@@ -23,8 +23,11 @@ public class PatientService implements IPatientService{
     }
 
     @Override
-    public Optional<Patient> getPatientByName(String name) { //byName
-        return patientRepository.findByName(name);
+    public Optional<Patient> getPatientByFullname(String fullname) {//byFullName
+      String[] name = fullname.split(" ");
+      String lastname = name[0];
+      String firstname = name[1];
+        return patientRepository.findByLastnameAndFirstname(lastname, firstname);
     }
 
     @Transactional(rollbackFor = Exception.class)

@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface IPatientRepository extends JpaRepository<Patient, Long> {
 
-
-    Optional<Patient> findByName(String name);
+    Optional<Patient> findByLastnameAndFirstname(String lastname, String firstname);
 }

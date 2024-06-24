@@ -1,0 +1,11 @@
+package com.medilabo_gui.medilabo_gui.services;
+
+import com.medilabo_gui.medilabo_gui.model.Patient;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
+public interface IPatientService {
+
+    ResponseEntity<List<Patient>> getPatientList();
+}

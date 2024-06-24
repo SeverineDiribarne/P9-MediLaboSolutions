@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8" />
@@ -17,13 +17,16 @@
       align="center" style="width: 100%">
       <!-- Create a form to input the values of Patient, there are 2 buttons: Save data and cancel to the list PatientList -->
 
-      <label>Lastname</label><br />
+      <label>Lastname<br />
       <input type="text" th:field="*{lastname}" placeholder="Lastname" required/><br />
-      <label>Firstname</label><br />
+      </label>
+      <label>Firstname<br />
       <input type="text" th:field="*{firstname}" placeholder="Firstname" required /><br />
-      <label>BirthDate</label><br />
+      </label>
+      <label>BirthDate<br />
       <input type="text" th:field="*{birthdate}" placeholder="BirthDate" required />
       <br />
+      </label>
       <label>Gender</label><br />
       <div>
         <input type="radio" id="genderChoice1" name="gender" value="Male" checked/>
@@ -36,12 +39,14 @@
         <label for="genderChoice3">X</label>
       </div>
       <br />
-      <label>Address</label><br />
+      <label>Address<br />
       <input type="text" th:field="*{address}" placeholder="Address" />
       <br />
-      <label>Phone number</label><br />
+      </label>
+      <label>Phone number<br />
       <input type="text" th:field="*{phoneNumber}" placeholder="Phone Number" />
       <br />
+      </label>
       <span th:style="'color: red;'" th:if="${msgLastname}" th:utext="${msgLastname}">Error Lastname</span><br />
       <span th:style="'color: red;'" th:if="${msgFirstname}" th:utext="${msgFirstname}">Error Firstname</span><br />
       <span th:style="'color: red;'" th:if="${msgBirthdate}" th:utext="${msgBirthdate}">Error Birthdate</span><br />

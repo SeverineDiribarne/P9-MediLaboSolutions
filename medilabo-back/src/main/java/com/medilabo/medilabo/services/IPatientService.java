@@ -8,7 +8,7 @@ public interface IPatientService {
 
     public Iterable<Patient>  getPatientList();
 
-    public Optional<Patient> getPatientByName(String name);
+    public Optional<Patient> getPatientByFullname(String fullname);
 
     public Patient savePatient(Patient patient);
 }

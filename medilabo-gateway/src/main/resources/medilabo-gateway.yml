@@ -1,0 +1,26 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    gateway:
+      routes:
+
+        - id: medilabo-back
+          uri: http://localhost:8082
+          predicates:
+          - Path=/api/**
+
+        - id: medilabo-2-route
+          uri: http://localhost:8083
+          predicates:
+            - Path=/**
+          filter:
+            - StripPrefix=1
+
+        - id: medilabo-3-route
+          uri: http://localhost:8084
+          predicates:
+            - Path=/**
+          filter:
+            - StripPrefix=1

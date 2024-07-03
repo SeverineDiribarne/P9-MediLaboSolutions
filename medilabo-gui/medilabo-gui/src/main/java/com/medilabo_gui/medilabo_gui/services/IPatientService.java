@@ -8,4 +8,6 @@ import java.util.List;
 public interface IPatientService {
 
     ResponseEntity<List<Patient>> getPatientList();
+
+    ResponseEntity<Patient> getPatientDetails(long id);
 }

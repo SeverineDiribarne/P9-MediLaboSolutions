@@ -9,7 +9,7 @@ import lombok.ToString;
     @ToString
     public class Patient {
 
-        private  long patientId = 0L;
+        private  long patientId;
 
         private String lastname ="";
 

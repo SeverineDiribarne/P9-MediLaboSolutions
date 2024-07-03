@@ -4,7 +4,6 @@ import com.medilabo.medilabo.model.Gender;
 import com.medilabo.medilabo.model.Patient;
 import com.medilabo.medilabo.services.IPatientService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,6 +72,15 @@ public class PatientController {
         return REDIRECT_PATIENT_LIST;
     }
 
+    @GetMapping("/patient/details/{id}")
+    public Optional<Patient> detailsOfPatient(@PathVariable long id) {
+        // Logique pour récupérer les détails du patient en fonction de l'id
+        Optional<Patient> patient = patientService.getPatientById(id);
+        log.info(" patient is found and returned to view");
+        return patient;
+
+    }
+
     @PostMapping("/patient/update")
     public String updatePatientInformationValidate( @RequestBody Patient patient, Model model, BindingResult bindingResult) {
 
@@ -107,10 +115,10 @@ public class PatientController {
             return PATIENT_UPDATE;
         }
 
-        Optional<Patient> patientByFullname = patientService.getPatientByFullname(patient.getLastname() + " " + patient.getFirstname());
-        if(patientByFullname.isPresent()) {
-            Patient patientFoundByName = patientByFullname.get();
-            Patient patientToUpdate = new Patient(patientFoundByName.getId(), patient.getLastname(), patient.getFirstname(),
+        Optional<Patient> patientById = patientService.getPatientById(patient.getPatientId());
+        if(patientById.isPresent()) {
+            Patient patientFoundByName = patientById.get();
+            Patient patientToUpdate = new Patient(patientFoundByName.getPatientId(), patient.getLastname(), patient.getFirstname(),
                                         patient.getBirthdate(), patient.getGender(), patient.getAddress(),
                                         patient.getPhoneNumber());
             Patient patientUpdated = patientService.savePatient(patientToUpdate);

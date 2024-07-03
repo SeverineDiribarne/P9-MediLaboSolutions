@@ -2,7 +2,7 @@
 <html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
-  <title>Home</title>
+  <title>Patient List </title>
   <link
           rel="stylesheet"
           type="text/css"
@@ -11,11 +11,11 @@
 </head>
 <body>
 <div class="container" align="center">
-  <a href="/patient/add" class="btn btn-primary btn-sm">Add new patient</a>
+  <a href="/api/patient/add" class="btn btn-primary btn-sm">Add new patient</a>
   <table class="table table-bordered" style="margin-top: 1%">
     <thead>
     <tr>
-      <th>Id</th>
+  <!--    <th>Id</th>   -->
       <th>Lastname</th>
       <th>Firstname</th>
       <th>Actions</th>
@@ -27,9 +27,9 @@
       <td th:text="${patient.lastname}"></td>
       <td th:text="${patient.firstname}"></td>
       <td align="center">
-        <a th:href="@{/patient/details/{id}(id=${patient.patientId})}">Details</a>
+        <a th:href="@{/api/patient/details/{id}(id=${patient.patientId})}">Details</a>
         &nbsp;|&nbsp;
-        <a th:href="@{/patient/update/{id}(id=${patient.patientId})}">Edit</a>
+        <a th:href="@{/api/patient/update/{id}(id=${patient.patientId})}">Edit</a>
       </td>
     </tr>
     </tbody>

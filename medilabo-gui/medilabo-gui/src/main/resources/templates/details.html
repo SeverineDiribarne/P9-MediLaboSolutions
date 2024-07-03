@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Patient details</title>
   </head>
   <body>
-    
+  <h1>Patient Details</h1>
+  <p>Id: <span th:text="${patient.patientId}"></span></p>
+  <p>First Name: <span th:text="${patient.firstname}"></span></p>
+  <p>Last Name: <span th:text="${patient.lastname}"></span></p>
+  <p>Gender: <span th:text="${patient.gender}"></span></p>
+  <p>Address: <span th:text="${patient.address}"></span></p>
+  <p>Phone Number: <span th:text="${patient.phoneNumber}"></span></p>
   </body>
 </html>

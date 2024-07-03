@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Long.parseLong;
+
 @Service
 public class PatientService implements IPatientService{
 
@@ -23,16 +25,12 @@ public class PatientService implements IPatientService{
     }
 
     @Override
-    public Optional<Patient> getPatientByFullname(String fullname) {//byFullName
-      String[] name = fullname.split(" ");
-      String lastname = name[0];
-      String firstname = name[1];
-        return patientRepository.findByLastnameAndFirstname(lastname, firstname);
+    public Optional<Patient> getPatientById(long id) {//byFullName
+        return patientRepository.findById(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Patient savePatient(Patient patient) {
-
         return patientRepository.save(patient);
     }
 }

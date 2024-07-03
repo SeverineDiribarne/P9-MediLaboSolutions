@@ -17,7 +17,7 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name="patient_id")
-    private  long id = 0L;
+    private  long patientId;
 
     @NotNull
     @Size(min = 1, max = 100)
@@ -47,7 +47,7 @@ public class Patient {
     public Patient(){}
 
     public Patient(long id, String lastname, String firstname, String birthdate, Gender gender, String address, String phoneNumber) {
-        this.id = id;
+        this.patientId = id;
         this.lastname=lastname;
         this.firstname = firstname;
         this.birthdate = birthdate;

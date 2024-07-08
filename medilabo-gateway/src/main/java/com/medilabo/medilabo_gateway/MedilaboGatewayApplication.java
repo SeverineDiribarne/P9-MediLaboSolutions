@@ -22,6 +22,11 @@ public class MedilaboGatewayApplication {
 				.route("medilabo-details",r->r.path("/api/patient/details/{id}")
 						.filters(f -> f.addRequestParameter("id", "defaultId"))
 						.uri("http://localhost:8082/"))
+				.route("medilabo-addvalidate",r->r.path("/api/patient/addvalidate")
+						.uri("http://localhost:8082/"))
+//				.route("medilabo-update",r->r.path("/api/patient/update/{id}")
+//						.filters(f -> f.addRequestParameter("id", "defaultId"))
+//						.uri("http://localhost:8082/"))
 				.build();
 	}
 }

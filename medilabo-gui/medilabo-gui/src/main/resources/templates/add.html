@@ -13,38 +13,37 @@
   </div>
 
   <div class="row">
-    <form action="#" th:action="@{/patient/validate}" th:object="${patient}" method="post" class="form-horizontal"
+    <form action="#" th:action="@{/api/patient/addvalidate}" method="post" class="form-horizontal"
       align="center" style="width: 100%">
       <!-- Create a form to input the values of Patient, there are 2 buttons: Save data and cancel to the list PatientList -->
-
       <label>Lastname<br />
-      <input type="text" th:field="*{lastname}" placeholder="Lastname" required/><br />
+      <input type="text"  id="lastname" name="lastname" placeholder="Lastname" required/><br />
       </label>
       <label>Firstname<br />
-      <input type="text" th:field="*{firstname}" placeholder="Firstname" required /><br />
+      <input type="text"  id="firstname" name="firstname" placeholder="Firstname" required /><br />
       </label>
       <label>BirthDate<br />
-      <input type="text" th:field="*{birthdate}" placeholder="BirthDate" required />
+      <input type="text"  id="birthdate" name="birthdate" placeholder="BirthDate" required />
       <br />
       </label>
       <label>Gender</label><br />
       <div>
-        <input type="radio" id="genderChoice1" name="gender" value="Male" checked/>
-        <label for="genderChoice1">Male</label>
+        <input type="radio"   id="Male" name="gender" value="Male" checked/>
+        <label for="Male">Male</label>
 
-        <input type="radio" id="genderChoice2" name="gender" value="Female" />
-        <label for="genderChoice2">Female</label>
+        <input type="radio"   id="Female" name="gender" value="Female" />
+        <label for="Female">Female</label>
 
-        <input type="radio" id="genderChoice3" name="gender" value="X" />
-        <label for="genderChoice3">X</label>
+        <input type="radio"  id="X" name="gender" value="X" />
+        <label for="X">X</label>
       </div>
       <br />
       <label>Address<br />
-      <input type="text" th:field="*{address}" placeholder="Address" />
+      <input type="text"  id="address" name="address" placeholder="Address" />
       <br />
       </label>
       <label>Phone number<br />
-      <input type="text" th:field="*{phoneNumber}" placeholder="Phone Number" />
+      <input type="text"  id="phoneNumber" name="phoneNumber" placeholder="Phone Number" />
       <br />
       </label>
       <span th:style="'color: red;'" th:if="${msgLastname}" th:utext="${msgLastname}">Error Lastname</span><br />

@@ -36,7 +36,7 @@ public class PatientController {
     }
 
 
-    @PostMapping("/patient/validate")
+    @PostMapping("/patient/addvalidate")
     public String addPatientInformationValidate(@Valid @RequestBody Patient patient, Model model, BindingResult bindingResult) {
 
         // Vérifier les erreurs de validation
@@ -68,7 +68,7 @@ public class PatientController {
             return PATIENT_ADD;
         }
 
-        Patient newPatient = patientService.savePatient(patient);
+        Patient savedPatient = patientService.savePatient(patient);
         return REDIRECT_PATIENT_LIST;
     }
 
@@ -82,7 +82,8 @@ public class PatientController {
     }
 
     @PostMapping("/patient/update")
-    public String updatePatientInformationValidate( @RequestBody Patient patient, Model model, BindingResult bindingResult) {
+    public String updatePatientInformationValidate(@Valid @RequestBody Patient patient, Model model, BindingResult bindingResult) {
+
 
         // Vérifier les erreurs de validation
         if (bindingResult.hasErrors()) {
@@ -114,13 +115,12 @@ public class PatientController {
             model.addAttribute("msgGender", "Your gender is incorrect");
             return PATIENT_UPDATE;
         }
-
         Optional<Patient> patientById = patientService.getPatientById(patient.getPatientId());
         if(patientById.isPresent()) {
-            Patient patientFoundByName = patientById.get();
-            Patient patientToUpdate = new Patient(patientFoundByName.getPatientId(), patient.getLastname(), patient.getFirstname(),
-                                        patient.getBirthdate(), patient.getGender(), patient.getAddress(),
-                                        patient.getPhoneNumber());
+            Patient patientFoundById = patientById.get();
+            Patient patientToUpdate = new Patient(patientFoundById.getPatientId(), patient.getLastname(), patient.getFirstname(),
+                    patient.getBirthdate(), patient.getGender(), patient.getAddress(),
+                    patient.getPhoneNumber());
             Patient patientUpdated = patientService.savePatient(patientToUpdate);
             model.addAttribute("patientUpdated",patientUpdated);
         }

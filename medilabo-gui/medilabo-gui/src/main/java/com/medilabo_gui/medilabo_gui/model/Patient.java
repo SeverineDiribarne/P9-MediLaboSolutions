@@ -2,26 +2,28 @@ package com.medilabo_gui.medilabo_gui.model;
 
 import com.medilabo_gui.medilabo_gui.model.Gender;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 
     @Getter
+    @Setter
     @ToString
     public class Patient {
 
         private  long patientId;
 
-        private String lastname ="";
+        private String lastname;
 
-        private String firstname = "";
+        private String firstname;
 
-        private String birthdate = "";
+        private String birthdate;
 
-        private Gender gender= Gender.NONE;
+        private Gender gender;
 
-        private String address = "";
+        private String address;
 
-        private String phoneNumber ="";
+        private String phoneNumber;
 
         public Patient(){}
 
@@ -34,5 +36,4 @@ import lombok.ToString;
             this.address = address;
             this.phoneNumber = phoneNumber;
         }
-
     }

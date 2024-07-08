@@ -10,4 +10,8 @@ public interface IPatientService {
     ResponseEntity<List<Patient>> getPatientList();
 
     ResponseEntity<Patient> getPatientDetails(long id);
+
+    ResponseEntity<Patient> getPatientToUpdate(long id);
+
+    ResponseEntity<Patient> addPatient(Patient patient);
 }

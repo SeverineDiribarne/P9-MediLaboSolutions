@@ -2,7 +2,7 @@ package com.medilabo.medilabo.controllers;
 
 import com.medilabo.medilabo.model.Gender;
 import com.medilabo.medilabo.model.Patient;
-import com.medilabo.medilabo.services.IPatientService;
+import com.medilabo.medilabo.services.patientService.IPatientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

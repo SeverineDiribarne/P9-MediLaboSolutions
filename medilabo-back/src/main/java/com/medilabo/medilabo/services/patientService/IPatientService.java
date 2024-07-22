@@ -1,4 +1,4 @@
-package com.medilabo.medilabo.services;
+package com.medilabo.medilabo.services.patientService;
 
 import com.medilabo.medilabo.model.Patient;
 

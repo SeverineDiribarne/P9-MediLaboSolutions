@@ -1,4 +1,4 @@
-package com.medilabo.medilabo.services;
+package com.medilabo.medilabo.services.patientService;
 
 import com.medilabo.medilabo.model.Patient;
 import com.medilabo.medilabo.repositories.IPatientRepository;
@@ -7,13 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Long.parseLong;
 
 @Service
-public class PatientService implements IPatientService{
+public class PatientService implements IPatientService {
 
     @Autowired
     IPatientRepository patientRepository;

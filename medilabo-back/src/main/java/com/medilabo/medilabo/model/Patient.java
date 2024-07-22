@@ -3,13 +3,17 @@ package com.medilabo.medilabo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @DynamicUpdate
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Table(name="patient")
 public class Patient {
@@ -34,6 +38,7 @@ public class Patient {
     private String birthdate = "";
 
     @Column(name="gender")
+    @Enumerated(EnumType.STRING)
     private Gender gender = Gender.NONE;
 
     @Column(name="address")
@@ -43,17 +48,5 @@ public class Patient {
     @Column(name="phoneNumber")
     @Size(min = 10, max = 15)
     private String phoneNumber ="";
-
-    public Patient(){}
-
-    public Patient(long id, String lastname, String firstname, String birthdate, Gender gender, String address, String phoneNumber) {
-        this.patientId = id;
-        this.lastname=lastname;
-        this.firstname = firstname;
-        this.birthdate = birthdate;
-        this.gender = gender;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
 
 }

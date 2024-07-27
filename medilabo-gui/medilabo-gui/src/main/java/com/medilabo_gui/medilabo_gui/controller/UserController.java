@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model){
+    public String showLoginForm(Model model){
         System.out.println("je passe par la methode login du userController");
         model.addAttribute("user", new User());
         return "login";
@@ -40,6 +40,7 @@ public class UserController {
                 return "redirect:/list";
             } else {
                 model.addAttribute("error", "Invalid username or password");
+                model.addAttribute("user", user);
                 return "login";
             }
     }

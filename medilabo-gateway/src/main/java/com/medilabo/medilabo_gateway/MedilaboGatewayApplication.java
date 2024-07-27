@@ -30,7 +30,7 @@ public class MedilaboGatewayApplication {
 						.filters(f -> f.addRequestParameter("id", "defaultId"))
 						.uri("http://localhost:8082"))
 				.route("medilabo-authenticate",r->r.path("/api/auth/login")
-						.filters(f -> f.filter(filterFactory.apply(new AddAuthRequestParametersGatewayFilterFactory.Config())))
+						//.filters(f -> f.filter(filterFactory.apply(new AddAuthRequestParametersGatewayFilterFactory.Config())))
 						.uri("http://localhost:8082"))
 				.build();
 	}

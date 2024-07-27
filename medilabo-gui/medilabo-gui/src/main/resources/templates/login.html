@@ -22,17 +22,18 @@
     <!-- Login via Username and password -->
     <div class="container_form">
         <div class="form">
-            <form id="loginForm" th:action="@{/authenticate}" method="post" class="form-signin">
+            <form th:action="@{/authenticate}" th:object="${user}" method="post" id="loginForm" class="form-signin">
                 <h2 class="title_login1">Login with Username and Password</h2>
                 <div class="form_content">
                     <div class="input-group1">
                         <label for="username" class="sr-only">User :</label>
                         <input
                                 type="text"
-                                id="username"
-                                name="username"
+                                th:field="*{username}"
                                 class="form-control"
                                 placeholder="Username"
+                                id="username"
+                                name="username"
                                 required
                                 autofocus
                         />
@@ -43,6 +44,7 @@
                                 type="password"
                                 id="password"
                                 name="password"
+                                th:field="*{password}"
                                 class="form-control"
                                 placeholder="Password"
                                 required

@@ -37,6 +37,7 @@ public class AddAuthRequestParametersGatewayFilterFactory extends AbstractGatewa
 
         return (exchange, chain) -> DataBufferUtils.join(exchange.getRequest().getBody())
                 .flatMap(dataBuffer -> {
+                    System.out.println("je passe par la lambda de la methode apply de la classe AddAuthRequestParametersGatewayFilterFactory");
                     byte[] bytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(bytes);
                     DataBufferUtils.release(dataBuffer);
@@ -59,6 +60,7 @@ public class AddAuthRequestParametersGatewayFilterFactory extends AbstractGatewa
                     System.out.println("Password: " + password);
 
                     URI uri = exchange.getRequest().getURI();
+                    System.out.println(uri);
                     URI modifiedUri = UriComponentsBuilder.fromUri(uri)
                             .replaceQueryParam("username", username)
                             .replaceQueryParam("password", password)

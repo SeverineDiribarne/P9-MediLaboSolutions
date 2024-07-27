@@ -60,7 +60,7 @@ public class ConfigurationApplicationSecurity {
 
         List<UserDetails> users = new ArrayList<>();
         users.add(User.withUsername("sedi77.sd@gmail.com")
-                .password(new BCryptPasswordEncoder().encode("?SD29@ds!"))
+                .password("?SD29@ds!")
                 .roles("USER")
                 .build());
 //        users.add(User.withUsername("user2@example.com")

@@ -5,19 +5,34 @@ spring:
     gateway:
       routes:
         - id: medilabo-list
-          uri: http://localhost:8082/
+          uri: http://localhost:8082
           predicates:
             - Path=/api/patient/list
         - id: medilabo-details
-          uri: http://localhost:8082/
+          uri: http://localhost:8082
           predicates:
             - Path=/api/patient/details/{id}
           filters:
             - AddRequestParameter=id, defaultId
         - id: medilabo-addvalidate
-          uri: http://localhost:8082/
+          uri: http://localhost:8082
           predicates:
             - Path=/api/patient/addvalidate
+        - id: medilabo-update
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/patient/update/{id}
+          filters:
+            - AddRequestParameter=id, defaultId
+        - id: medilabo-authenticate
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/auth/login
+          filters:
+            - name: AddAuthRequestParametersGatewayFilterFactory
+              args:
+                defaultUsername: yourDefaultUsername
+                defaultPassword: yourDefaultPassword
         - id: medilabo-2-route
           uri: http://localhost:8083
           predicates:

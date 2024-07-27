@@ -1,70 +1,70 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="https://www.thymeleaf.org"
-  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
->
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        lang="en"
+        xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Please sign in</title>
-    <link href="\css\login.css" rel="stylesheet" />
+    <!-- <meta name="csrf-token" content="${_csrf.token}"/> --> <!-- CSRF Token Meta Tag -->
+    <link href="\css\login.css" rel="stylesheet"/>
     <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
-      rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+            rel="stylesheet"
     />
     <link
-      href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css"
-      rel="stylesheet"
+            href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css"
+            rel="stylesheet"
     />
-  </head>
+</head>
 
-  <body>
-    <div class="container_page">
-      <!-- Login via Username and password -->
-      <div class="container_form">
+<body>
+<div class="container_page">
+    <!-- Login via Username and password -->
+    <div class="container_form">
         <div class="form">
-          <form th:action="@{/login}" method="post" class="form-signin">
-            <h2 class="title_login1">Login with Username and Password</h2>
-            <div class="form_content">
-              <div class="input-group1">
-                <label for="username" class="sr-only">User :</label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  class="form-control"
-                  placeholder="Username"
-                  required
-                  autofocus
-                />
-              </div>
-              <div class="input-group2">
-                <label for="password" class="sr-only">Password :</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  class="form-control"
-                  placeholder="Password"
-                  required
-                />
-              </div>
+            <form id="loginForm" th:action="@{/authenticate}" method="post" class="form-signin">
+                <h2 class="title_login1">Login with Username and Password</h2>
+                <div class="form_content">
+                    <div class="input-group1">
+                        <label for="username" class="sr-only">User :</label>
+                        <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-control"
+                                placeholder="Username"
+                                required
+                                autofocus
+                        />
+                    </div>
+                    <div class="input-group2">
+                        <label for="password" class="sr-only">Password :</label>
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Password"
+                                required
+                        />
+                    </div>
 
-              <span th:style="'color: red;'" th:if="${param.error}"
-                >Invalid username and password</span
-              >
-
-              <div>
-                <button type="submit" class="btn btn-lg btn-primary btn-block">
-                  Login
-                </button>
-              </div>
-            </div>
-          </form>
+                    <span th:style="'color: red;'" th:if="${param.error}"
+                    >Invalid username and password</span
+                    >
+                    <div id="errorMessage" style="color: red;"></div> <!-- Element for error messages -->
+                    <div>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block">
+                            Login
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-      </div>
-      <!-- Login via Oauth2 -->
-      <div class="loginOauth2">
+    </div>
+    <!--   Login via Oauth2 -->
+    <!--
+    <div class="loginOauth2">
         <h2 class="title_login2">Login with OAuth 2.0</h2>
         <table class="table table-striped">
           <tr>
@@ -77,5 +77,46 @@
         </table>
       </div>
     </div>
-  </body>
+    -->
+</div>
+
+<!--<script>-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--     document.getElementById('loginForm').addEventListener('submit', async function(event) {-->
+<!--         event.preventDefault();-->
+
+<!--         const formData = new FormData(event.target);-->
+<!--         const response = await fetch('/api/auth/login', {-->
+<!--             method: 'POST',-->
+<!--             body: JSON.stringify({-->
+<!--                 username: formData.get('username'),-->
+<!--                 password: formData.get('password')-->
+<!--             }),-->
+<!--             headers: {-->
+<!--                 'Content-Type': 'application/json'-->
+<!--             //  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF Token Header-->
+<!--             }-->
+<!--         });-->
+
+<!--         // Vérifiez le type de réponse-->
+<!--         const contentType = response.headers.get('Content-Type');-->
+<!--         if (contentType && contentType.includes('application/json')) {-->
+<!--             try {-->
+<!--                 const data = await response.json();-->
+<!--                 if (data.jwt) {-->
+<!--                     localStorage.setItem('authToken', data.jwt); // Store token-->
+<!--                     window.location.href = '/api/patient/list';  // Redirect after login-->
+<!--                 } else {-->
+<!--                     document.getElementById('errorMessage').textContent = 'Authentication failed';-->
+<!--                 }-->
+<!--             } catch (error) {-->
+<!--                 document.getElementById('errorMessage').textContent = 'Invalid JSON response';-->
+<!--             }-->
+<!--         } else {-->
+<!--             document.getElementById('errorMessage').textContent = 'Unexpected response format';-->
+<!--         }-->
+<!--     });-->
+<!-- });-->
+<!--</script>-->
+</body>
 </html>

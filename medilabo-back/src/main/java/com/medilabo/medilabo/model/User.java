@@ -29,7 +29,9 @@ public class User implements UserDetails {
     private String password;
     
     private boolean activeAccount = false;
-    
+
+    public User(String mail, String password) {
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

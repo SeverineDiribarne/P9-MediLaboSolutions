@@ -9,7 +9,6 @@ import com.medilabo_gui.medilabo_gui.model.Patient;
 
 import java.util.List;
 
-import static java.lang.Integer.parseInt;
 
 @Service
 public class PatientService implements IPatientService{

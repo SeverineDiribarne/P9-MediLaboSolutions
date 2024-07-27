@@ -9,8 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,37 +19,39 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 public class ConfigurationApplicationSecurity {
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final JwtRequestFilter jwtFilter;
 
     @Autowired
-    private JwtRequestFilter jwtFilter;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public ConfigurationApplicationSecurity() {}
+    public ConfigurationApplicationSecurity(JwtRequestFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        System.out.println("je passe dans la methode authenticationManager du ConfigurationApplicationSecurity");
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-       httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+        System.out.println("je passe dans la methode filterChain du ConfigurationApplicationSecurity");
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable) // .csrfTokenRepository(csrfTokenRepository())
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers(POST, "/login").permitAll()
-                                       // .requestMatchers(POST, "").permitAll()
-                                      //  .requestMatchers(POST, "").permitAll()
+                                        .requestMatchers(POST, "/api/auth/login").permitAll()
                                         .anyRequest().authenticated()
                 )
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
+//    @Bean
+//    public CsrfTokenRepository csrfTokenRepository() {
+//        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
+//        repository.setCookieHttpOnly(false); // Allow JavaScript access to CSRF token
+//        return repository;
+//    }
 }

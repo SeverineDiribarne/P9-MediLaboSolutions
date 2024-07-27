@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<h1>Welcome to the Home Page</h1>
+<a th:href="@{/login}">Login</a>
+<button onclick="logout()">Logout</button>
+<!--
+<script>
+    function logout() {
+        localStorage.removeItem('authToken'); // Remove token on logout
+        window.location.href = '/login'; // Redirect to login page
+    }
+</script>
+-->
+</body>
+</html>

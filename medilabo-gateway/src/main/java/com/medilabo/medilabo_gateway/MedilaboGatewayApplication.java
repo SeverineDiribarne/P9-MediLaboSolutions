@@ -1,5 +1,6 @@
 package com.medilabo.medilabo_gateway;
 
+import com.medilabo.medilabo_gateway.AddAuthRequestParametersGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -14,19 +15,23 @@ public class MedilaboGatewayApplication {
 		SpringApplication.run(MedilaboGatewayApplication.class, args);
 	}
 
+
 	@Bean
-	public RouteLocator routerBuilder(RouteLocatorBuilder routeLocatorBuilder){
+	public RouteLocator routerBuilder(RouteLocatorBuilder routeLocatorBuilder, AddAuthRequestParametersGatewayFilterFactory filterFactory){
 		return routeLocatorBuilder.routes()
 				.route("medilabo-list",r->r.path("/api/patient/list")
-						.uri("http://localhost:8082/"))
+						.uri("http://localhost:8082"))
 				.route("medilabo-details",r->r.path("/api/patient/details/{id}")
 						.filters(f -> f.addRequestParameter("id", "defaultId"))
-						.uri("http://localhost:8082/"))
+						.uri("http://localhost:8082"))
 				.route("medilabo-addvalidate",r->r.path("/api/patient/addvalidate")
-						.uri("http://localhost:8082/"))
-//				.route("medilabo-update",r->r.path("/api/patient/update/{id}")
-//						.filters(f -> f.addRequestParameter("id", "defaultId"))
-//						.uri("http://localhost:8082/"))
+						.uri("http://localhost:8082"))
+				.route("medilabo-update",r->r.path("/api/patient/update/{id}")
+						.filters(f -> f.addRequestParameter("id", "defaultId"))
+						.uri("http://localhost:8082"))
+				.route("medilabo-authenticate",r->r.path("/api/auth/login")
+						.filters(f -> f.filter(filterFactory.apply(new AddAuthRequestParametersGatewayFilterFactory.Config())))
+						.uri("http://localhost:8082"))
 				.build();
 	}
 }

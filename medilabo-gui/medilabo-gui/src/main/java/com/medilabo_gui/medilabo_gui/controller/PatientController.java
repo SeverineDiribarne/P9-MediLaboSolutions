@@ -59,7 +59,7 @@ public class PatientController {
         return "details";
     }
 
-
+    //TODO : A revoir cette methode du front vers le back
     @GetMapping ("/patient/update/{id}")
     public String showUpdatePatientForm(@PathVariable long id, Model model){
         ResponseEntity<Patient> patientToUpdate = patientService.getPatientToUpdate(id);

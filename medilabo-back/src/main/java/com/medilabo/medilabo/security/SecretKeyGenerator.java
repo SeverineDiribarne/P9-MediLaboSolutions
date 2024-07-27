@@ -10,18 +10,20 @@ import java.util.Base64;
 @Configuration
 public class SecretKeyGenerator {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private static final int KEY_LENGTH = 50;// 50 bytes for 256-bit key
+    private static final int KEY_LENGTH = 32;// 32 bytes for 256-bit key
 
     @Value("${jwt.secret:default-secret-key}")
     private String defaultSecret;
 
     @Bean
     public String jwtSecret() {
+        System.out.println("je passe dans la methode jwtSecret du SecretKeyGenerator");
         System.out.println("la cle est " + generateSecretKey(KEY_LENGTH));
         return generateSecretKey(KEY_LENGTH);
     }
 
     private String generateSecretKey(int length) {
+        System.out.println("je passe dans la methode generateSecretKey du SecretKeyGenerator");
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder keyBuilder = new StringBuilder(length);
 

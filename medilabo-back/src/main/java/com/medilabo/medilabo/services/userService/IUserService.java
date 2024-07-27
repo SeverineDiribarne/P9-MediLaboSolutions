@@ -4,5 +4,7 @@ import com.medilabo.medilabo.model.User;
 
 public interface IUserService {
 
-    public User findByUsername(String username);
+    User findByEmail(String username);
+
+    User saveUser(User user);
 }

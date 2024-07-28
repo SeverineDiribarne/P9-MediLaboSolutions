@@ -25,6 +25,7 @@ public class UserService implements IUserService {
 
     public User findByEmail(String username) {
         System.out.println("je passe dans la methode findByEmail du UserService");
+        System.out.println(username);
         return userRepository.findByEmail(username);
     }
 

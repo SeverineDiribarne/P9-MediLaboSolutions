@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @DynamicUpdate
@@ -37,9 +38,10 @@ public class Patient {
     @Column(name="birthdate")
     private String birthdate = "";
 
+    @NotNull
     @Column(name="gender")
     @Enumerated(EnumType.STRING)
-    private Gender gender = Gender.NONE;
+    private Gender gender = Gender.M;
 
     @Column(name="address")
     @Size(min = 1, max = 255)

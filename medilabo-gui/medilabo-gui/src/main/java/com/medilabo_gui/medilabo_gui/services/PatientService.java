@@ -46,7 +46,7 @@ public class PatientService implements IPatientService{
 
 
     @Override
-    public ResponseEntity<Patient> getPatientToUpdate(long id) {
+    public ResponseEntity<Patient>  getPatientToUpdate(long id) {
         String gatewayUrl = "http://localhost:8090/api/patient/update/" + id;
         return restTemplate.getForEntity(gatewayUrl, Patient.class);
     }

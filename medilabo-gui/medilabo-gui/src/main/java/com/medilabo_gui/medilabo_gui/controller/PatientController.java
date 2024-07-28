@@ -28,6 +28,7 @@ public class PatientController {
 
     @GetMapping("/patient/list")
     public String showPatientsList(Model model) {
+        System.out.println("je rentre dans la methode showPatientsList");
         ResponseEntity<List<Patient>> patients = patientService.getPatientList();
         model.addAttribute("patients", patients.getBody());
         log.info("all patients are found and returned to view");

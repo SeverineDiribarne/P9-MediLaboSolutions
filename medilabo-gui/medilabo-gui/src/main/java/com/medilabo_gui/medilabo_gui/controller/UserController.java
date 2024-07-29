@@ -39,13 +39,12 @@ public class UserController {
         return "login";
     }
 
-    @PostMapping("/authenticate")
-    public String authenticate(@ModelAttribute("user") User user, BindingResult result, Model model) {
+    @PostMapping("/custom-login")
+    public String login(@ModelAttribute("user") User user, BindingResult result, Model model) {
         System.out.println("je passe par la methode authenticate du userController");
             if (userService.authenticate(user.getUsername(), user.getPassword())) {
                 System.out.println("le token sauvegarde est " +jwtTokenService.getJwtToken());
-                //return "redirect:/list";
-                return "redirect:/api/patient/list";
+                return "/list";
             } else {
                 model.addAttribute("error", "Invalid username or password");
                 model.addAttribute("user", user);

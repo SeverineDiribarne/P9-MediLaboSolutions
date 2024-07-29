@@ -35,12 +35,15 @@ public class ConfigurationApplicationSecurity {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/authenticate", "/home").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/custom-login").permitAll()
+                        .requestMatchers( "/home").permitAll()
+                        .requestMatchers("/api/patient/list").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/authenticate")
+                        //.loginProcessingUrl("/custom-login")
                         .defaultSuccessUrl("/api/patient/list", true)
                         .failureUrl("/login?error=true")
                         .permitAll()

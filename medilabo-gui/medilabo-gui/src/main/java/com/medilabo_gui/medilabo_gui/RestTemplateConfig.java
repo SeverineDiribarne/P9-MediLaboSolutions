@@ -13,16 +13,29 @@ import java.util.List;
 
 
 @Configuration
-public class AppConfig {
+public class RestTemplateConfig {
 
-    @Autowired
-    private JwtTokenService jwtTokenService;
+//VERSION DE BASE
+//    @Autowired
+//    private JwtTokenService jwtTokenService;
+//
+//    @Bean
+//    public RestTemplate restTemplate() {
+//        RestTemplate restTemplate = new RestTemplate();
+//        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+//        interceptors.add(new JwtInterceptor(jwtTokenService));
+//        restTemplate.setInterceptors(interceptors);
+//        return restTemplate;
+//    }
+
+@Autowired
+private JwtInterceptor jwtInterceptor;
 
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-        interceptors.add(new JwtInterceptor(jwtTokenService));
+        interceptors.add(jwtInterceptor);
         restTemplate.setInterceptors(interceptors);
         return restTemplate;
     }

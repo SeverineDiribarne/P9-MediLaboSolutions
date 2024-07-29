@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/patient")
 public class PatientController {
 
     private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PatientController.class);
@@ -26,22 +26,22 @@ public class PatientController {
     @Autowired
     IPatientService patientService;
 
-    @GetMapping("/patient/list")
+    @GetMapping("/list")
     public String showPatientsList(Model model) {
         System.out.println("je rentre dans la methode showPatientsList");
         ResponseEntity<List<Patient>> patients = patientService.getPatientList();
         model.addAttribute("patients", patients.getBody());
         log.info("all patients are found and returned to view");
-        return "list";
+        return "redirect:/list";
     }
-    @GetMapping("/patient/add")
+    @GetMapping("/add")
     public String showAddPatientForm(Model model){
         model.addAttribute("patient", new Patient());
         log.info("The display of the addPatient page of a patient is functional");
         return PATIENT_ADD;
     }
 
-    @PostMapping("/patient/addvalidate")
+    @PostMapping("/addvalidate")
     public String addPatient(@ModelAttribute ("patient") Patient patient, BindingResult result, Model model){
         System.out.println(patient.getLastname());
         if (result.hasErrors()) {
@@ -52,7 +52,7 @@ public class PatientController {
         return REDIRECT_PATIENT_LIST;
     }
 
-    @GetMapping("/patient/details/{id}")
+    @GetMapping("/details/{id}")
     public String showPatientDetails(@PathVariable long id, Model model){
         ResponseEntity<Patient> patient = patientService.getPatientDetails(id);
         model.addAttribute("patient", patient.getBody());
@@ -61,7 +61,7 @@ public class PatientController {
     }
 
     //TODO : A revoir cette methode du front vers le back
-    @GetMapping ("/patient/update/{id}")
+    @GetMapping ("/update/{id}")
     public String showUpdatePatientForm(@PathVariable long id, Model model){
         ResponseEntity<Patient> patientToUpdate = patientService.getPatientToUpdate(id);
         model.addAttribute("patient", patientToUpdate);

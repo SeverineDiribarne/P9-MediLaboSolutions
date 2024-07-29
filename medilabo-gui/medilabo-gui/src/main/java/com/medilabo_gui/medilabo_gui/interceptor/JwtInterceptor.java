@@ -13,6 +13,7 @@ import java.io.IOException;
 @Component
 public class JwtInterceptor implements ClientHttpRequestInterceptor {
 
+//VERSION DE BASE
     private JwtTokenService jwtTokenService;
 
     public JwtInterceptor(JwtTokenService jwtTokenService) {
@@ -20,17 +21,16 @@ public class JwtInterceptor implements ClientHttpRequestInterceptor {
         System.out.println("Je passe dans le constructeur de JwtInterceptor" + this.jwtTokenService);
     }
 
-    //public JwtInterceptor() {
-    //}
-
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         System.out.println("je passe dans la methode intercept de la classe JwtInterceptor");
         String token = jwtTokenService.getJwtToken();
-        System.out.println(token);
+        System.out.println( "le token dans la methode intercept de la classe JwtInterceptor est : " +jwtTokenService.getJwtToken());
         if (token != null) {
+            System.out.println("mon token est : " +token);
             request.getHeaders().set("Authorization", "Bearer " + token);
         }
         return execution.execute(request, body);
     }
+
 }

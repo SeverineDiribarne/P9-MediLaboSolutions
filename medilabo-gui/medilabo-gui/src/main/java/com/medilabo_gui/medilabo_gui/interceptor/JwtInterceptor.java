@@ -1,12 +1,15 @@
 package com.medilabo_gui.medilabo_gui.interceptor;
 
 import com.medilabo_gui.medilabo_gui.services.JwtTokenService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
 
@@ -32,5 +35,4 @@ public class JwtInterceptor implements ClientHttpRequestInterceptor {
         }
         return execution.execute(request, body);
     }
-
 }

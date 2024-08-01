@@ -34,18 +34,4 @@ public class UserService implements IUserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
-
-//    @PostConstruct
-//    public void initUsers() {
-//        List<User> users = new ArrayList<>();
-//        users.add(new User("sedi77.sd@gmail.com", passwordEncoder.encode("?SD29@ds!")));
-//        //users.add(new User("user2@example.com", passwordEncoder.encode("password2")));
-//        // Ajoutez d'autres utilisateurs ici
-//
-//        for (User user : users) {
-//            if (userRepository.findByEmail(user.getEmail()) == null) {
-//                userRepository.save(user);
-//            }
-//        }
-//    }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
 
     //VERSION PRECEDENTE
 //    @Value("${gateway.url}")
@@ -78,13 +78,14 @@ public class UserService implements IUserService{
     private String gatewayUrl;
 
     private final RestTemplate restTemplate;
-
-    @Autowired
+    private RestTemplate restTemplateWithJwt;
     private JwtTokenService jwtTokenService;
 
     @Autowired
-    public UserService(RestTemplate restTemplate) {
+    public UserService(RestTemplate restTemplate, RestTemplate restTemplateWithJwt, JwtTokenService jwtTokenService  ) {
         this.restTemplate = restTemplate;
+        this.restTemplateWithJwt = restTemplateWithJwt;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
@@ -100,8 +101,6 @@ public class UserService implements IUserService{
             LoginRequest loginRequest = new LoginRequest(username, password);
             System.out.println(loginRequest.toString());
 
-            //TODO voir comment faire pour que la methode JwtInterceptor se declenche apres la reception du jwtToken
-
             // Configurer les en-têtes de la requête pour indiquer que le contenu est JSON
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -114,6 +113,7 @@ public class UserService implements IUserService{
             ResponseEntity<Map> response = restTemplate.postForEntity(authUrl, request, Map.class);
             System.out.println("la response est : " + response.toString());
 
+
             if (response.getStatusCode().is2xxSuccessful()) {
 
                 // Extraire le token JWT de la réponse
@@ -123,7 +123,7 @@ public class UserService implements IUserService{
                 // Faire quelque chose avec le token JWT si nécessaire
                 System.out.println("JWT Token: " + jwt);
                 jwtTokenService.setJwtToken(jwt);// Stocker le token JWT
-                System.out.println( "le token que je viens de stocker est " + jwtTokenService.getJwtToken());
+                System.out.println("le token que je viens de stocker est " + jwtTokenService.getJwtToken());
                 return true;
             } else {
                 return false;

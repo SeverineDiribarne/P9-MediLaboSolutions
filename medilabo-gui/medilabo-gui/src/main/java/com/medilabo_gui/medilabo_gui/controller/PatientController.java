@@ -32,7 +32,7 @@ public class PatientController {
         ResponseEntity<List<Patient>> patients = patientService.getPatientList();
         model.addAttribute("patients", patients.getBody());
         log.info("all patients are found and returned to view");
-        return "redirect:/list";
+        return "list";
     }
     @GetMapping("/add")
     public String showAddPatientForm(Model model){

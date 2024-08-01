@@ -28,15 +28,15 @@ public class RestTemplateConfig {
 //        return restTemplate;
 //    }
 
-@Autowired
-private JwtInterceptor jwtInterceptor;
-
     @Bean
     public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public RestTemplate restTemplateWithJwt(JwtTokenService jwtTokenService) {
         RestTemplate restTemplate = new RestTemplate();
-        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-        interceptors.add(jwtInterceptor);
-        restTemplate.setInterceptors(interceptors);
+        restTemplate.getInterceptors().add(new JwtInterceptor(jwtTokenService));
         return restTemplate;
     }
 }

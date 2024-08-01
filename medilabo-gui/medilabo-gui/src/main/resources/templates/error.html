@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+   <!-- <link rel="stylesheet" href="/css/styles.css"> -->
+</head>
+<body>
+<div class="container">
+    <h1>Error</h1>
+    <p>An error occurred while processing your request.</p>
+    <p th:if="${status != null}">
+        <strong>Status:</strong> <span th:text="${status}"></span>
+    </p>
+    <p th:if="${error != null}">
+        <strong>Error:</strong> <span th:text="${error}"></span>
+    </p>
+    <p th:if="${message != null}">
+        <strong>Message:</strong> <span th:text="${message}"></span>
+    </p>
+    <a href="/" th:href="@{/}">Back to Home</a>
+</div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.medilabo_gui.medilabo_gui.services;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,25 +10,35 @@ import com.medilabo_gui.medilabo_gui.model.Patient;
 
 import java.util.List;
 
+import  org.springframework.http.HttpEntity;
 
 @Service
 public class PatientService implements IPatientService{
 
     private final RestTemplate restTemplate;
+    private final JwtTokenService jwtTokenService;
 
-    public PatientService(RestTemplate restTemplate) {
+    public PatientService(RestTemplate restTemplate, JwtTokenService jwtTokenService) {
         this.restTemplate = restTemplate;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
     public ResponseEntity<List<Patient>> getPatientList() {
         String gatewayUrl = "http://localhost:8090/api/patient/list";
 
-        return restTemplate.exchange(
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtTokenService.getJwtToken());
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        ResponseEntity<List<Patient>> responseEntity = restTemplate.exchange(
                 gatewayUrl,
                 HttpMethod.GET,
-                null,
+                entity,
                 new ParameterizedTypeReference<List<Patient>>() {});
+
+        System.out.println(responseEntity.getBody().toString());
+        return responseEntity;
     }
 
     @Override

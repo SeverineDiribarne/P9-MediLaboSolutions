@@ -21,7 +21,7 @@ public class PatientController {
    //         " with the exception of the address and telephone number, which are optional.";
     private static final String PATIENT_ADD = "add";
     private static final String PATIENT_UPDATE = "update";
-    private static final String REDIRECT_PATIENT_LIST = "redirect:/list";
+    private static final String PATIENT_LIST = "list";
 
     @Autowired
     IPatientService patientService;
@@ -49,7 +49,7 @@ public class PatientController {
             return PATIENT_ADD;
         }
         patientService.addPatient(patient);
-        return REDIRECT_PATIENT_LIST;
+        return PATIENT_LIST;
     }
 
     @GetMapping("/details/{id}")
@@ -68,4 +68,5 @@ public class PatientController {
         log.info("The display of the updatePatient page of a patient is functional");
         return PATIENT_UPDATE;
     }
+
 }

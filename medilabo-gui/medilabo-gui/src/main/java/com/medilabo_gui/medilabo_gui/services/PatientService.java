@@ -52,13 +52,28 @@ public class PatientService implements IPatientService{
     public ResponseEntity<Patient> getPatientDetails(long id) {
         String gatewayUrl = "http://localhost:8090/api/patient/details/" + id;
 
-        return restTemplate.getForEntity(gatewayUrl, Patient.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtTokenService.getJwtToken());
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        ResponseEntity<Patient> responseEntity = restTemplate.exchange(
+                gatewayUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<Patient>() {});
+        return responseEntity;
+       // return restTemplate.getForEntity(gatewayUrl, Patient.class);
     }
 
 
     @Override
     public ResponseEntity<Patient>  getPatientToUpdate(long id) {
         String gatewayUrl = "http://localhost:8090/api/patient/update/" + id;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtTokenService.getJwtToken());
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
         return restTemplate.getForEntity(gatewayUrl, Patient.class);
     }
 

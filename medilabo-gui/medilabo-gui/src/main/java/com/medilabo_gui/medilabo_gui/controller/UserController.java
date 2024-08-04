@@ -3,6 +3,7 @@ package com.medilabo_gui.medilabo_gui.controller;
 import com.medilabo_gui.medilabo_gui.security.LoginRequest;
 import com.medilabo_gui.medilabo_gui.services.IUserService;
 import com.medilabo_gui.medilabo_gui.services.JwtTokenService;
+import com.medilabo_gui.medilabo_gui.services.UserPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ public class UserController {
 
     private final IUserService userService;
     private final JwtTokenService jwtTokenService;
+
 
     @Autowired
     public UserController(IUserService userService, JwtTokenService jwtTokenService) {

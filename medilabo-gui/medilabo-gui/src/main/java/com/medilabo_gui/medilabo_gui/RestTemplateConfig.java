@@ -15,18 +15,7 @@ import java.util.List;
 @Configuration
 public class RestTemplateConfig {
 
-//VERSION DE BASE
-//    @Autowired
-//    private JwtTokenService jwtTokenService;
-//
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-//        interceptors.add(new JwtInterceptor(jwtTokenService));
-//        restTemplate.setInterceptors(interceptors);
-//        return restTemplate;
-//    }
+    //TODO : verifier si classe interceptor est toujours utilise
 
     @Bean
     public RestTemplate restTemplate() {

@@ -2,13 +2,10 @@ package com.medilabo.medilabo.services.userService;
 
 import com.medilabo.medilabo.model.User;
 import com.medilabo.medilabo.repositories.IUserRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserService implements IUserService {

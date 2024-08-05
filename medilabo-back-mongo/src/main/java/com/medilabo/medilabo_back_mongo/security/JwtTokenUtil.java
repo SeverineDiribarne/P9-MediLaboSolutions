@@ -1,4 +1,4 @@
-package com.medilabo.medilabo.security;
+package com.medilabo.medilabo_back_mongo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -45,7 +45,7 @@ public class JwtTokenUtil {
 
     private Key getSigningKey() {
         System.out.println("je passe dans la methode getSigningKey du JwtTokenUtil");
-       return this.secretKey;
+        return this.secretKey;
     }
 
     public String extractUsername(String token){
@@ -102,3 +102,4 @@ public class JwtTokenUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 }
+

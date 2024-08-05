@@ -1,8 +1,9 @@
-package com.medilabo.medilabo.security;
+package com.medilabo.medilabo_back_mongo.security;
 
-import com.medilabo.medilabo.model.User;
-import com.medilabo.medilabo.services.userService.IUserService;
+import com.medilabo.medilabo_back_mongo.model.User;
+import com.medilabo.medilabo_back_mongo.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

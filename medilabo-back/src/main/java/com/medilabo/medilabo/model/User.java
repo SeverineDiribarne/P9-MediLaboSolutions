@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-@Getter
-@Setter
+@Data
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name= "user")
 public class User implements UserDetails {
@@ -22,20 +22,30 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name="email")
+    @Column(nullable = false, unique = true, name="email")
     private String email;
 
-    @Column(name="password")
+    @Column(nullable = false, name="password")
     private String password;
     
-    private boolean activeAccount = false;
+     @Column(nullable = false, name = "active_account")
+    private boolean accountIsActive;
 
-    public User(String mail, String password) {
-    }
+    @Column(nullable = false, name = "locked_account")
+    private boolean accountIsLocked;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    @Column(nullable = false, name = "credentials_non_expired")
+    private boolean isCredentialsNonExpired;
+
+    @Column(nullable = false, name = "enabled_account")
+    private boolean isEnabled;
+
+    @Column(nullable = false, name = "authorities")
+    private UserAuthorities userAuthorities;
+
+     @Override
+    public String getUsername() {
+        return this.email;
     }
 
     @Override
@@ -44,27 +54,42 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
     public boolean isAccountNonExpired() {
-        return this.activeAccount;
+        return (accountIsActive == true);
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.activeAccount;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return this.activeAccount;
+        return (accountIsLocked == false);
     }
 
     @Override
     public boolean isEnabled() {
-        return this.activeAccount;
+        return isEnabled;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+
+        switch (userAuthorities){
+            case USER:
+            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.USER));
+            break;
+
+             case ADMIN:
+            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.ADMIN));
+            break;
+
+             case ADMIN_AND_USER:
+            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.ADMIN));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.USER));
+            break;
+
+            default:
+            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.USER));break;
+        }
+        return authorities;
     }
 }

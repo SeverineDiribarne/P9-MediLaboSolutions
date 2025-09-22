@@ -1,0 +1,11 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Logout Page</title>
+</head>
+<body>
+    <h3>Logout</h3>
+    <div th:if="${param.logoutError}" th:text="#{logout.error}"></div>
+    <div th:unless="${param.logoutError}" th:text="#{logout.success}"></div>
+    <a href="/login">Login</a>
+</body>
+</html>

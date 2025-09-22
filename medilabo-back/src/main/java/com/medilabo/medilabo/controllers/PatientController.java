@@ -9,11 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "https://localhost:8090")
 public class PatientController {
 
     private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PatientController.class);
@@ -60,14 +62,17 @@ public class PatientController {
         if(patient.getBirthdate().isEmpty()) {
             log.error(LOG_ERROR);
             model.addAttribute("msgBirthdate", "Your birthdate is empty");
-            return "/patient/add";
+            return PATIENT_ADD;
         }
         if(patient.getGender() != Gender.M && patient.getGender() != Gender.F && patient.getGender() != Gender.X) {
             log.error(LOG_ERROR);
             model.addAttribute("msgGender", "Your gender is incorrect");
             return PATIENT_ADD;
         }
-
+        if (Objects.equals(patient.getAddress(), "") || patient.getAddress()==null || Objects.equals(patient.getPhoneNumber(), "") || patient.getPhoneNumber() == null){
+            Patient savedPatient = patientService.savePatient(patient);
+            return REDIRECT_PATIENT_LIST;
+        }
         Patient savedPatient = patientService.savePatient(patient);
         return REDIRECT_PATIENT_LIST;
     }

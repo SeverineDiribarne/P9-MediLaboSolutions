@@ -1,21 +1,23 @@
 package com.medilabo.medilabo.controllers;
 
+import com.medilabo.medilabo.dto.UserPublicDTO;
 import com.medilabo.medilabo.model.User;
 import com.medilabo.medilabo.services.userService.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:8090")
 public class UserController {
 
     private final IUserService userService;
 
-    @Autowired
     public UserController(IUserService userService) {
         this.userService = userService;
     }
@@ -25,4 +27,17 @@ public class UserController {
         User savedUser = userService.saveUser(user);
         return ResponseEntity.ok(savedUser);
     }
+
+    @GetMapping("/users")
+    public List<UserPublicDTO> getUsers() {
+        return userService.findAll()
+        .stream()
+        .map(user -> new UserPublicDTO( 
+            user.getUsername(),
+            user.getAuthorities().stream()
+                                 .map(Object :: toString)
+                                 .toList()))
+        .toList();
+    }
+    
 }

@@ -32,7 +32,7 @@ public class PatientService implements IPatientService{
 
     @Override
     public ResponseEntity<Patient> addPatient(Patient patient) {
-        String gatewayUrl = "https://localhost:8090/api/patient/addvalidate";
+        String gatewayUrl = "https://localhost:8090/api/patient/addpatient";
 
         return restTemplate.postForEntity(gatewayUrl, patient, Patient.class);
     }

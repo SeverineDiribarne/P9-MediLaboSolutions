@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+public class PatientController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -46,6 +46,30 @@ public class ApiController {
                         });
             }
             return ResponseEntity.ok(patients);
+        } catch (HttpClientErrorException.Forbidden e) {
+            logger.error("403 Forbidden from downstream service: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden : " + e.getMessage());
+        } catch (HttpClientErrorException e) {
+            logger.error("Error from downstream service: {}", e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body("Error: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error parsing user list: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing user list");
+        }
+    }
+
+    @PostMapping("/patient/addpatient")
+    public ResponseEntity<?> addPatient(@RequestHeader(value = "Authorization", required = false) String authorization,
+                                        @RequestBody PatientDTO patient) {
+        String apiUrl = "https://localhost:8082/api/patient/addpatient";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("User-Name", "toto@gmail.com");
+        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpClientErrorException.Forbidden e) {
             logger.error("403 Forbidden from downstream service: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden : " + e.getMessage());

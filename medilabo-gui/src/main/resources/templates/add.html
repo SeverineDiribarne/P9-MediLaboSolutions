@@ -13,7 +13,7 @@
 </div>
 
 <div class="row">
-    <form action="#" th:action="@{/api/patient/addvalidate}" method="post" class="form-horizontal"
+    <form action="#" th:action="@{/api/patient/addpatient}" method="post" class="form-horizontal"
           align="center" style="width: 100%">
         <!-- Create a form to input the values of Patient, there are 2 buttons: Save data and cancel to the list PatientList -->
         <label>Lastname<br/>
@@ -29,11 +29,11 @@
         <div>
             <label>Gender</label><br/>
 
-            <input type="radio" id="Male" name="gender" value="Male" checked/>
-            <label for="Male">Male</label>
+            <input type="radio" id="M" name="gender" value="M" checked/>
+            <label for="M">Male</label>
 
-            <input type="radio" id="Female" name="gender" value="Female"/>
-            <label for="Female">Female</label>
+            <input type="radio" id="F" name="gender" value="F"/>
+            <label for="F">Female</label>
 
             <input type="radio" id="X" name="gender" value="X"/>
             <label for="X">X</label>

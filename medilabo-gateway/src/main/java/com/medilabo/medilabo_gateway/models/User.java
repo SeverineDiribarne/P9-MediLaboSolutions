@@ -1,4 +1,4 @@
-package com.medilabo.medilabo_gateway.config;
+package com.medilabo.medilabo_gateway.models;
 
 import java.io.Serializable;
 

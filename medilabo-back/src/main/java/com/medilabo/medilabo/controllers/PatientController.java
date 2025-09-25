@@ -38,7 +38,7 @@ public class PatientController {
     }
 
 
-    @PostMapping("/patient/addvalidate")
+    @PostMapping("/patient/addpatient")
     public String addPatientInformationValidate(@Valid @RequestBody Patient patient, Model model, BindingResult bindingResult) {
 
         // Vérifier les erreurs de validation

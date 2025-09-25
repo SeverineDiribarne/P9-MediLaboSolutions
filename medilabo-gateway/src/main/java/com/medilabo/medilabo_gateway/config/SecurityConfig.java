@@ -81,8 +81,8 @@ public class SecurityConfig {
                 //         .path("/api/patient/details/{id}")
                 //         .filters(f -> f.addRequestParameter("id", "defaultId"))
                 //         .uri("https://localhost:8082"))
-                // .route("medilabo-addvalidate", r -> r
-                //         .path("/api/patient/addvalidate")
+                // .route("medilabo-addpatient", r -> r
+                //         .path("/api/patient/addpatient")
                 //         .uri("https://localhost:8082"))
                 // .route("medilabo-update", r -> r
                 //         .path("/api/patient/update/{id}")

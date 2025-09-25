@@ -2,7 +2,6 @@ package com.medilabo_gui.medilabo_gui.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.medilabo_gui.medilabo_gui.dto.UserPublicDTO;
 import com.medilabo_gui.medilabo_gui.model.Patient;
 import com.medilabo_gui.medilabo_gui.services.IPatientService;
 import com.medilabo_gui.medilabo_gui.utils.JwtUtils;
@@ -26,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @CrossOrigin(origins = "https://localhost:8090")
 @Controller
@@ -97,7 +95,7 @@ public class PatientController {
         return PATIENT_ADD;
     }
 
-    @PostMapping("/addvalidate")
+    @PostMapping("/addpatient")
     public String addPatient(UsernamePasswordAuthenticationToken authentication,
             @ModelAttribute("patient") Patient newPatient, BindingResult result, Model model) {
         String jwtToken = (String) authentication.getDetails();
@@ -113,31 +111,37 @@ public class PatientController {
 
         HttpHeaders headersRequest = new HttpHeaders();
         headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headersRequest.setContentType(MediaType.APPLICATION_JSON);
         headersRequest.set("Authorization", "Bearer " + jwtToken);
-        HttpEntity<String> entity = new HttpEntity<>(headersRequest);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    "https://localhost:8090/api/patient/addvalidate",
+            HttpEntity<Patient> postEntity = new HttpEntity<>(newPatient, headersRequest);
+            restTemplate.exchange(
+                    "https://localhost:8090/api/patient/addpatient",
                     HttpMethod.POST,
-                    entity,
+                    postEntity,
                     new ParameterizedTypeReference<String>() {
                     });
-            // if (response.getStatusCode() == HttpStatus.OK) {
-            // ObjectMapper mapper = new ObjectMapper();
-            // patients = mapper.readValue(
-            // response.getBody(),
-            // new TypeReference<List<Patient>>() {
-            // });
-            // }
-            // } catch (Exception ex) {
-            // logger.error("Exception during REST call to /api/patient/list", ex);
-            // patients = Collections.emptyList();
-            // }
-            // model.addAttribute("patients", patients);
+
+            HttpEntity<String> getEntity = new HttpEntity<>(headersRequest);
+            List<Patient> patients = Collections.emptyList();
+        ResponseEntity<String> listResponse = restTemplate.exchange(
+            "https://localhost:8090/api/patient/addpatient", // fetch updated list
+                    HttpMethod.POST,
+                    getEntity,
+                    new ParameterizedTypeReference<String>() {
+                    });
+            if (listResponse.getStatusCode() == HttpStatus.OK && listResponse.getBody() != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                patients = mapper.readValue(
+                        listResponse.getBody(),
+                        new TypeReference<List<Patient>>() {
+                        });
+            }
+            model.addAttribute("patients", patients);
             return "list";
         } catch (Exception ex) {
-            logger.error("Exception during REST call to /api/patient/addvalidate", ex);
+            logger.error("Exception during REST call to /api/patient/addpatient", ex);
             return PATIENT_ADD;
         }
         // System.out.println(patient.getLastname());

@@ -27,6 +27,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.json.BasicJsonParser;
+
+import com.medilabo.medilabo_gateway.models.User;
 import com.medilabo.medilabo_gateway.session.SessionStore;
 import com.medilabo.medilabo_gateway.utils.JwtUtils;
 import com.fasterxml.jackson.core.type.TypeReference;

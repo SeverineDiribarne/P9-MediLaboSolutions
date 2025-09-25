@@ -36,10 +36,10 @@ spring:
 #             - Path=/api/patient/details/{id}
 #           filters:
 #             - AddRequestParameter=id, defaultId
-#         - id: medilabo-addvalidate
+#         - id: medilabo-addpatient
 #           uri: https://localhost:8082
 #           predicates:
-#             - Path=/api/patient/addvalidate
+#             - Path=/api/patient/addpatient
 #         - id: medilabo-update
 #           uri: https://localhost:8082
 #           predicates:

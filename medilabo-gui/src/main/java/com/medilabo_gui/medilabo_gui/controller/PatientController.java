@@ -125,9 +125,9 @@ public class PatientController {
 
             HttpEntity<String> getEntity = new HttpEntity<>(headersRequest);
             List<Patient> patients = Collections.emptyList();
-        ResponseEntity<String> listResponse = restTemplate.exchange(
-            "https://localhost:8090/api/patient/addpatient", // fetch updated list
-                    HttpMethod.POST,
+            ResponseEntity<String> listResponse = restTemplate.exchange(
+                    "https://localhost:8090/api/patient/list",
+                    HttpMethod.GET,
                     getEntity,
                     new ParameterizedTypeReference<String>() {
                     });

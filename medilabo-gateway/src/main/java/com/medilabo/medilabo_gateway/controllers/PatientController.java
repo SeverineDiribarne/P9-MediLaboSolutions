@@ -68,7 +68,7 @@ public class PatientController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
+            ResponseEntity<PatientDTO> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, PatientDTO.class);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpClientErrorException.Forbidden e) {
             logger.error("403 Forbidden from downstream service: {}", e.getMessage());

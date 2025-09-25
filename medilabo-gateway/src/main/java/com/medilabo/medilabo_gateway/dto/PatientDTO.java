@@ -1,5 +1,7 @@
 package com.medilabo.medilabo_gateway.dto;
 
+import com.medilabo.medilabo_gateway.models.Gender;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,4 @@ public class PatientDTO {
 
     private String phoneNumber =" ";
 
-    public enum Gender {
-        M, F, X
-    }
 }

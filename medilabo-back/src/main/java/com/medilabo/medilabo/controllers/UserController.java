@@ -1,12 +1,8 @@
 package com.medilabo.medilabo.controllers;
 
 import com.medilabo.medilabo.dto.UserPublicDTO;
-import com.medilabo.medilabo.model.User;
 import com.medilabo.medilabo.services.userService.IUserService;
-
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -22,11 +18,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
-    }
+    // @PostMapping("/register")
+    // public ResponseEntity<User> registerUser(@RequestBody User user) {
+    //     User savedUser = userService.saveUser(user);
+    //     return ResponseEntity.ok(savedUser);
+    // }
 
     @GetMapping("/users")
     public List<UserPublicDTO> getUsers() {

@@ -7,29 +7,33 @@
   </head>
   <body>
   <h1>Patient Details</h1>
-  <p>Id: <span th:text="${patient.patientId}"></span></p>
+  <!--<p>Id: <span th:text="${patient.patientId}"></span></p> -->
   <p>First Name: <span th:text="${patient.firstname}"></span></p>
   <p>Last Name: <span th:text="${patient.lastname}"></span></p>
   <p>Gender: <span th:text="${patient.gender}"></span></p>
   <p>Address: <span th:text="${patient.address}"></span></p>
   <p>Phone Number: <span th:text="${patient.phoneNumber}"></span></p>
 
-  <!-- Pour ajouter une date et une note sur le patient -->
-<form method="post" th:action="@{/notes}" th:object="${patient}">
-   <p>
-       <label for="note">Notes :</label><br />
-       <input type="date" th:field="*{date}" />
-       <textarea name="note" id="note" th:text="${note}"></textarea>
-   </p>
-   <button type="submit">Valider</button>
-</form>
+  <section>
+    <h2>Notes du patient</h2>
+    <div th:if="${#lists.isEmpty(notes)}">Aucune note enregistrée.</div>
+    <ul th:if="${!#lists.isEmpty(notes)}">
+      <li th:each="note : ${notes}">
+          <span th:text="${note.note}"></span>
+      </li>
+    </ul>
+  </section>
 
-<!-- Pour afficher la date et la note enregistrée dans la base de données -->
-<p>Notes du patient :</p>
-<div>
-    <span th:date="${date}"></span>
-    <span th:text="${note}"></span>
-</div>
+  <section>
+    <h3>Ajouter une note</h3>
+  <form method="post" th:action="@{/api/notes}" th:object="${noteForm}">
+      <input type="hidden" th:field="*{patientId}" th:value="${patient.patientId}" />
+      <label for="note">Notes :</label><br />
+      <textarea th:field="*{note}" id="note" rows="4" cols="40"></textarea><br />
+      <div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" style="color:red"></div>
+      <button type="submit">Enregistrer</button>
+    </form>
+  </section>
 
   <a th:href="@{/api/patient/list}">Back to Patient List</a>
   </body>

@@ -65,29 +65,35 @@ public class SecurityConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("backend_route", r -> r
-                        .path("/api/patient/list")
-                        .uri("https://localhost:8082"))
                 .route("dedude_response_header_route", r -> r
                         .path("/authentication")
                         .filters(f -> f.dedupeResponseHeader(
                                 "Access-Control-Allow-Credentials",
                                 "RETAIN_FIRST"))
                         .uri("https://localhost:8082"))
-                // .route("medilabo-list", r -> r
-                //         .path("/api/patient/list")
-                //         .uri("https://localhost:8082"))
-                // .route("medilabo-details", r -> r
-                //         .path("/api/patient/details/{id}")
-                //         .filters(f -> f.addRequestParameter("id", "defaultId"))
-                //         .uri("https://localhost:8082"))
-                // .route("medilabo-addpatient", r -> r
-                //         .path("/api/patient/addpatient")
-                //         .uri("https://localhost:8082"))
+
+                .route("backend_route", r -> r
+                        .path("/api/patient/list")
+                        .uri("https://localhost:8082"))
+
+                .route("medilabo-addpatientbyid", r -> r
+                        .path("/api/patient/details/{id}")
+                        .uri("https://localhost:8082"))
+
+                .route("medilabo-details-getnotes", r -> r
+                        .path("/api/notes/patient/{patientid}")
+                        .filters(f -> f.addRequestParameter("patientid", "defaultId"))
+                        .uri("https://localhost:8083"))
+
+                .route("medilabo-addpatient", r -> r
+                         .path("/api/notes/patient/addnote")
+                         .uri("https://localhost:8083"))
+
                 // .route("medilabo-update", r -> r
                 //         .path("/api/patient/update/{id}")
                 //         .filters(f -> f.addRequestParameter("id", "defaultId"))
                 //         .uri("https://localhost:8082"))
+
                 // .route("medilabo-authenticate", r -> r
                 //         .path("/api/auth/login")
                 //         // .filters(f -> f.filter(filterFactory.apply(new

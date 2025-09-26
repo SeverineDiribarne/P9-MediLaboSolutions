@@ -3,7 +3,8 @@ package com.medilabo_gui.medilabo_gui.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medilabo_gui.medilabo_gui.model.Patient;
-import com.medilabo_gui.medilabo_gui.services.IPatientService;
+import com.medilabo_gui.medilabo_gui.services.patientservice.IPatientService;
+import com.medilabo_gui.medilabo_gui.services.noteservice.INoteService;
 import com.medilabo_gui.medilabo_gui.utils.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @CrossOrigin(origins = "https://localhost:8090")
 @Controller
@@ -39,13 +39,16 @@ public class PatientController {
     // optional.";
     private static final String PATIENT_ADD = "add";
     private static final String PATIENT_UPDATE = "update";
-    private static final String REDIRECT_PATIENT_LIST = "redirect:/list";
+    //private static final String REDIRECT_PATIENT_LIST = "redirect:/list";
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     IPatientService patientService;
+
+    @Autowired
+    INoteService noteService;
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String showPatientsList(UsernamePasswordAuthenticationToken authentication, Model model) {
@@ -154,10 +157,76 @@ public class PatientController {
     }
 
     @GetMapping("/details/{id}")
-    public String showPatientDetails(@PathVariable long id, Model model) {
-        ResponseEntity<Patient> patient = patientService.getPatientDetails(id);
-        model.addAttribute("patient", patient.getBody());
-        logger.info(" patient is found and returned to view");
+    public String showPatientDetails(UsernamePasswordAuthenticationToken authentication,
+    @PathVariable long id, Model model) {
+String jwtToken = (String) authentication.getDetails();
+
+        if (jwtToken == null || jwtToken.isEmpty()) {
+            model.addAttribute("users", Collections.emptyList());
+            model.addAttribute("authorities", Collections.emptyList());
+            return "login";
+        }
+
+        List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
+        model.addAttribute("authorities", authorities);
+
+        HttpHeaders headersRequest = new HttpHeaders();
+        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headersRequest.set("Authorization", "Bearer " + jwtToken);
+        HttpEntity<String> entity = new HttpEntity<>(headersRequest);
+
+
+        Patient patient;
+        try {
+            // Appel via la gateway (port 8090) pour récupérer le patient par son id
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "https://localhost:8090/api/patient/details/" + id,
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<String>() {
+                    });
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && !response.getBody().isEmpty()) {
+                ObjectMapper mapper = new ObjectMapper();
+                patient = mapper.readValue(response.getBody(), new TypeReference<Patient>() {});
+                logger.info("Patient details retrieved via gateway for id {}", id);
+            } else {
+                logger.warn("Gateway call succeeded but body empty or status not OK for id {}", id);
+                patient = new Patient();
+            }
+        } catch (Exception ex) {
+            logger.error("Exception during REST call to /api/patient/details/" + id, ex);
+            patient = new Patient();
+        }
+        model.addAttribute("patient", patient);
+        // Récupération des notes associées si patientId valide
+        if (patient.getPatientId() != 0) {
+            try {
+                model.addAttribute("notes", noteService.getNotesByPatient(patient.getPatientId(), jwtToken));
+            } catch (Exception e) {
+                logger.warn("Impossible de récupérer les notes pour le patient {}", patient.getPatientId());
+                model.addAttribute("notes", Collections.emptyList());
+            }
+            // Préparation du formulaire de saisie de note (évite l'erreur 'noteForm' introuvable)
+            if (!model.containsAttribute("noteForm")) {
+                com.medilabo_gui.medilabo_gui.model.NoteForm noteForm = new com.medilabo_gui.medilabo_gui.model.NoteForm(
+                        patient.getPatientId(),
+                        patient.getLastname() != null ? patient.getLastname() : "",
+                        ""
+                );
+                model.addAttribute("noteForm", noteForm);
+            }
+        } else {
+            model.addAttribute("notes", Collections.emptyList());
+            if (!model.containsAttribute("noteForm")) {
+                // Patient non trouvé: fournir un formulaire vide pour éviter l'erreur Thymeleaf
+                com.medilabo_gui.medilabo_gui.model.NoteForm noteForm = new com.medilabo_gui.medilabo_gui.model.NoteForm(
+                        0L,
+                        "",
+                        ""
+                );
+                model.addAttribute("noteForm", noteForm);
+            }
+        }
         return "details";
     }
 

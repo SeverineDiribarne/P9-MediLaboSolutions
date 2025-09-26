@@ -9,11 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
+@Document(collection = "notes")
 public class Note {
 
     @Id
-    private String id;
+    private Long id;
+    private String patientId;
+    private String patientLastname;
     private String note;
 
 

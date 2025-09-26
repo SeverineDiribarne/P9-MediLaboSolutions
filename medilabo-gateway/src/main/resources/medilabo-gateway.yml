@@ -7,63 +7,45 @@ server:
     key-store-type: PKCS12
     key-alias: springboot
 spring:
- security:
+  security:
     oauth2:
       resourceserver:
         jwt:
           secret-key-location: classpath:hmac256.key
- cloud:
+  cloud:
     gateway:
-     httpclient:
+      httpclient:
         ssl:
           use-insecure-trust-manager: true
-     globalcors:
-            globalcors:
-              cors-configurations:
-                '[/**]':
-                  allowedOrigins: "https://localhost:8443"
-                  allowedMethods: GET, POST, PUT, DELETE, OPTIONS
-                  allowedHeaders: "*"
-                  allowCredentials: true
-#      routes:
-#         - id: medilabo-list
-#           uri: https://localhost:8082
-#           predicates:
-#             - Path=/api/patient/list
-#         - id: medilabo-details
-#           uri: https://localhost:8082
-#           predicates:
-#             - Path=/api/patient/details/{id}
-#           filters:
-#             - AddRequestParameter=id, defaultId
-#         - id: medilabo-addpatient
-#           uri: https://localhost:8082
-#           predicates:
-#             - Path=/api/patient/addpatient
-#         - id: medilabo-update
-#           uri: https://localhost:8082
-#           predicates:
-#             - Path=/api/patient/update/{id}
-#           filters:
-#             - AddRequestParameter=id, defaultId
-#         - id: medilabo-authenticate
-#           uri: https://localhost:8082
-#           predicates:
-#             - Path=/api/auth/login
-# #          filters:
-# #            - name: AddAuthRequestParametersGatewayFilterFactory
-# #              args:
-# #                defaultUsername: yourDefaultUsername
-# #                defaultPassword: yourDefaultPassword
-#         - id: medilabo-2-route
-#           uri: https://localhost:8083
-#           predicates:
-#             - Path=/**
-#           filter:
-#             - StripPrefix=1
-#         - id: medilabo-3-route
-#           uri: https://localhost:8084
-#           predicates:
-#             - Path=/**
-#           filter:
-#             - StripPrefix=1
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "https://localhost:8443"
+            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: patient-list
+          uri: https://localhost:8082
+          predicates:
+            - Path=/api/patient/list
+        - id: patient-details
+          uri: https://localhost:8082
+          predicates:
+            - Path=/api/patient/details/**
+        - id: patient-add
+          uri: https://localhost:8082
+          predicates:
+            - Path=/api/patient/addpatient
+        - id: patient-update
+          uri: https://localhost:8082
+          predicates:
+            - Path=/api/patient/update/**
+        - id: auth-login
+          uri: https://localhost:8082
+          predicates:
+            - Path=/api/auth/login
+        - id: notes-get-add
+          uri: https://localhost:8083
+          predicates:
+            - Path=/api/notes/**

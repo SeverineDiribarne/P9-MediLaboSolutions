@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/patient")
 @CrossOrigin(origins = "https://localhost:8090")
 public class PatientController {
 
@@ -30,7 +30,7 @@ public class PatientController {
     @Autowired
     IPatientService patientService;
 
-    @RequestMapping("/patient/list")
+    @RequestMapping("/list")
     public Iterable<Patient> home(Model model) {
         Iterable<Patient> patients = patientService.getPatientList();
 
@@ -38,7 +38,7 @@ public class PatientController {
         return patients;
     }
 
-    @PostMapping("/patient/addpatient")
+    @PostMapping("/addpatient")
     public ResponseEntity<?> addPatient(@Valid @RequestBody Patient patient, Model model, BindingResult bindingResult) {
         // Vérifier les erreurs de validation
         // if (bindingResult.hasErrors()) {
@@ -80,7 +80,7 @@ public class PatientController {
         return new ResponseEntity<Patient>(savedPatient,HttpStatus.OK);
     }
 
-    @GetMapping("/patient/details/{id}")
+    @GetMapping("/details/{id}")
     public Optional<Patient> detailsOfPatient(@PathVariable long id) {
         // Logique pour récupérer les détails du patient en fonction de l'id
         Optional<Patient> patient = patientService.getPatientById(id);
@@ -90,7 +90,7 @@ public class PatientController {
     }
 
     // TODO : A revoir cette methode du front vers le back
-    @PostMapping("/patient/update/{id}")
+    @PostMapping("/update/{id}")
     public String updatePatientInformationValidate(@Valid @RequestParam long id, Model model,
             BindingResult bindingResult) {
 

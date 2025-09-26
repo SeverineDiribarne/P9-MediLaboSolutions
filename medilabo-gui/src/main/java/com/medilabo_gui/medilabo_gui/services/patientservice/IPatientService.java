@@ -1,4 +1,4 @@
-package com.medilabo_gui.medilabo_gui.services;
+package com.medilabo_gui.medilabo_gui.services.patientservice;
 
 import com.medilabo_gui.medilabo_gui.model.Patient;
 import org.springframework.http.ResponseEntity;

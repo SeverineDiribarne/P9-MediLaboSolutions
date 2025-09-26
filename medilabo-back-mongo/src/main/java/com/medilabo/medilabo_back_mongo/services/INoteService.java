@@ -1,12 +1,12 @@
 package com.medilabo.medilabo_back_mongo.services;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.medilabo.medilabo_back_mongo.model.Note;
 
 public interface INoteService {
 
-    Iterable<Note> getNoteList();
+     public List<Note> getNotes(String patientId);
 
-    Optional<Note> getNoteById(long id);
+   public Note addNote(String patientId, String patientLastname, String note);
 }

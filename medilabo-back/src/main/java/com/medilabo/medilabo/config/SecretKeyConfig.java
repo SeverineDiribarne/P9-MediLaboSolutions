@@ -1,8 +1,6 @@
 package com.medilabo.medilabo.config;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;

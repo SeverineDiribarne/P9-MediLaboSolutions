@@ -1,5 +1,7 @@
 package com.medilabo.medilabo_gateway.dto;
 
+import java.util.List;
+
 import com.medilabo.medilabo_gateway.models.Gender;
 
 import lombok.AllArgsConstructor;
@@ -25,5 +27,7 @@ public class PatientDTO {
     private String address = " ";
 
     private String phoneNumber =" ";
+
+    private List<NoteDTO> notes;
 
 }

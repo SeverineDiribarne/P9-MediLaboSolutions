@@ -39,43 +39,8 @@ public class PatientController {
     }
 
     @PostMapping("/addpatient")
-    public ResponseEntity<?> addPatient(@Valid @RequestBody Patient patient, Model model, BindingResult bindingResult) {
-        // Vérifier les erreurs de validation
-        // if (bindingResult.hasErrors()) {
-        // log.error(LOG_ERROR);
-        // model.addAttribute("errors", bindingResult.getAllErrors());
-        // return PATIENT_ADD;
-        // }
-
-        // // check data valid and save to db, after saving return patient list OK
-        // if( patient.getLastname().isEmpty() ) {
-        // log.error(LOG_ERROR);
-        // model.addAttribute("msgLastname" , "Your lastname is empty");
-        // return PATIENT_ADD;
-        // }
-        // if(patient.getFirstname().isEmpty() ) {
-        // log.error(LOG_ERROR);
-        // model.addAttribute("msgFirstname", "Your firstname is empty");
-        // return PATIENT_ADD;
-        // }
-        // if(patient.getBirthdate().isEmpty()) {
-        // log.error(LOG_ERROR);
-        // model.addAttribute("msgBirthdate", "Your birthdate is empty");
-        // return PATIENT_ADD;
-        // }
-        // if(patient.getGender() != Gender.M && patient.getGender() != Gender.F &&
-        // patient.getGender() != Gender.X) {
-        // log.error(LOG_ERROR);
-        // model.addAttribute("msgGender", "Your gender is incorrect");
-        // return PATIENT_ADD;
-        // }
-        // if (Objects.equals(patient.getAddress(), "") || patient.getAddress()==null ||
-        // Objects.equals(patient.getPhoneNumber(), "") || patient.getPhoneNumber() ==
-        // null){
-        // Patient savedPatient = patientService.savePatient(patient);
-        // return REDIRECT_PATIENT_LIST;
-        // }
-
+    public ResponseEntity<?> addPatient(@Valid @RequestBody Patient patient) {
+        
         Patient savedPatient = patientService.savePatient(patient);
         return new ResponseEntity<Patient>(savedPatient,HttpStatus.OK);
     }

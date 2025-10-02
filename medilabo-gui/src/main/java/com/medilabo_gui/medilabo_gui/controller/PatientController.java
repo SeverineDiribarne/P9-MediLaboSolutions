@@ -1,19 +1,11 @@
 package com.medilabo_gui.medilabo_gui.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medilabo_gui.medilabo_gui.model.Patient;
 import com.medilabo_gui.medilabo_gui.services.patientservice.IPatientService;
 import com.medilabo_gui.medilabo_gui.services.noteservice.INoteService;
 import com.medilabo_gui.medilabo_gui.utils.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,12 +28,11 @@ public class PatientController {
     // partially empty," +
     // " with the exception of the address and telephone number, which are
     // optional.";
+    private static final String LOGIN = "login";
     private static final String PATIENT_ADD = "add";
     private static final String PATIENT_UPDATE = "update";
-    //private static final String REDIRECT_PATIENT_LIST = "redirect:/list";
-
-    @Autowired
-    private RestTemplate restTemplate;
+    private static final String PATIENT_LIST = "list";
+    private static final String PATIENT_DETAILS = "details";
 
     @Autowired
     IPatientService patientService;
@@ -57,38 +47,25 @@ public class PatientController {
         if (jwtToken == null || jwtToken.isEmpty()) {
             model.addAttribute("users", Collections.emptyList());
             model.addAttribute("authorities", Collections.emptyList());
-            return "login";
+            return LOGIN;
         }
 
         List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
         model.addAttribute("authorities", authorities);
 
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
-        HttpEntity<String> entity = new HttpEntity<>(headersRequest);
-
         List<Patient> patients = Collections.emptyList();
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    "https://localhost:8090/api/patient/list",
-                    HttpMethod.GET,
-                    entity,
-                    new ParameterizedTypeReference<String>() {
-                    });
-            if (response.getStatusCode() == HttpStatus.OK) {
-                ObjectMapper mapper = new ObjectMapper();
-                patients = mapper.readValue(
-                        response.getBody(),
-                        new TypeReference<List<Patient>>() {
-                        });
+            ResponseEntity<List<Patient>> response = patientService.getPatientList(jwtToken);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+
+                patients = response.getBody();
             }
         } catch (Exception ex) {
             logger.error("Exception during REST call to /api/patient/list", ex);
             patients = Collections.emptyList();
         }
         model.addAttribute("patients", patients);
-        return "list";
+        return PATIENT_LIST;
     }
 
     @GetMapping("/add")
@@ -106,45 +83,64 @@ public class PatientController {
         if (jwtToken == null || jwtToken.isEmpty()) {
             model.addAttribute("users", Collections.emptyList());
             model.addAttribute("authorities", Collections.emptyList());
-            return "login";
+            return LOGIN;
         }
 
         List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
         model.addAttribute("authorities", authorities);
+        // Vérifier les erreurs de validation
+        // if (bindingResult.hasErrors()) {
+        // log.error(LOG_ERROR);
+        // model.addAttribute("errors", bindingResult.getAllErrors());
+        // return PATIENT_ADD;
+        // }
 
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.setContentType(MediaType.APPLICATION_JSON);
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
-
+        // // check data valid and save to db, after saving return patient list OK
+        // if( patient.getLastname().isEmpty() ) {
+        // log.error(LOG_ERROR);
+        // model.addAttribute("msgLastname" , "Your lastname is empty");
+        // return PATIENT_ADD;
+        // }
+        // if(patient.getFirstname().isEmpty() ) {
+        // log.error(LOG_ERROR);
+        // model.addAttribute("msgFirstname", "Your firstname is empty");
+        // return PATIENT_ADD;
+        // }
+        // if(patient.getBirthdate().isEmpty()) {
+        // log.error(LOG_ERROR);
+        // model.addAttribute("msgBirthdate", "Your birthdate is empty");
+        // return PATIENT_ADD;
+        // }
+        // if(patient.getGender() != Gender.M && patient.getGender() != Gender.F &&
+        // patient.getGender() != Gender.X) {
+        // log.error(LOG_ERROR);
+        // model.addAttribute("msgGender", "Your gender is incorrect");
+        // return PATIENT_ADD;
+        // }
+        // if (Objects.equals(patient.getAddress(), "") || patient.getAddress()==null ||
+        // Objects.equals(patient.getPhoneNumber(), "") || patient.getPhoneNumber() ==
+        // null){
+        // Patient savedPatient = patientService.savePatient(patient);
+        // return REDIRECT_PATIENT_LIST;
+        // }
         try {
-            HttpEntity<Patient> postEntity = new HttpEntity<>(newPatient, headersRequest);
-            restTemplate.exchange(
-                    "https://localhost:8090/api/patient/addpatient",
-                    HttpMethod.POST,
-                    postEntity,
-                    new ParameterizedTypeReference<String>() {
-                    });
+            // Appel service pour l'ajout
+            patientService.addPatient(newPatient, jwtToken);
 
-            HttpEntity<String> getEntity = new HttpEntity<>(headersRequest);
+            // Récupération liste mise à jour via service
             List<Patient> patients = Collections.emptyList();
-            ResponseEntity<String> listResponse = restTemplate.exchange(
-                    "https://localhost:8090/api/patient/list",
-                    HttpMethod.GET,
-                    getEntity,
-                    new ParameterizedTypeReference<String>() {
-                    });
-            if (listResponse.getStatusCode() == HttpStatus.OK && listResponse.getBody() != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                patients = mapper.readValue(
-                        listResponse.getBody(),
-                        new TypeReference<List<Patient>>() {
-                        });
+            try {
+                ResponseEntity<List<Patient>> listResponse = patientService.getPatientList(jwtToken);
+                if (listResponse.getStatusCode().is2xxSuccessful() && listResponse.getBody() != null) {
+                    patients = listResponse.getBody();
+                }
+            } catch (Exception e) {
+                logger.error("Exception during list refresh after addPatient", e);
             }
             model.addAttribute("patients", patients);
-            return "list";
+            return PATIENT_LIST;
         } catch (Exception ex) {
-            logger.error("Exception during REST call to /api/patient/addpatient", ex);
+            logger.error("Exception during service addPatient", ex);
             return PATIENT_ADD;
         }
         // System.out.println(patient.getLastname());
@@ -158,36 +154,25 @@ public class PatientController {
 
     @GetMapping("/details/{id}")
     public String showPatientDetails(UsernamePasswordAuthenticationToken authentication,
-    @PathVariable long id, Model model) {
-String jwtToken = (String) authentication.getDetails();
+            @PathVariable long id, Model model) {
+        String jwtToken = (String) authentication.getDetails();
 
         if (jwtToken == null || jwtToken.isEmpty()) {
             model.addAttribute("users", Collections.emptyList());
             model.addAttribute("authorities", Collections.emptyList());
-            return "login";
+            return LOGIN;
         }
 
         List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
         model.addAttribute("authorities", authorities);
 
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
-        HttpEntity<String> entity = new HttpEntity<>(headersRequest);
-
-
+        // Recuperation des informations patient dans la base de donnees medilabo-back
         Patient patient;
         try {
             // Appel via la gateway (port 8090) pour récupérer le patient par son id
-            ResponseEntity<String> response = restTemplate.exchange(
-                    "https://localhost:8090/api/patient/details/" + id,
-                    HttpMethod.GET,
-                    entity,
-                    new ParameterizedTypeReference<String>() {
-                    });
-            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && !response.getBody().isEmpty()) {
-                ObjectMapper mapper = new ObjectMapper();
-                patient = mapper.readValue(response.getBody(), new TypeReference<Patient>() {});
+            ResponseEntity<Patient> responsePatientDetails = patientService.getPatientDetails(id, jwtToken);
+            if (responsePatientDetails.getStatusCode().is2xxSuccessful() && responsePatientDetails.getBody() != null) {
+                patient = responsePatientDetails.getBody();
                 logger.info("Patient details retrieved via gateway for id {}", id);
             } else {
                 logger.warn("Gateway call succeeded but body empty or status not OK for id {}", id);
@@ -198,42 +183,40 @@ String jwtToken = (String) authentication.getDetails();
             patient = new Patient();
         }
         model.addAttribute("patient", patient);
-        // Récupération des notes associées si patientId valide
-        if (patient.getPatientId() != 0) {
-            try {
-                model.addAttribute("notes", noteService.getNotesByPatient(patient.getPatientId(), jwtToken));
-            } catch (Exception e) {
-                logger.warn("Impossible de récupérer les notes pour le patient {}", patient.getPatientId());
-                model.addAttribute("notes", Collections.emptyList());
-            }
-            // Préparation du formulaire de saisie de note (évite l'erreur 'noteForm' introuvable)
-            if (!model.containsAttribute("noteForm")) {
-                com.medilabo_gui.medilabo_gui.model.NoteForm noteForm = new com.medilabo_gui.medilabo_gui.model.NoteForm(
-                        patient.getPatientId(),
-                        patient.getLastname() != null ? patient.getLastname() : "",
-                        ""
-                );
-                model.addAttribute("noteForm", noteForm);
-            }
-        } else {
+        // Récupération des notes du patient via le service notes
+        try {
+            var notes = noteService.getNotesByPatient(patient.getPatientId(), jwtToken);
+            model.addAttribute("notes", notes);
+        } catch (Exception ex) {
+            logger.error("Exception lors de la récupération des notes du patient {}", patient.getPatientId(), ex);
             model.addAttribute("notes", Collections.emptyList());
-            if (!model.containsAttribute("noteForm")) {
-                // Patient non trouvé: fournir un formulaire vide pour éviter l'erreur Thymeleaf
-                com.medilabo_gui.medilabo_gui.model.NoteForm noteForm = new com.medilabo_gui.medilabo_gui.model.NoteForm(
-                        0L,
-                        "",
-                        ""
-                );
-                model.addAttribute("noteForm", noteForm);
-            }
         }
-        return "details";
+        // Préparation de l'objet formulaire pour l'ajout d'une note (utilisé par th:object="${noteForm}")
+        if (!model.containsAttribute("noteForm")) {
+            com.medilabo_gui.medilabo_gui.model.NoteForm noteForm = new com.medilabo_gui.medilabo_gui.model.NoteForm();
+            noteForm.setPatientId(patient.getPatientId());
+            noteForm.setPatientLastname(patient.getLastname());
+            model.addAttribute("noteForm", noteForm);
+        }
+        return PATIENT_DETAILS;
     }
 
     // TODO : A revoir cette methode du front vers le back
     @GetMapping("/update/{id}")
-    public String showUpdatePatientForm(@PathVariable long id, Model model) {
-        ResponseEntity<Patient> patientToUpdate = patientService.getPatientToUpdate(id);
+    public String showUpdatePatientForm(UsernamePasswordAuthenticationToken authentication,
+            @PathVariable long id, Model model) {
+        String jwtToken = (String) authentication.getDetails();
+
+        if (jwtToken == null || jwtToken.isEmpty()) {
+            model.addAttribute("users", Collections.emptyList());
+            model.addAttribute("authorities", Collections.emptyList());
+            return LOGIN;
+        }
+
+        List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
+        model.addAttribute("authorities", authorities);
+
+        ResponseEntity<Patient> patientToUpdate = patientService.getPatientToUpdate(id, jwtToken);
         model.addAttribute("patient", patientToUpdate);
         logger.info("The display of the updatePatient page of a patient is functional");
         return PATIENT_UPDATE;

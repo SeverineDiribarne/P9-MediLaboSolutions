@@ -18,7 +18,21 @@ public class NoteService implements INoteService {
 
     @Override
     public List<Note> getNotes(String patientId) {
-        return noteRepository.findByPatientId(patientId);
+       // return noteRepository.findByPatientId(patientId); 
+        // Retour statique temporaire (bypass repository)
+        Note n1 = new Note();
+        n1.setId(1L);
+        n1.setPatientId(patientId);
+        n1.setPatientLastname("DummyLastname");
+        n1.setNote("Note de test 1 pour patient " + patientId);
+
+        Note n2 = new Note();
+        n2.setId(2L);
+        n2.setPatientId(patientId);
+        n2.setPatientLastname("DummyLastname");
+        n2.setNote("Note de test 2 pour patient " + patientId);
+
+        return java.util.List.of(n1, n2);
     }
 
     @Override

@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface IPatientService {
 
-    ResponseEntity<List<Patient>> getPatientList();
+    ResponseEntity<List<Patient>> getPatientList(String jwtToken);
 
-    ResponseEntity<Patient> getPatientDetails(long id);
+    ResponseEntity<Patient> addPatient(Patient patient, String jwtToken);
 
-    ResponseEntity<Patient> getPatientToUpdate(long id);
+    ResponseEntity<Patient> getPatientDetails(long id, String jwtToken);
 
-    ResponseEntity<Patient> addPatient(Patient patient);
+    ResponseEntity<Patient> getPatientToUpdate(long id, String jwtToken);
+
+   
 }

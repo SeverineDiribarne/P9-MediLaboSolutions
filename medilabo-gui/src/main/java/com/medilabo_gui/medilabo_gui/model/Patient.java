@@ -1,6 +1,7 @@
 package com.medilabo_gui.medilabo_gui.model;
 
-import com.medilabo_gui.medilabo_gui.model.Gender;
+import java.util.List;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -23,4 +24,6 @@ public class Patient {
     private String address;
 
     private String phoneNumber;
+
+    private List<Note> notes;
 }

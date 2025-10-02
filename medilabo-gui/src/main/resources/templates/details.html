@@ -27,7 +27,8 @@
   <section>
     <h3>Ajouter une note</h3>
   <form method="post" th:action="@{/api/notes}" th:object="${noteForm}">
-      <input type="hidden" th:field="*{patientId}" th:value="${patient.patientId}" />
+      <input type="hidden" th:field="*{patientId}" />
+      <input type="hidden" th:field="*{patientLastname}" />
       <label for="note">Notes :</label><br />
       <textarea th:field="*{note}" id="note" rows="4" cols="40"></textarea><br />
       <div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" style="color:red"></div>

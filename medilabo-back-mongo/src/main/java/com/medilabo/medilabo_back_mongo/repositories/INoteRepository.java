@@ -8,6 +8,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface INoteRepository extends MongoRepository<Note, Long> {
+public interface INoteRepository extends MongoRepository<Note, String> {
      List<Note> findByPatientId(String patientId);
 }

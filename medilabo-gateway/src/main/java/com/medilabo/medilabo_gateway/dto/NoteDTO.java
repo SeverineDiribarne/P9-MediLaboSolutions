@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NoteDTO {
 
-    private Long id;
-    private Long patientId;
+    private String id;
+    private String patientId;
+    private String patientLastname;
     private String note;
 }

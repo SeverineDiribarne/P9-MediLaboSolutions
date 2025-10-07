@@ -45,4 +45,5 @@ public class NoteController {
                 noteRequest.getNote());
         return ResponseEntity.ok(noteSaved);
     }
+
 }

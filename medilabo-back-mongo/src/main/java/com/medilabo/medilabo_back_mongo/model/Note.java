@@ -5,16 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "notes")
+@Document(collection = "note")
 public class Note {
 
     @Id
-    private Long id;
+    private String id;
     private String patientId;
+    @Field("patient")
     private String patientLastname;
     private String note;
 

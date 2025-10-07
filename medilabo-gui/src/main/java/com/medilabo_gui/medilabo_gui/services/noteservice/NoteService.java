@@ -26,7 +26,7 @@ public class NoteService implements INoteService {
     private final Logger logger = LoggerFactory.getLogger(NoteService.class);
 
     @Override
-    public List<Note> getNotesByPatient(Long patientId, String jwtToken) {
+    public List<Note> getNotesByPatientId(Long patientId, String jwtToken) {
         HttpHeaders headers = buildHeaders(jwtToken);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         try {

@@ -1,5 +1,6 @@
 package com.medilabo_gui.medilabo_gui.model;
 
+import jakarta.persistence.Id;
 import lombok.*;
 
 /**
@@ -10,6 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Note {
+
+    @Id
     private String id;          // identifiant Mongo (ObjectId sous forme String)
     private Long patientId; 
     private String patientLastname;    // lien vers le patient

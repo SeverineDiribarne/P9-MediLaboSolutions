@@ -185,7 +185,7 @@ public class PatientController {
         model.addAttribute("patient", patient);
         // Récupération des notes du patient via le service notes
         try {
-            var notes = noteService.getNotesByPatient(patient.getPatientId(), jwtToken);
+            var notes = noteService.getNotesByPatientId(patient.getPatientId(), jwtToken);
             model.addAttribute("notes", notes);
         } catch (Exception ex) {
             logger.error("Exception lors de la récupération des notes du patient {}", patient.getPatientId(), ex);

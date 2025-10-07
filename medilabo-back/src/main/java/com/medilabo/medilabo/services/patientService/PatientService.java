@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static java.lang.Long.parseLong;
-
 @Service
 public class PatientService implements IPatientService {
 

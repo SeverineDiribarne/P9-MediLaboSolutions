@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -23,7 +22,7 @@ public class PatientController {
     private static final String LOG_ERROR = "The patient could not be validated or registered in the database because the patient details were empty or partially empty,"
             +
             " with the exception of the address and telephone number, which are optional.";
-    private static final String PATIENT_ADD = "patient/add";
+   // private static final String PATIENT_ADD = "patient/add";
     private static final String PATIENT_UPDATE = "patient/update";
     private static final String REDIRECT_PATIENT_LIST = "redirect:/patient/list";
 

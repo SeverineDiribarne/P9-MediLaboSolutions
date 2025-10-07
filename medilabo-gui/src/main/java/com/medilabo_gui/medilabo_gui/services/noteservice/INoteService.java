@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface INoteService {
 
-    List<Note> getNotesByPatient(Long patientId, String jwtToken);
+    List<Note> getNotesByPatientId(Long patientId, String jwtToken);
 
     Note addNote(NoteForm form, String jwtToken);
 }

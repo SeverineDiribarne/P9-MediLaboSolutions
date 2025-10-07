@@ -1,7 +1,5 @@
 package com.medilabo.medilabo_gateway.config;
 
-import java.io.Closeable;
-
 import javax.net.ssl.SSLContext;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;

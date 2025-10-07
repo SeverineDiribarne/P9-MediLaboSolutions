@@ -22,6 +22,33 @@ import java.util.List;
 @RequestMapping("/api/patient")
 public class PatientController {
 
+    @RequestMapping(value = "/list", method = {RequestMethod.POST, RequestMethod.GET})
+    public String showPatientsList(UsernamePasswordAuthenticationToken authentication, Model model) {
+        String jwtToken = (String) authentication.getDetails();
+
+        if (jwtToken == null || jwtToken.isEmpty()) {
+            model.addAttribute("users", Collections.emptyList());
+            model.addAttribute("authorities", Collections.emptyList());
+            return LOGIN;
+        }
+
+        List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
+        model.addAttribute("authorities", authorities);
+
+        List<Patient> patients = Collections.emptyList();
+        try {
+            ResponseEntity<List<Patient>> response = patientService.getPatientList(jwtToken);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                patients = response.getBody();
+            }
+        } catch (Exception ex) {
+            logger.error("Exception during REST call to /api/patient/list", ex);
+            patients = Collections.emptyList();
+        }
+        model.addAttribute("patients", patients);
+        return PATIENT_LIST;
+    }
+
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PatientController.class);
     // private static final String LOG_ERROR = "The patient could not be validated
     // or registered in the database because the patient details were empty or
@@ -40,33 +67,7 @@ public class PatientController {
     @Autowired
     INoteService noteService;
 
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public String showPatientsList(UsernamePasswordAuthenticationToken authentication, Model model) {
-        String jwtToken = (String) authentication.getDetails();
 
-        if (jwtToken == null || jwtToken.isEmpty()) {
-            model.addAttribute("users", Collections.emptyList());
-            model.addAttribute("authorities", Collections.emptyList());
-            return LOGIN;
-        }
-
-        List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
-        model.addAttribute("authorities", authorities);
-
-        List<Patient> patients = Collections.emptyList();
-        try {
-            ResponseEntity<List<Patient>> response = patientService.getPatientList(jwtToken);
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-
-                patients = response.getBody();
-            }
-        } catch (Exception ex) {
-            logger.error("Exception during REST call to /api/patient/list", ex);
-            patients = Collections.emptyList();
-        }
-        model.addAttribute("patients", patients);
-        return PATIENT_LIST;
-    }
 
     @GetMapping("/add")
     public String showAddPatientForm(Model model) {

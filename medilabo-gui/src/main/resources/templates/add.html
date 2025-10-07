@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Patient details</title>
+    <link href="/css/medilabo-style.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- Bandeau supérieur -->
+<div class="top-banner">
+    <div class="banner-content">
+        <div class="logo-placeholder">Logo</div>
+        <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+    </div>
+</div>
+<div style="max-width: 2200px; margin: 40px auto 32px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(59,89,152,0.10); padding: 6rem 10vw;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.2rem; width: 100%;">
+                    <h2 style="color: #3b5998; font-weight: 700; font-size: 2.2rem; letter-spacing: 1px; margin: 0; text-align: center; flex: 1;">Ajouter un patient</h2>
+                    <a th:href="@{/api/patient/list}"
+                         class="btn btn-login"
+                         style="background: #fff; color: #3b5998; border: 1.2px solid #3b5998; border-radius: 16px; font-weight: 500; padding: 0.18rem 0.85rem; font-size: 0.98rem; line-height: 1.2; height: auto; min-width: 200px; max-width: 200px; box-shadow: none; transition: background 0.2s, color 0.2s; display: inline-block; border-width: 1.2px; border-style: solid; border-color: #3b5998; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-left: 32px;"
+                         onmouseover="this.style.background='#3b5998';this.style.color='#fff'"
+                         onmouseout="this.style.background='#fff';this.style.color='#3b5998'"
+                    >Retour à la liste</a>
+                </div>
+            <form action="#" th:action="@{/api/patient/addpatient}" method="post" style="display: flex; flex-direction: column; gap: 1.2rem; width: 100%; max-width: 1200px; margin: 0 auto;">
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0.7rem;">
+                            <label for="lastname" style="font-weight: 600; color: #3b5998; text-align: left; min-width: 180px;">Nom</label>
+                            <input type="text" id="lastname" name="lastname" placeholder="Nom" required class="form-control" style="flex:1; min-width: 350px; max-width: 1000px;"/>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0.7rem;">
+                            <label for="firstname" style="font-weight: 600; color: #3b5998; text-align: left; min-width: 180px;">Prénom</label>
+                            <input type="text" id="firstname" name="firstname" placeholder="Prénom" required class="form-control" style="flex:1; min-width: 350px; max-width: 1000px;"/>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0.7rem;">
+                            <label for="birthdate" style="font-weight: 600; color: #3b5998; text-align: left; min-width: 180px;">Date de naissance</label>
+                            <input type="text" id="birthdate" name="birthdate" placeholder="JJ/MM/AAAA" required class="form-control" style="flex:1; min-width: 350px; max-width: 1000px;"/>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0.7rem;">
+                            <label style="font-weight: 600; color: #3b5998; text-align: left; min-width: 180px;">Genre</label>
+                            <div style="display: flex; gap: 18px;">
+                                <label style="font-weight: 500; color: #2c3e50;"><input type="radio" id="M" name="gender" value="M" checked/> Homme</label>
+                                <label style="font-weight: 500; color: #2c3e50;"><input type="radio" id="F" name="gender" value="F"/> Femme</label>
+                                <label style="font-weight: 500; color: #2c3e50;"><input type="radio" id="X" name="gender" value="X"/> X</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0.7rem;">
+                            <label for="address" style="font-weight: 600; color: #3b5998; text-align: left; min-width: 180px;">Adresse</label>
+                            <input type="text" id="address" name="address" placeholder="Adresse" class="form-control" style="flex:1; min-width: 350px; max-width: 1000px;"/>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 0.7rem;">
+                            <label for="phoneNumber" style="font-weight: 600; color: #3b5998; text-align: left; min-width: 180px;">Téléphone</label>
+                            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Téléphone" class="form-control" style="flex:1; min-width: 350px; max-width: 1000px;"/>
+                        </div>
+            <span th:style="'color: red;'" th:if="${msgLastname}" th:utext="${msgLastname}">Erreur Nom</span>
+            <span th:style="'color: red;'" th:if="${msgFirstname}" th:utext="${msgFirstname}">Erreur Prénom</span>
+            <span th:style="'color: red;'" th:if="${msgBirthdate}" th:utext="${msgBirthdate}">Erreur Date de naissance</span>
+                        <div style="display: flex; justify-content: flex-end; gap: 18px; margin-top: 1.5rem;">
+                          <button type="button" onclick="resetForm()" class="btn btn-login" style="background: #fff; color: #3b5998; border: 2px solid #3b5998; border-radius: 10px; font-weight: 600; padding: 0.55rem 1.5rem; transition: background 0.2s, color 0.2s; box-shadow: 0 1px 4px rgba(59,89,152,0.07); min-width: 120px; text-align: center;"
+                              onmouseover="this.style.background='#3b5998';this.style.color='#fff'"
+                              onmouseout="this.style.background='#fff';this.style.color='#3b5998'"
+                          >Annuler</button>
+                          <button type="submit" class="btn btn-login" style="background: #3b5998; color: #fff; border: 2px solid #3b5998; border-radius: 10px; font-weight: 600; padding: 0.55rem 1.5rem; transition: background 0.2s, color 0.2s; box-shadow: 0 1px 4px rgba(59,89,152,0.07); min-width: 120px; text-align: center;"
+                              onmouseover="this.style.background='#fff';this.style.color='#3b5998'"
+                              onmouseout="this.style.background='#3b5998';this.style.color='#fff'"
+                          >Ajouter</button>
+                        </div>
+                </form>
+                <script>
+                    function resetForm() {
+                        const form = document.querySelector('form');
+                        if(form) form.reset();
+                    }
+                </script>
+        </form>
+    </div>
+</body>
+
+</html>

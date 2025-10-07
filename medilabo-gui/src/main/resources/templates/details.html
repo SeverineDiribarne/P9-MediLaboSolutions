@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient details</title>
+  <link href="/css/medilabo-style.css" rel="stylesheet">
+  </head>
+  <body>
+  <!-- Bandeau supérieur -->
+  <div class="top-banner">
+    <div class="banner-content">
+      <div class="logo-placeholder">Logo</div>
+      <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+    </div>
+  </div>
+  <div style="max-width: 1100px; margin: 40px auto 32px auto;">
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2.2rem; position: relative; width: 100%;">
+      <h2 style="color: #3b5998; font-weight: 700; font-size: 2.2rem; letter-spacing: 1px; margin: 0 auto; flex: 0 1 auto; text-align: center; width: 100%;">Détails du patient</h2>
+      <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 200px; display: flex; justify-content: flex-end;">
+  <a th:href="@{/api/patient/list}"
+           class="btn btn-login"
+           style="background: #fff; color: #3b5998; border: 1.2px solid #3b5998; border-radius: 16px; font-weight: 500; padding: 0.18rem 0.85rem; font-size: 0.98rem; line-height: 1.2; height: auto; min-width: 200px; max-width: 200px; box-shadow: none; transition: background 0.2s, color 0.2s; display: inline-block; border-width: 1.2px; border-style: solid; border-color: #3b5998; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+           onmouseover="this.style.background='#3b5998';this.style.color='#fff'"
+           onmouseout="this.style.background='#fff';this.style.color='#3b5998'"
+        >Retour à la liste</a>
+      </div>
+    </div>
+    <div style="background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(59,89,152,0.10); padding: 2.5rem 2rem; display: flex; gap: 40px; align-items: flex-start;">
+      <form style="display: flex; flex-direction: column; gap: 1.2rem; min-width: 320px; max-width: 420px; flex: 1 1 420px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label style="font-weight: 600; color: #3b5998; min-width: 90px; text-align: left;">Prénom</label>
+          <input type="text" class="form-control" th:value="${patient.firstname}" readonly style="flex:1;" />
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label style="font-weight: 600; color: #3b5998; min-width: 90px; text-align: left;">Nom</label>
+          <input type="text" class="form-control" th:value="${patient.lastname}" readonly style="flex:1;" />
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label style="font-weight: 600; color: #3b5998; min-width: 90px; text-align: left;">Genre</label>
+          <input type="text" class="form-control" th:value="${patient.gender}" readonly style="flex:1;" />
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label style="font-weight: 600; color: #3b5998; min-width: 90px; text-align: left;">Adresse</label>
+          <input type="text" class="form-control" th:value="${patient.address}" readonly style="flex:1;" />
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label style="font-weight: 600; color: #3b5998; min-width: 90px; text-align: left;">Téléphone</label>
+          <input type="text" class="form-control" th:value="${patient.phoneNumber}" readonly style="flex:1;" />
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; justify-content: flex-start;">
+          <a th:href="@{/api/patient/update}"
+             class="btn btn-login"
+             style="background: #f4f8fb; color: #2c3e50; border: 2px solid #dbeafe; border-radius: 10px; font-weight: 600; padding: 0.55rem 1.5rem; transition: background 0.2s, color 0.2s; box-shadow: 0 1px 4px rgba(59,89,152,0.07); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; text-align: center; min-width: 120px;"
+             onmouseover="this.style.background='#2c3e50';this.style.color='#fff'"
+             onmouseout="this.style.background='#f4f8fb';this.style.color='#2c3e50'"
+          >Modifier</a>
+        </div>
+      </form>
+    <!-- Bloc notes patient à droite (unique) -->
+    <div style="flex: 1 1 420px; min-width: 340px; max-width: 480px;">
+      <div style="background: #f8fafc; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,89,152,0.06); padding: 1.5rem 1.2rem; margin-bottom: 28px;">
+        <h3 style="color: #3b5998; font-weight: 600; margin-bottom: 1.2rem; text-align: center;">Notes du patient</h3>
+        <div th:if="${#lists.isEmpty(notes)}" style="color: #888;">Aucune note enregistrée.</div>
+        <div th:if="${!#lists.isEmpty(notes)}" style="display: flex; flex-direction: column; gap: 1.1rem;">
+          <div th:each="note : ${notes}" style="background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(59,89,152,0.08); padding: 1.1rem 1.2rem; border-left: 5px solid #3b5998;">
+            <span th:text="${note.note}" style="font-size: 1.08em; color: #2c3e50;"></span>
+          </div>
+        </div>
+      </div>
+      <div style="background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,89,152,0.06); padding: 1.5rem 1.2rem;">
+        <h3 style="color: #3b5998; font-weight: 600; margin-bottom: 1.2rem; text-align: center;">Ajouter une note</h3>
+        <form method="post" th:action="@{/api/notes}" th:object="${noteForm}" style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="hidden" th:field="*{patientId}" />
+            <input type="hidden" th:field="*{patientLastname}" />
+            <textarea th:field="*{note}" id="note" rows="4" cols="40" class="form-control" style="resize: vertical;"></textarea>
+            <div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" style="color:red"></div>
+            <button type="submit" class="btn btn-login" style="align-self: flex-end; min-width: 160px;">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

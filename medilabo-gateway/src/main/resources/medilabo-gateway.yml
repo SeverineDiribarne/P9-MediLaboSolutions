@@ -1,32 +1,51 @@
 server:
   port: 8090
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: ?42AzdK{}sD&16984523Tu
+    key-store-type: PKCS12
+    key-alias: springboot
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key-location: classpath:hmac256.key
   cloud:
     gateway:
+      httpclient:
+        ssl:
+          use-insecure-trust-manager: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "https://localhost:8443"
+            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
-        - id: medilabo-list
-          uri: http://localhost:8082/
+        - id: patient-list
+          uri: https://localhost:8082
           predicates:
             - Path=/api/patient/list
-        - id: medilabo-details
-          uri: http://localhost:8082/
+        - id: patient-details
+          uri: https://localhost:8082
           predicates:
-            - Path=/api/patient/details/{id}
-          filters:
-            - AddRequestParameter=id, defaultId
-        - id: medilabo-addvalidate
-          uri: http://localhost:8082/
+            - Path=/api/patient/details/**
+        - id: patient-add
+          uri: https://localhost:8082
           predicates:
-            - Path=/api/patient/addvalidate
-        - id: medilabo-2-route
-          uri: http://localhost:8083
+            - Path=/api/patient/addpatient
+        - id: patient-update
+          uri: https://localhost:8082
           predicates:
-            - Path=/**
-          filter:
-            - StripPrefix=1
-        - id: medilabo-3-route
-          uri: http://localhost:8084
+            - Path=/api/patient/update/**
+        - id: auth-login
+          uri: https://localhost:8082
           predicates:
-            - Path=/**
-          filter:
-            - StripPrefix=1
+            - Path=/api/auth/login
+        - id: notes-get-add
+          uri: https://localhost:8083
+          predicates:
+            - Path=/api/notes/**

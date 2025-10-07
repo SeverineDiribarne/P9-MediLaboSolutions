@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title>Patient List </title>
+  <link href="/css/medilabo-style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Bandeau supérieur -->
+<div class="top-banner">
+  <div class="banner-content">
+    <div class="logo-placeholder">Logo</div>
+    <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+  </div>
+</div>
+<div class="container" style="width: 80vw; max-width: 1800px; min-width: 700px; margin: 40px auto 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+    <h2 style="margin: 0; color: #3b5998; font-weight: 700; font-size: 2.2rem; letter-spacing: 1px;">Liste des patients</h2>
+    <a href="/api/patient/add" class="btn btn-login" style="max-width: 260px; font-size: 1.15rem; padding: 0.9rem 2.2rem; border-radius: 14px; box-shadow: 0 2px 8px rgba(59,89,152,0.10);">+ Ajouter un patient</a>
+  </div>
+  <div class="table-responsive">
+  <table class="table table-hover align-middle" style="background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 24px rgba(59,89,152,0.10); width: 100%; min-width: 700px; font-size: 1.13rem;">
+      <thead style="background: linear-gradient(90deg, #e0e7ef 60%, #f8fafc 100%);">
+        <tr style="color: #3b5998;">
+          <th style="padding: 20px 18px; font-size: 1.1em;">Nom</th>
+          <th style="padding: 20px 18px; font-size: 1.1em;">Prénom</th>
+          <th style="padding: 20px 18px; text-align: center; font-size: 1.1em;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="patient : ${patients}" style="border-bottom: 1px solid #f0f4fa;">
+          <td th:text="${patient.lastname}" style="padding: 18px 18px;"></td>
+          <td th:text="${patient.firstname}" style="padding: 18px 18px;"></td>
+          <td style="text-align: center;">
+            <a th:href="@{/api/patient/details/{id}(id=${patient.patientId})}"
+               class="btn btn-login"
+               style="background: #fff; color: #3b5998; border: 2px solid #3b5998; border-radius: 10px; font-weight: 600; margin-right: 12px; padding: 0.55rem 1.5rem; transition: background 0.2s, color 0.2s; box-shadow: 0 1px 4px rgba(59,89,152,0.07);"
+               onmouseover="this.style.background='#3b5998';this.style.color='#fff'"
+               onmouseout="this.style.background='#fff';this.style.color='#3b5998'"
+            >Détails</a>
+            <a th:href="@{/api/patient/update}"
+               class="btn btn-login"
+               style="background: #f4f8fb; color: #2c3e50; border: 2px solid #dbeafe; border-radius: 10px; font-weight: 600; padding: 0.55rem 1.5rem; transition: background 0.2s, color 0.2s; box-shadow: 0 1px 4px rgba(59,89,152,0.07);"
+               onmouseover="this.style.background='#2c3e50';this.style.color='#fff'"
+               onmouseout="this.style.background='#f4f8fb';this.style.color='#2c3e50'"
+            >Modifier</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- Le bouton de déconnexion est maintenant dans le bandeau -->
+</div>
+</body>
+</html>

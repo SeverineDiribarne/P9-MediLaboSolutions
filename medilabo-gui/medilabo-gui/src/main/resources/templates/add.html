@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient details</title>
+</head>
+
+<body>
+  <div class="row">
+    <h2>Add a new patient</h2>
+  </div>
+
+  <div class="row">
+    <form action="#" th:action="@{/api/patient/addvalidate}" method="post" class="form-horizontal"
+      align="center" style="width: 100%">
+      <!-- Create a form to input the values of Patient, there are 2 buttons: Save data and cancel to the list PatientList -->
+      <label>Lastname<br />
+      <input type="text"  id="lastname" name="lastname" placeholder="Lastname" required/><br />
+      </label>
+      <label>Firstname<br />
+      <input type="text"  id="firstname" name="firstname" placeholder="Firstname" required /><br />
+      </label>
+      <label>BirthDate<br />
+      <input type="text"  id="birthdate" name="birthdate" placeholder="BirthDate" required />
+      <br />
+      </label>
+      <label>Gender</label><br />
+      <div>
+        <input type="radio"   id="Male" name="gender" value="Male" checked/>
+        <label for="Male">Male</label>
+
+        <input type="radio"   id="Female" name="gender" value="Female" />
+        <label for="Female">Female</label>
+
+        <input type="radio"  id="X" name="gender" value="X" />
+        <label for="X">X</label>
+      </div>
+      <br />
+      <label>Address<br />
+      <input type="text"  id="address" name="address" placeholder="Address" />
+      <br />
+      </label>
+      <label>Phone number<br />
+      <input type="text"  id="phoneNumber" name="phoneNumber" placeholder="Phone Number" />
+      <br />
+      </label>
+      <span th:style="'color: red;'" th:if="${msgLastname}" th:utext="${msgLastname}">Error Lastname</span><br />
+      <span th:style="'color: red;'" th:if="${msgFirstname}" th:utext="${msgFirstname}">Error Firstname</span><br />
+      <span th:style="'color: red;'" th:if="${msgBirthdate}" th:utext="${msgBirthdate}">Error Birthdate</span><br />
+      <div class="form-group">
+        <div class="col-sm-12">
+          <a href="/patient/list" class="btn btn-danger" style="margin-top: 0.5%">Cancel</a>
+          <input type="submit" class="btn btn-primary" value="Add Patient" style="margin-top: 0.5%" />
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>

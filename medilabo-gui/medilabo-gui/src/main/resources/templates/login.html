@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="https://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Please sign in</title>
+    <link href="\css\login.css" rel="stylesheet" />
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="container_page">
+      <!-- Login via Username and password -->
+      <div class="container_form">
+        <div class="form">
+          <form th:action="@{/login}" method="post" class="form-signin">
+            <h2 class="title_login1">Login with Username and Password</h2>
+            <div class="form_content">
+              <div class="input-group1">
+                <label for="username" class="sr-only">User :</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="form-control"
+                  placeholder="Username"
+                  required
+                  autofocus
+                />
+              </div>
+              <div class="input-group2">
+                <label for="password" class="sr-only">Password :</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+
+              <span th:style="'color: red;'" th:if="${param.error}"
+                >Invalid username and password</span
+              >
+
+              <div>
+                <button type="submit" class="btn btn-lg btn-primary btn-block">
+                  Login
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Login via Oauth2 -->
+      <div class="loginOauth2">
+        <h2 class="title_login2">Login with OAuth 2.0</h2>
+        <table class="table table-striped">
+          <tr>
+            <td>
+              <a href="/oauth2/authorization/github"
+                ><img src="images/logoGithub.png" class="img" alt="Logo Github"
+              /></a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

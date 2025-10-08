@@ -63,6 +63,28 @@ public class PatientController {
     @PostMapping("/patient/addpatient")
     public ResponseEntity<?> addPatient(@RequestHeader(value = "Authorization", required = false) String authorization,
             @RequestBody PatientDTO patient) {
+        // Normalisation du format de date avant enregistrement
+        String inputDate = patient.getBirthdate();
+        if (inputDate != null && !inputDate.isEmpty()) {
+            // Remplace les points ou slash par tirets
+            String normalized = inputDate.replace('.', '-').replace('/', '-');
+            // Vérifie le format dd-MM-yyyy
+            if (normalized.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                String[] parts = normalized.split("-");
+                normalized = parts[2] + "-" + parts[1] + "-" + parts[0];
+                patient.setBirthdate(normalized);
+            }
+        }
+        // Normalisation du format du numéro de téléphone avant enregistrement
+        String inputPhone = patient.getPhoneNumber();
+        if (inputPhone != null && !inputPhone.isEmpty()) {
+            // Remplace points, slash et espaces par tirets
+            String normalizedPhone = inputPhone.replace('.', '-').replace('/', '-').replace(' ', '-');
+            // Vérifie le format xxx-xxx-xxxx
+            if (normalizedPhone.matches("\\d{3}-\\d{3}-\\d{4}")) {
+                patient.setPhoneNumber(normalizedPhone);
+            }
+        }
         String apiUrl = "https://localhost:8082/api/patient/addpatient";
         HttpHeaders headers = new HttpHeaders();
         headers.add("User-Name", "toto@gmail.com");

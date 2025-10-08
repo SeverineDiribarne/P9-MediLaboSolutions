@@ -1,9 +1,19 @@
-/* Bandeau supérieur avec logo et bouton déconnexion */
+/* Supprimer le soulignement de tous les boutons */
+a.btn, a.btn-login, a.btn-danger, .btn, .btn-login, .btn-danger {
+    text-decoration: none !important;
+}
+
+/* Palette adaptée au logo :
+   Rouge principal : #d9412e
+   Blanc : #fff
+   Bleu clair fond : #e0f2fa, #f8fafc
+   Gris bleu clair : #e0e7ef
+*/
 .top-banner {
     width: 100vw;
     min-width: 700px;
-    background: linear-gradient(90deg, #3b5998 60%, #e0e7ef 100%);
-    box-shadow: 0 2px 12px rgba(59,89,152,0.08);
+    background: linear-gradient(90deg, #25648f 0%, #3b8dbc 55%, #6ec1e4 80%, #e0f2fa 100%);
+    box-shadow: 0 2px 12px rgba(59,139,188,0.08);
     padding: 0;
     margin: 0;
     position: fixed;
@@ -24,32 +34,36 @@
     height: 70px;
     padding: 0 3vw;
 }
-.logo-placeholder {
-    color: #fff;
-    font-size: 1.6rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    opacity: 0.7;
+.logo-placeholder, .logo-img {
+    display: flex;
+    align-items: center;
+    height: 54px;
+}
+.logo-img img {
+    height: 54px;
+    width: auto;
+    object-fit: contain;
+    background: transparent;
 }
 .logout-btn {
     font-size: 1.1rem;
     padding: 0.7rem 2.2rem;
     border-radius: 12px;
-    background: #e74c3c;
+    background: #3b8dbc;
     color: #fff;
     border: none;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(59,89,152,0.10);
+    box-shadow: 0 2px 8px rgba(59,139,188,0.10);
     transition: background 0.2s;
     margin-left: 18px;
 }
 .logout-btn:hover {
-    background: #c0392b;
+    background: #25648f;
 }
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background: linear-gradient(120deg, #e0e7ef 0%, #f8fafc 100%);
+    background: linear-gradient(120deg, #e0f2fa 0%, #f8fafc 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -65,9 +79,10 @@ body {
     max-width: 400px;
     width: 100%;
 }
+/* Titres principaux */
 h2 {
     font-weight: 700;
-    color: #3b5998;
+    color: #d9412e;
     margin-bottom: 2rem;
     text-align: center;
 }
@@ -78,14 +93,23 @@ h2 {
     margin-bottom: 1.2rem;
     border: 1px solid #dbeafe;
     background: #f4f8fb;
+    .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1.1em;
+        margin-bottom: 1.2rem;
+        border: 1px solid #dbeafe;
+        background: #f4f8fb;
+        border-color: #d9412e;
+        box-shadow: 0 0 0 0.2rem rgba(217,65,46,0.08);
+    }
+    border-color: #d9412e;
+    box-shadow: 0 0 0 0.2rem rgba(217,65,46,0.08);
 }
-.form-control:focus {
-    border-color: #3b5998;
-    box-shadow: 0 0 0 0.2rem rgba(59,89,152,0.08);
-}
+/* Boutons principaux */
 .btn-login {
     width: 100%;
-    background: #3b5998;
+    background: #3b8dbc;
     color: #fff;
     font-weight: 600;
     border: none;
@@ -95,7 +119,7 @@ h2 {
     transition: background 0.2s;
 }
 .btn-login:hover {
-    background: #2c3e50;
+    background: #25648f;
 }
 .alert-danger {
     margin-top: 1rem;
@@ -109,5 +133,5 @@ h2 {
 }
 .login-icon i {
     font-size: 3rem;
-    color: #3b5998;
+    color: #d9412e;
 }

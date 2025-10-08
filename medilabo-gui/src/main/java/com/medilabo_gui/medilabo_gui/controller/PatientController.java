@@ -1,5 +1,6 @@
 package com.medilabo_gui.medilabo_gui.controller;
 
+import com.medilabo_gui.medilabo_gui.model.Gender;
 import com.medilabo_gui.medilabo_gui.model.Patient;
 import com.medilabo_gui.medilabo_gui.services.patientservice.IPatientService;
 import com.medilabo_gui.medilabo_gui.services.noteservice.INoteService;
@@ -21,6 +22,25 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/patient")
 public class PatientController {
+
+
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PatientController.class);
+    // private static final String LOG_ERROR = "The patient could not be validated
+    // or registered in the database because the patient details were empty or
+    // partially empty," +
+    // " with the exception of the address and telephone number, which are
+    // optional.";
+    private static final String LOGIN = "login";
+    private static final String PATIENT_ADD = "add";
+    private static final String PATIENT_UPDATE = "update";
+    private static final String PATIENT_LIST = "list";
+    private static final String PATIENT_DETAILS = "details";
+
+    @Autowired
+    IPatientService patientService;
+
+    @Autowired
+    INoteService noteService;
 
     @RequestMapping(value = "/list", method = {RequestMethod.POST, RequestMethod.GET})
     public String showPatientsList(UsernamePasswordAuthenticationToken authentication, Model model) {
@@ -48,26 +68,6 @@ public class PatientController {
         model.addAttribute("patients", patients);
         return PATIENT_LIST;
     }
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PatientController.class);
-    // private static final String LOG_ERROR = "The patient could not be validated
-    // or registered in the database because the patient details were empty or
-    // partially empty," +
-    // " with the exception of the address and telephone number, which are
-    // optional.";
-    private static final String LOGIN = "login";
-    private static final String PATIENT_ADD = "add";
-    private static final String PATIENT_UPDATE = "update";
-    private static final String PATIENT_LIST = "list";
-    private static final String PATIENT_DETAILS = "details";
-
-    @Autowired
-    IPatientService patientService;
-
-    @Autowired
-    INoteService noteService;
-
-
 
     @GetMapping("/add")
     public String showAddPatientForm(Model model) {
@@ -202,10 +202,9 @@ public class PatientController {
         return PATIENT_DETAILS;
     }
 
-    // TODO : A revoir cette methode du front vers le back
-    @GetMapping("/update/{id}")
-    public String showUpdatePatientForm(UsernamePasswordAuthenticationToken authentication,
-            @PathVariable long id, Model model) {
+    @PostMapping("/update/{id}")
+    public String showAndUpdatePatientForm(UsernamePasswordAuthenticationToken authentication, BindingResult result,
+            @PathVariable String patientId, Model model) {
         String jwtToken = (String) authentication.getDetails();
 
         if (jwtToken == null || jwtToken.isEmpty()) {
@@ -214,10 +213,41 @@ public class PatientController {
             return LOGIN;
         }
 
+//  if (bindingResult.hasErrors()) {
+//             log.error(LOG_ERROR);
+//             model.addAttribute("errors", bindingResult.getAllErrors());
+//             return PATIENT_UPDATE;
+//         }
+
+//         if (patient.get().getLastname().isEmpty()) {
+//             log.error(LOG_ERROR);
+//             model.addAttribute("msgLastname", "Your lastname is empty");
+//             return PATIENT_UPDATE;
+//         }
+
+//         if (patient.get().getFirstname().isEmpty()) {
+//             log.error(LOG_ERROR);
+//             model.addAttribute("msgFirstname", "Your firstname is empty");
+//             return PATIENT_UPDATE;
+//         }
+
+//         if (patient.get().getBirthdate().isEmpty()) {
+//             log.error(LOG_ERROR);
+//             model.addAttribute("msgBirthdate", "Your birthdate is empty");
+//             return PATIENT_UPDATE;
+//         }
+
+//         if (patient.get().getGender() != Gender.M && patient.get().getGender() != Gender.F
+//                 && patient.get().getGender() != Gender.X) {
+//             log.error(LOG_ERROR);
+//             model.addAttribute("msgGender", "Your gender is incorrect");
+//             return PATIENT_UPDATE;
+//         }
+
         List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
         model.addAttribute("authorities", authorities);
 
-        ResponseEntity<Patient> patientToUpdate = patientService.getPatientToUpdate(id, jwtToken);
+        ResponseEntity<Patient> patientToUpdate = patientService.getPatientToUpdateById(patientId, jwtToken);
         model.addAttribute("patient", patientToUpdate);
         logger.info("The display of the updatePatient page of a patient is functional");
         return PATIENT_UPDATE;

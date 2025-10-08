@@ -55,42 +55,12 @@ public class PatientController {
 
     // TODO : A revoir cette methode du front vers le back
     @PostMapping("/update/{id}")
-    public String updatePatientInformationValidate(@Valid @RequestParam long id, Model model,
-            BindingResult bindingResult) {
+    public String updatePatientInformationValidate(@Valid @RequestParam long id, Model model) {
 
         Optional<Patient> patient = patientService.getPatientById(id);
 
         // Vérifier les erreurs de validation
-        if (bindingResult.hasErrors()) {
-            log.error(LOG_ERROR);
-            model.addAttribute("errors", bindingResult.getAllErrors());
-            return PATIENT_UPDATE;
-        }
-
-        if (patient.get().getLastname().isEmpty()) {
-            log.error(LOG_ERROR);
-            model.addAttribute("msgLastname", "Your lastname is empty");
-            return PATIENT_UPDATE;
-        }
-
-        if (patient.get().getFirstname().isEmpty()) {
-            log.error(LOG_ERROR);
-            model.addAttribute("msgFirstname", "Your firstname is empty");
-            return PATIENT_UPDATE;
-        }
-
-        if (patient.get().getBirthdate().isEmpty()) {
-            log.error(LOG_ERROR);
-            model.addAttribute("msgBirthdate", "Your birthdate is empty");
-            return PATIENT_UPDATE;
-        }
-
-        if (patient.get().getGender() != Gender.M && patient.get().getGender() != Gender.F
-                && patient.get().getGender() != Gender.X) {
-            log.error(LOG_ERROR);
-            model.addAttribute("msgGender", "Your gender is incorrect");
-            return PATIENT_UPDATE;
-        }
+       
         Optional<Patient> patientById = patientService.getPatientById(patient.get().getPatientId());
         if (patientById.isPresent()) {
             Patient patientFoundById = patientById.get();

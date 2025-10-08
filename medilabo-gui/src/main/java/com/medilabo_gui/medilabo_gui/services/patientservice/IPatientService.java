@@ -13,7 +13,7 @@ public interface IPatientService {
 
     ResponseEntity<Patient> getPatientDetails(long id, String jwtToken);
 
-    ResponseEntity<Patient> getPatientToUpdate(long id, String jwtToken);
+    ResponseEntity<Patient> getPatientToUpdateById(String patientId, String jwtToken);
 
    
 }

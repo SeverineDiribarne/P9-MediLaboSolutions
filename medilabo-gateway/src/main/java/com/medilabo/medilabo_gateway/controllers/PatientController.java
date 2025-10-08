@@ -159,4 +159,51 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing patient details");
         }
     }
+     @PostMapping("/patient/update/{id}")
+    public ResponseEntity<?> updatePatient(@RequestHeader(value = "Authorization", required = false) String authorization,
+     @PathVariable Long id, @RequestBody PatientDTO patient) {
+        // Normalisation du format de date avant enregistrement
+        String inputDate = patient.getBirthdate();
+        if (inputDate != null && !inputDate.isEmpty()) {
+            // Remplace les points ou slash par tirets
+            String normalized = inputDate.replace('.', '-').replace('/', '-');
+            // Vérifie le format dd-MM-yyyy
+            if (normalized.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                String[] parts = normalized.split("-");
+                normalized = parts[2] + "-" + parts[1] + "-" + parts[0];
+                patient.setBirthdate(normalized);
+            }
+        }
+        // Normalisation du format du numéro de téléphone avant enregistrement
+        String inputPhone = patient.getPhoneNumber();
+        if (inputPhone != null && !inputPhone.isEmpty()) {
+            // Remplace points, slash et espaces par tirets
+            String normalizedPhone = inputPhone.replace('.', '-').replace('/', '-').replace(' ', '-');
+            // Vérifie le format xxx-xxx-xxxx
+            if (normalizedPhone.matches("\\d{3}-\\d{3}-\\d{4}")) {
+                patient.setPhoneNumber(normalizedPhone);
+            }
+        }
+        String apiUrl = "https://localhost:8082/api/patient/update/" + id;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("User-Name", "toto@gmail.com");
+        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
+        try {
+            ResponseEntity<PatientDTO> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity,
+                    PatientDTO.class);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpClientErrorException.Forbidden e) {
+            logger.error("403 Forbidden from downstream service: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden : " + e.getMessage());
+        } catch (HttpClientErrorException e) {
+            logger.error("Error from downstream service: {}", e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body("Error: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error parsing user list: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing user list");
+        }
+    }
+
 }

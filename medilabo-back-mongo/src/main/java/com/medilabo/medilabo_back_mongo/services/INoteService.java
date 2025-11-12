@@ -10,4 +10,7 @@ public interface INoteService {
 
     Note addNote(String patientId, String patientLastname, String note);
 
+    void deleteNote(String id);
+
+      Note updateNote(String id, String note);
 }

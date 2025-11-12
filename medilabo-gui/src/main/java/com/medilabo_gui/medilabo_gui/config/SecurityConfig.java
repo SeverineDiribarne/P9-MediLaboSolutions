@@ -23,7 +23,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/api/auth/login", "/").permitAll()
+            // Autoriser librement les ressources statiques pour éviter que le navigateur reçoive la page /login à la place (erreur MIME nosniff)
+            .requestMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
+            // Pages publiques
+            .requestMatchers("/login", "/api/auth/login", "/").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

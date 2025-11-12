@@ -49,3 +49,7 @@ spring:
           uri: https://localhost:8083
           predicates:
             - Path=/api/notes/**
+        - id: risk-diabetes
+          uri: https://localhost:8084
+          predicates:
+            - Path=/api/risk/**

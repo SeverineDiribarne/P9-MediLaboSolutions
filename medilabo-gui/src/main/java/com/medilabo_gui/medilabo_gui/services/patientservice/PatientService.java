@@ -22,13 +22,20 @@ public class PatientService implements IPatientService {
         this.restTemplate = restTemplate;
     }
 
+     private static final String GATEWAY_BASE_URL = "https://localhost:8090"; // Gateway
+
+      private HttpHeaders buildHeaders(String jwtToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(java.util.List.of(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", "Bearer " + jwtToken);
+        return headers;
+    }
+     
     @Override
     public ResponseEntity<List<Patient>> getPatientList(String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/list";
-
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
+        String gatewayUrl = GATEWAY_BASE_URL + "/api/patient/list";
+        HttpHeaders headersRequest = buildHeaders(jwtToken);
+        
         HttpEntity<String> entity = new HttpEntity<>(headersRequest);
 
         return restTemplate.exchange(
@@ -41,12 +48,9 @@ public class PatientService implements IPatientService {
 
     @Override
     public ResponseEntity<Patient> addPatient(Patient patient, String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/addpatient";
+        String gatewayUrl = GATEWAY_BASE_URL + "/api/patient/addpatient";
+         HttpHeaders headers = buildHeaders(jwtToken);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + jwtToken);
         HttpEntity<Patient> entity = new HttpEntity<>(patient, headers);
 
         return restTemplate.exchange(
@@ -58,12 +62,10 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public ResponseEntity<Patient> getPatientDetails(long id, String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/details/" + id;
+    public ResponseEntity<Patient> getPatientDetails(String id, String jwtToken) {
+        String gatewayUrl = GATEWAY_BASE_URL + "/api/patient/details/" + id;
+        HttpHeaders headersRequest = buildHeaders(jwtToken);
 
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
         HttpEntity<String> entity = new HttpEntity<>(headersRequest);
 
         return restTemplate.exchange(
@@ -76,10 +78,9 @@ public class PatientService implements IPatientService {
 
     @Override
     public ResponseEntity<Patient> getPatientToUpdateById(String patientId, String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/update/" + patientId;
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
+        String gatewayUrl = GATEWAY_BASE_URL + "/api/patient/details/" + patientId;
+        HttpHeaders headersRequest = buildHeaders(jwtToken);
+
         HttpEntity<String> entity = new HttpEntity<>(headersRequest);
 
         return restTemplate.exchange(
@@ -88,5 +89,21 @@ public class PatientService implements IPatientService {
                 entity,
                 new ParameterizedTypeReference<Patient>() {
                 });
+    }
+
+    @Override
+    public ResponseEntity<Patient> updatePatient(String patientId, Patient patient, String jwtToken) {
+    String gatewayUrl = GATEWAY_BASE_URL + "/api/patient/update/" + patientId;
+     HttpHeaders headers = buildHeaders(jwtToken);
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    
+    HttpEntity<Patient> entity = new HttpEntity<>(patient, headers);
+
+    return restTemplate.exchange(
+        gatewayUrl,
+        HttpMethod.POST,
+        entity,
+        new ParameterizedTypeReference<Patient>() {
+        });
     }
 }

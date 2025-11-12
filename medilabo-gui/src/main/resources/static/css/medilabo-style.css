@@ -1,3 +1,60 @@
+/* ========= medilabo-style.css =========
+  Table des sections (rechercher les tags entre crochets):
+  - [BANNER] Bandeau/Logo
+  - [BUTTONS] Boutons génériques
+  - [PAGE-LOGIN] Styles spécifiques page Login
+  - [PAGE-LISTE] Styles page Liste des patients
+  - [PAGE-DETAILS] Styles page Détails patient
+  - [PAGE-FORMULAIRES] Styles pages Ajouter/Modifier
+  - [COMPONENT-RISK] Indicateurs visuels du niveau de risque
+======================================= */
+/* [BUTTONS] Boutons de formulaires (sans contrainte de largeur) */
+.btn-form {
+  border-radius: 10px;
+  font-weight: 600;
+  /* pas de padding personnalisé pour conserver la taille d'origine Bootstrap */
+  box-shadow: 0 1px 4px rgba(59, 89, 152, 0.07);
+  text-align: center;
+}
+.btn-form-outline {
+  background: #fff;
+  color: #3b8dbc;
+  border: 2px solid #3b8dbc;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-form-outline:hover {
+  background: #25648f; /* même survol que 'Ajouter un patient' */
+  color: #fff;
+  border-color: #25648f;
+}
+.btn-form-solid {
+  background: #3b8dbc;
+  color: #fff;
+  border: 2px solid #3b8dbc;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-form-solid:hover {
+  background: #fff; /* survol clair, même contraste que 'Modifier' */
+  color: #25648f;
+  border-color: #25648f;
+}
+/* Boutons qui se partagent la largeur (50/50) avec hauteur ~30px */
+.btn-split {
+  flex: 1 1 0;
+  height: 36px !important; /* force la hauteur désirée */
+  min-height: 36px !important;
+  box-sizing: border-box;
+  padding: 0 0.75rem !important; /* supprime tout padding vertical Bootstrap */
+  display: inline-flex !important; /* priorité sur .btn */
+  align-items: center;
+  justify-content: center;
+  line-height: 1 !important; /* évite que la line-height augmente la hauteur */
+}
+/* Taille fixe utilisée historiquement pour les boutons de formulaires */
+.btn-form-fixed {
+  min-width: 120px;
+  text-align: center;
+}
 /* Supprimer le soulignement de tous les boutons */
 a.btn,
 a.btn-login,
@@ -8,30 +65,24 @@ a.btn-danger,
   text-decoration: none !important;
 }
 
-/* Palette adaptée au logo :
+/* [BANNER] Palette adaptée au logo :
    Rouge principal : #d9412e
    Blanc : #fff
    Bleu clair fond : #e0f2fa, #f8fafc
    Gris bleu clair : #e0e7ef
 */
 .top-banner {
-  width: 100vw;
-  min-width: 700px;
-  background: linear-gradient(
-    90deg,
-    #25648f 0%,
-    #3b8dbc 55%,
-    #6ec1e4 80%,
-    #e0f2fa 100%
-  );
+  width: 100%;
+  background: #266591;
   box-shadow: 0 2px 12px rgba(59, 139, 188, 0.08);
   padding: 0;
   margin: 0;
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   z-index: 1000;
-  height: 70px;
+  height: 90px;
   display: flex;
   align-items: center;
 }
@@ -42,17 +93,17 @@ a.btn-danger,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 70px;
+  height: 90px;
   padding: 0 3vw;
 }
 .logo-placeholder,
 .logo-img {
   display: flex;
-  align-items: center;
-  height: 54px;
+  align-items: flex-end; /* ancre le logo un peu vers le bas du bandeau */
+  height: 64px; /* +10px pour agrandir légèrement */
 }
 .logo-img img {
-  height: 54px;
+  height: 64px; /* +10px pour agrandir légèrement */
   width: auto;
   object-fit: contain;
   background: transparent;
@@ -70,27 +121,53 @@ a.btn-danger,
   margin-left: 18px;
 }
 .logout-btn:hover {
-  background: #25648f;
+  background: #E3F3FA; /* nouvelle couleur de survol demandée */
+  color: #266591 !important; /* texte = bleu de fond du mode non-survol du bandeau */
 }
 
-body {
+/* Couleur du texte par défaut des boutons dans le bandeau */
+.top-banner .btn,
+.top-banner a.btn,
+.top-banner .btn-login,
+.top-banner .btn-danger,
+.top-banner .logout-btn {
+  color: #E3F3FA !important; /* écriture en #E3F3FA en mode non-survol */
+}
+
+/* Survol unifié des boutons dans le bandeau */
+.top-banner .btn:hover,
+.top-banner a.btn:hover,
+.top-banner .btn-login:hover,
+.top-banner .btn-danger:hover,
+.top-banner .logout-btn:hover {
+  background: #E3F3FA; /* fond en #E3F3FA au survol */
+  color: #266591 !important; /* texte = bleu de fond non-survol du bandeau (#266591) */
+}
+
+/* [PAGE-LISTE] Mise en page générique des pages applicatives (liste et autres) */
+body:not(.login-page) {
   font-family: "Roboto", Arial, sans-serif;
-  background: linear-gradient(120deg, #e0f2fa 0%, #f8fafc 100%);
+  background: #e3f3fa; /* harmonise le fond des pages applicatives */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 70px; /* espace pour le bandeau fixe */
+  padding-top: 90px; /* espace pour le bandeau fixe (hauteur bandeau) */
 }
-.login-container {
+/* [PAGE-LOGIN] Carte principale du login */
+/* [PAGE-LOGIN] Conteneur visuel limitant la largeur globale (spécificité augmentée) */
+body.login-page .login-container {
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.09);
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
-  max-width: 400px;
-  width: 100%;
+  padding: 2rem 2.2rem 1.6rem 2.2rem;
+  width: clamp(320px, 60vw, 420px); /* réduit pour éviter impression plein écran */
+  margin: 0 auto;
+  border: 2px solid #3b8dbc;
 }
+/* Classe helper temporaire pour forcer encore plus étroit (peut être retirée après validation visuelle) */
+.login-frame-narrow { width: clamp(320px, 50vw, 400px) !important; }
 /* Titres principaux */
 h2 {
   font-weight: 700;
@@ -104,19 +181,32 @@ h2 {
   font-size: 1.1em;
   margin-bottom: 1.2rem;
   border: 1px solid #dbeafe;
-  background: #f4f8fb;
-  .form-control {
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    font-size: 1.1em;
-    margin-bottom: 1.2rem;
-    border: 1px solid #dbeafe;
-    background: #f4f8fb;
-    border-color: #d9412e;
-    box-shadow: 0 0 0 0.2rem rgba(217, 65, 46, 0.08);
-  }
-  border-color: #d9412e;
-  box-shadow: 0 0 0 0.2rem rgba(217, 65, 46, 0.08);
+  background: #ffffff; /* fond blanc (suppression du léger bleu) */
+  /* neutralise les teintes rouges par défaut */
+  border-color: #dbeafe;
+  box-shadow: none;
+}
+.login-page .form-control,
+.login-page .btn-login {
+  width: clamp(280px, 85vw, 320px); /* largeur cible ~320px responsive */
+  margin-left: auto;
+  margin-right: auto;
+}
+.login-page .btn-login { max-width: 320px; display:block; margin-top: 0.6rem; }
+
+/* Focus doux générique (hors page add qui a son override) */
+.form-control:focus {
+  border-color: #3b8dbc;
+  box-shadow: 0 0 0 0.15rem rgba(59, 141, 188, 0.08);
+  outline: none;
+}
+
+/* [PAGE-FORMULAIRES] Spécifique à la page d'ajout: supprime toute lueur rouge et garde le bleu doux */
+.add-page .form-control,
+.add-page .form-control:focus {
+  border-color: #3b8dbc !important;
+  box-shadow: none !important;
+  outline: none;
 }
 /* Boutons principaux */
 .btn-login {
@@ -133,6 +223,45 @@ h2 {
 .btn-login:hover {
   background: #25648f;
 }
+
+/* Boutons harmonisés pour la liste (Détails / Modifier) */
+.btn-med {
+  /* [PAGE-LISTE] Boutons harmonisés pour la liste (Détails / Modifier) */
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.55rem 1.5rem; /* restaurer la hauteur précédente */
+  box-shadow: 0 1px 4px rgba(59, 89, 152, 0.07);
+  min-width: 100px; /* restaurer largeur fixe précédente */
+  max-width: 100px;
+  width: 100px;
+  text-align: center;
+}
+/* Détails: blanc par défaut, survol bleu (même hover que \"Ajouter un patient\") */
+.btn-med-outline {
+  /* [PAGE-LISTE] Détails: blanc par défaut, survol bleu (même hover que "Ajouter un patient") */
+  background: #fff;
+  color: #3b8dbc;
+  border: 2px solid #3b8dbc;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-med-outline:hover {
+  background: #25648f; /* même survol que le bouton 'Ajouter un patient' */
+  color: #fff;
+  border-color: #25648f;
+}
+/* Modifier: bleu par défaut, survol blanc (comme avant) */
+.btn-med-solid {
+  /* [PAGE-LISTE] Modifier: bleu par défaut, survol blanc (comme avant) */
+  background: #3b8dbc;
+  color: #fff;
+  border: 2px solid #3b8dbc;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-med-solid:hover {
+  background: #fff; /* ne change que le contour et le texte */
+  color: #25648f;   /* texte en #25648f */
+  border-color: #25648f; /* contour en #25648f */
+}
 .alert-danger {
   margin-top: 1rem;
   border-radius: 10px;
@@ -146,4 +275,281 @@ h2 {
 .login-icon i {
   font-size: 3rem;
   color: #d9412e;
+}
+
+/* [COMPONENT-RISK] =====================
+  Couleurs du niveau de risque diabète
+   NONE -> vert doux
+   BORDERLINE -> orange clair
+   IN_DANGER -> orange foncé
+   EARLY_ONSET -> rouge
+   ===================== */
+.risk-level-box {
+  min-height: 3.2rem;
+  border-radius: 10px;
+  border: 1px dashed #cfdbe6;
+  background: #f9fbfd; /* valeur par défaut (sera surchargée par classes spécifiques) */
+  padding: 0.7rem 1rem;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: .4px;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.risk-none { color: #1b7d2b; background: rgba(27,125,43,0.10); }
+.risk-borderline { color: #d38400; background: rgba(211,132,0,0.12); }
+.risk-in-danger { color: #c75a00; background: rgba(199,90,0,0.14); }
+.risk-early-onset { color: #d53829; background: rgba(213,56,41,0.15); }
+.risk-undetermined { color: #25648f; background: rgba(37,100,143,0.12); }
+
+/* ====== Extensions pour externaliser les styles inline des templates ====== */
+/* [PAGE-LOGIN] Page login: overrides (layout, cadre formulaire, titres) */
+body.login-page {
+  font-family: "Roboto", Arial, sans-serif;
+  background: linear-gradient(120deg, #e0e7ef 0%, #f8fafc 100%);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0; /* aucun décalage */
+}
+.login-page .top-banner { position: relative; }
+.login-main { min-height: calc(100vh - 90px); display: flex; align-items: center; justify-content: center; padding: 2rem 0 3rem; }
+.login-welcome { font-size: 1.8rem; font-weight:600; color:#25648f; text-align:center; margin:0 0 0.75rem; letter-spacing:.5px; }
+.login-brand { font-size: 1.1rem; font-weight:500; color:#3b5998; text-align:center; margin:-0.3rem 0 1.1rem; letter-spacing:.4px; }
+/* [PAGE-LOGIN] Formulaire sans second cadre (on réduit l'étirement horizontal) */
+.login-page .login-container form {
+  background: transparent; /* enlever le fond légèrement bleu derrière Connexion/inputs/bouton */
+  padding: 0.4rem 0 0.2rem;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+.login-page .login-container form h2 { margin-top: 0; margin-bottom: 1.2rem; }
+/* Affinage du titre quand il est dans le cadre */
+.login-page .login-container form h2 { margin-top: 0; margin-bottom: 1.4rem; }
+.login-page .alert-danger { width: clamp(280px, 85vw, 320px); margin: 1rem auto 0; }
+.login-container { margin: 0 auto; display:block; }
+body.login-page h2 { color: #3b5998; font-size: 1.2rem; }
+
+/* --- Responsive: mobiles et très petits écrans --- */
+/* [PAGE-LOGIN] Responsive mobile */
+@media (max-width: 480px) {
+  .top-banner, .banner-content { height: 66px; }
+  .banner-content { padding: 0 4vw; }
+  .logo-frame { width: 90px; height: 66px; top: 8px; border-width: 5px; }
+  .logo-frame img { height: 100%; }
+  .login-main { min-height: calc(100vh - 66px); padding: 1rem 0 2rem; }
+  .login-container { padding: 1.3rem 1.2rem 1rem; border-radius: 16px; width: clamp(300px, 88vw, 360px); }
+  .login-welcome { font-size: 1.5rem; margin-bottom: 0.6rem; }
+  body.login-page h2 { font-size: 1.05rem; }
+  .login-page .login-container form { padding: 0.3rem 0 0.2rem; max-width: 320px; }
+  .form-control { font-size: 1rem; margin-bottom: 0.9rem; }
+  .btn-login { padding: 0.65rem; font-size: 1rem; }
+}
+
+/* Plage intermédiaire: masquer la 3e colonne (date) pour 481px à 582px pour libérer l'espace des boutons */
+@media (min-width: 481px) and (max-width: 582px) {
+  .table-card thead tr th:nth-child(3),
+  .table-card tbody tr td:nth-child(3),
+  .table-card th.col-date,
+  .table-card td.col-date { display: none !important; }
+}
+@media (max-width: 360px) {
+  body.login-page h2 { font-size: 1rem; }
+  .login-page .form-control,
+  .login-page .btn-login { width: min(92vw, 320px); }
+  .login-page .alert-danger { width: min(92vw, 320px); }
+}
+
+/* Cadre stylisé du logo et actions du bandeau */
+.logo-frame { border: 6px solid #25648f; border-radius: 18px; padding: 0; background: #e0f2fa; box-shadow: 0 2px 8px rgba(37, 100, 143, 0.07); width: 120px; height: 88px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; top: 18px; }
+.logo-frame img { width: auto; height: 100%; object-fit: contain; border-radius: 0; display: block; margin: 0; }
+.banner-actions { display: flex; align-items: center; margin-left: auto; }
+.banner-actions .logout-btn { margin-left: 0; }
+
+/* [PAGE-LISTE] Boutons spécifiques (Ajouter un patient) */
+.btn-add { max-width: 260px; font-size: 1.15rem; padding: 0.9rem 2.2rem; border-radius: 14px; box-shadow: 0 2px 8px rgba(59, 89, 152, 0.1); }
+.retour-btn { min-width: 200px; max-width: 200px; margin-right: 5px; text-align: center; }
+
+/* [PAGE-LISTE] Containers principaux de la liste */
+.container-main { width: 80vw; max-width: 1800px; min-width: 700px; margin: 80px auto 0 auto; }
+.heading-blue { margin: 0; color: #3b5998; font-weight: 700; font-size: 2.2rem; letter-spacing: 1px; }
+/* Header de la liste (remplace le style inline) */
+.list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; gap: 12px; }
+
+/* [PAGE-LISTE] Tableau principal de la liste */
+.table-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 24px rgba(59, 89, 152, 0.1); width: 100%; min-width: 700px; font-size: 1.13rem; }
+.table-card thead { background: #25648f; color: #fff; }
+.table-card th { padding: 10px 12px; font-size: 1.05em; }
+.table-card td { padding: 8px 12px; }
+.col-date { width: 260px; }
+.col-actions { width: 360px; text-align: center; }
+.actions-flex { display: flex; justify-content: center; align-items: center; gap: 10px; }
+.row-even { background:#e6f2fb; border-bottom:1px solid #e3eef7; }
+.row-odd { background:#ffffff; border-bottom:1px solid #e3eef7; }
+
+/* [PAGE-FORMULAIRES] Cartes & formulaires Add/Update */
+
+/* [PAGE-FORMULAIRES] Cartes & formulaires Add/Update */
+.form-card-wide { max-width: 2200px; margin: 40px auto 32px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(59, 89, 152, 0.1); padding: 2.5rem 10vw; }
+.form-vertical { display: flex; flex-direction: column; gap: 1.2rem; width: 100%; max-width: 1200px; margin: 0 auto; }
+.form-row { display: flex; align-items: center; gap: 24px; margin-bottom: 0.1rem; }
+.label-main-180 { font-weight: 600; color: #25648f; text-align: left; min-width: 180px; }
+.label-main-140 { font-weight: 600; color: #25648f; text-align: left; min-width: 140px; }
+.radio-group { display: flex; gap: 18px; }
+.label-spacer-180 { min-width: 180px; }
+.label-spacer-140 { min-width: 140px; }
+.actions-row { display: flex; align-items: center; gap: 24px; margin-top: 1.5rem; }
+.actions-form-wide { flex: 1; min-width: 350px; max-width: 1000px; display: flex; gap: 12px; }
+.actions-form-narrow { width: 340px; display: flex; }
+.input-flex { flex: 1; min-width: 350px; max-width: 1000px; }
+.input-340 { width: 340px; }
+.error-text { color: red; }
+/* [/PAGE-FORMULAIRES] */
+
+/* [PAGE-DETAILS] Page détails patient */
+.details-container { background: #fff; border-radius: 22px; box-shadow: 0 6px 30px rgba(59,89,152,0.12); padding: 3rem 2.8rem; display: flex; gap: 1.6rem; align-items: flex-start; flex-wrap: nowrap; width: calc(420px + 2.8rem + 700px); min-width: 0; max-width: 100vw; margin: 0 auto; }
+.identity-card { display: flex; flex-direction: column; gap: 1rem; min-width: 320px; max-width: 420px; flex: 0 0 420px; background: #F8FAFC; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,89,152,0.06); padding: 1.5rem 1.2rem; margin-right: 0.6rem; }
+.section-title { color: #3b5998; font-weight: 600; margin-bottom: 0.6rem; text-align: center; }
+.notes-panel { background: #f8fafc; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,89,152,0.10); padding: 1.5rem 1.2rem; margin: 0 5em 28px 0.6rem; width: calc(100% - 0.6rem - 5em); box-sizing: border-box; }
+.notes-list { display: flex; flex-direction: column; gap: 1.1rem; }
+.note-item { background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(59,89,152,0.10); padding: 1.2rem 1.3rem 1.3rem 1.3rem; border-left: 6px solid #3b5998; display: flex; flex-direction: column; gap: 12px; }
+.note-textarea { width: 92%; min-width: 320px; max-width: 860px; min-height: 90px; max-height: 340px; resize: vertical; border: 1.8px solid #3b8dbc; border-radius: 8px; background: #f4f8fb; color: #1f2d3a; padding: 0.68em 0.9em; font-size: 1.18em; line-height: 1.38; margin: 0 2% 0 2%; }
+.note-actions { display: flex; gap: 12px; }
+.btn-note { padding: 0.45rem 1.25rem; font-size: 0.98em; border-radius: 8px; background: #b3e0ff; color: #25648f; border: 1.5px solid #7cc0e4; font-weight: 600; letter-spacing: .3px; transition: background 0.18s, transform 0.15s; }
+.btn-note:hover { background: #7cc0e4; }
+.btn-note:active { transform: scale(0.96); }
+.notes-add-panel { background: #f4f8fb; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,139,188,0.10); padding: 1.4rem 1.6rem 1.4rem 1.6rem; border: 1.5px solid #3b8dbc; width: calc(100% - 0.6rem - 2.5em); margin: 0.8rem 2.5em 0 0.6rem; box-sizing: border-box; }
+.note-textarea-add { width: 92%; min-width: 320px; max-width: 860px; height: 6.2em; resize: none; background: #f4f8fb; border: 1.5px solid #3b8dbc; color: #2c3e50; margin-bottom: 0.7rem; display: block; margin-left: auto; margin-right: auto; font-size: 1.18em; line-height: 1.38; padding: 0.68em 0.9em; }
+
+/* --- Responsive global (hors login déjà géré) --- */
+@media (max-width: 992px) {
+  /* Liste: contenants plus fluides, sans modifier le rendu desktop */
+  .container-main { width: 90vw; min-width: 0; }
+  .table-card { min-width: 0; }
+  .col-actions { width: auto; }
+  .actions-flex { flex-wrap: wrap; gap: 8px; }
+}
+
+@media (max-width: 768px) {
+  /* Liste */
+  .container-main { width: 92vw; margin-top: 60px; }
+  .table-card { display: block; overflow-x: auto; }
+  .heading-blue { font-size: 1.8rem; }
+  .btn-med { min-width: 90px; max-width: 90px; padding: 0.5rem 1.1rem; }
+
+  /* Détails patient: passer en colonne */
+  .details-container { width: 92vw; padding: 2rem 1.4rem; flex-wrap: wrap; }
+  .identity-card { flex: 1 1 100%; max-width: 100%; margin-right: 0; }
+  .notes-panel { width: 100%; margin: 1rem 0; }
+  .note-textarea, .note-textarea-add { width: 100%; min-width: 0; max-width: 100%; margin: 0; }
+  .notes-add-panel { width: 100%; margin: 1rem 0 0 0; }
+
+  /* Formulaires Add/Update */
+  .form-card-wide { margin: 28px auto 24px; padding: 1.6rem 6vw; }
+  .form-vertical { max-width: 100%; }
+  .form-row { flex-direction: column; align-items: stretch; gap: 8px; }
+  .label-main-180, .label-main-140, .label-spacer-180, .label-spacer-140 { min-width: 0; }
+  .input-flex, .actions-form-wide { min-width: 0; max-width: 100%; width: 100%; }
+  .actions-form-narrow { width: 100%; }
+  .retour-btn { min-width: 160px; }
+}
+
+@media (max-width: 480px) {
+  /* Liste: marges et titres adaptés au mobile */
+  .container-main { width: 94vw; margin-top: 48px; }
+  .heading-blue { font-size: 1.6rem; }
+  .table-card th { padding: 8px 10px; font-size: 1rem; }
+  .table-card td { padding: 6px 10px; }
+  .actions-flex { gap: 6px; }
+  /* Masquer la colonne Date de naissance (associée à .col-date dans le tableau) */
+  .table-card .col-date,
+  .table-card td.col-date { display: none; }
+  /* Et, par sécurité si les <td> n'ont pas de classe, masquer la 3e colonne par position */
+  .table-card thead th:nth-child(3),
+  .table-card tbody td:nth-child(3) { display: none; }
+
+  /* Détails */
+  .details-container { padding: 1.4rem 1rem; }
+  .note-item { padding: 1rem 1rem 1.1rem 1rem; }
+
+  /* Formulaires */
+  .form-card-wide { padding: 1.2rem 4vw; }
+}
+
+/* Ultra-petits écrans: 240px à 375px
+   - Bandeau plus haut avec logo centré et bouton Déconnexion centré en dessous
+   - Titre centré sous le bandeau
+   - Bouton "Ajouter un patient" en pleine largeur alignée sur le tableau
+   - Tableau: polices et boutons plus petits, actions empilées pour visibilité complète
+*/
+@media (min-width: 240px) and (max-width: 375px) {
+  /* Bandeau empilé */
+  .top-banner { height: auto; padding: 8px 0 10px; }
+  .banner-content { height: auto; padding: 8px 4vw 10px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .logo-frame { width: 96px; height: 64px; top: 0; }
+  .logo-frame img { height: 100%; }
+  .logout-btn { display: inline-block; margin: 6px auto 0 auto; padding: 0.55rem 1.2rem; width: clamp(140px, 70vw, 240px); font-size: 1rem; text-align: center; }
+  /* Décaler le contenu sous un bandeau plus haut */
+  body:not(.login-page) { padding-top: 140px; }
+
+  /* En-tête de la liste en colonne */
+  .list-header { flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+  .heading-blue { width: 100%; text-align: center; font-size: 1.35rem; }
+  .btn-add { display: block; width: 100%; max-width: 100%; text-align: center; padding: 0.75rem 1rem; font-size: 1rem; }
+
+  /* Tableau plus compact, actions empilées */
+  .table-card { font-size: 0.96rem; }
+  .table-card th { font-size: 0.92rem; padding: 6px 8px; }
+  .table-card td { font-size: 0.92rem; padding: 6px 8px; }
+  .actions-flex { flex-direction: column; align-items: stretch; gap: 6px; }
+  .btn-med { min-width: 0; max-width: none; width: 100%; padding: 0.5rem 0.8rem; font-size: 0.96rem; }
+}
+
+/* Ultra-ultra-petits écrans: ≤240px
+   Objectif: tout faire tenir sans scroll horizontal
+   - Masquer la colonne 2 (Prénom) en plus de la date déjà masquée
+   - Réduire polices et paddings
+   - Forcer la table à casser les mots et à fixer sa mise en page
+*/
+@media (max-width: 240px) {
+  /* Contenant principal plus resserré */
+  .container-main { width: 96vw; margin-top: 40px; }
+
+  /* Titre et bouton d'ajout adaptés */
+  .heading-blue { font-size: 1.1rem; }
+  .btn-add { font-size: 0.95rem; padding: 0.6rem 0.8rem; }
+
+  /* Tableau ultra-compact tout en gardant la colonne Prénom visible
+     - table-layout fixed pour contrôler les largeurs
+     - réduire police et padding
+     - utiliser ellipsis pour Nom/Prénom si long
+     - définir largeurs relatives pour distribuer l'espace (Nom + Prénom + Actions)
+  */
+  .table-card { font-size: 0.78rem; table-layout: fixed; }
+  .table-card th, .table-card td { font-size: 0.78rem; padding: 3px 5px; }
+
+  /* Forcer Nom et Prénom à tronquer proprement et rester sur une ligne */
+  .table-card thead th:nth-child(1),
+  .table-card thead th:nth-child(2),
+  .table-card tbody td:nth-child(1),
+  .table-card tbody td:nth-child(2) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Distribuer l'espace entre Nom / Prénom / Actions */
+  .table-card thead th:nth-child(1) { width: 36%; }
+  .table-card thead th:nth-child(2) { width: 34%; }
+  /* Date déjà masquée sur petits écrans; Actions prend le reste */
+  .col-actions { width: 30%; }
+
+  /* Actions: essayer d'afficher les boutons sur une seule ligne si possible, sinon wrap propre */
+  .actions-flex { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
+  .btn-med { min-width: 64px; max-width: 88px; width: auto; padding: 4px 6px; font-size: 0.78rem; }
 }

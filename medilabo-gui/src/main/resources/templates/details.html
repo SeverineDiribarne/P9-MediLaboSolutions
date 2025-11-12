@@ -10,79 +10,117 @@
   <!-- Bandeau supérieur -->
   <div class="top-banner">
     <div class="banner-content">
-      <div class="logo-img" style="border: 6px solid #25648f; border-radius: 18px; padding: 0; background: #e0f2fa; box-shadow: 0 2px 8px rgba(37,100,143,0.07); width: 90px; height: 68px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; top: 10px;">
-        <img src="/img/medilabo-logo.png" alt="MédiLabo Solutions" style="width: 80px; height: 56px; object-fit: cover; border-radius: 10px; display: block; margin: 0;" />
+      <div class="logo-img logo-frame">
+        <img src="/img/medilabo-logo.png" alt="MédiLabo Solutions" />
       </div>
-      <div style="display: flex; align-items: center; margin-left: auto;">
-        <a th:href="@{/api/patient/list}" class="btn btn-login retour-btn" style="min-width:200px;max-width:200px;margin-right:5px;text-align:center;">Retour à la liste</a>
-        <a th:href="@{/logout}" class="btn btn-danger logout-btn" style="margin-left:0;">Déconnexion</a>
+      <div class="banner-actions">
+        <a th:href="@{/api/patient/list}" class="btn btn-login retour-btn">Retour à la liste</a>
+        <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
       </div>
     </div>
   </div>
-  <div style="max-width: 1100px; margin: 40px auto 32px auto;">
+  <div style="max-width: 1800px; width: 100%; margin: 40px auto 32px auto; padding: 0 20px;">
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2.2rem; position: relative; width: 100%;">
-      <h2 style="color: #3b5998; font-weight: 700; font-size: 2.2rem; letter-spacing: 1px; margin: 0 auto; flex: 0 1 auto; text-align: center; width: 100%;">Détails du patient</h2>
+      <h2 class="heading-blue" style="margin: 0 auto; flex: 0 1 auto; text-align: center; width: 100%;">Détails du patient</h2>
       <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 200px; display: flex; justify-content: flex-end;">
 
       </div>
     </div>
-    <div style="background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(59,89,152,0.10); padding: 2.5rem 2rem; display: flex; gap: 40px; align-items: flex-start;">
-      <form style="display: flex; flex-direction: column; gap: 1.2rem; min-width: 320px; max-width: 420px; flex: 1 1 420px;">
-        <div style="display: flex; align-items: center; gap: 18px;">
-          <label style="font-weight: 600; color: #3b5998; min-width: 140px; text-align: left;">Prénom</label>
-          <input type="text" class="form-control" th:value="${patient.firstname}" readonly style="width: 340px; border: 1.5px solid #3b8dbc; background: #f4f8fb; color: #2c3e50;" />
+  <div class="details-container">
+  <div class="identity-card">
+        <!-- Titre Identité du patient (même style que 'Notes du patient') -->
+  <h3 class="section-title">Identité du patient</h3>
+     
+     <!-- Bloc centré pour l'affichage du risque de diabète -->
+  <div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:1rem;margin-bottom:0.9rem;flex-wrap:nowrap;width:100%;">
+    <div style="flex:0 0 auto;font-weight:600;color:#25648f;font-size:1.05rem;letter-spacing:.5px;white-space:nowrap;">Risque de diabète :</div>
+    <div th:if="${diabetesMessage != null and diabetesMessage != ''}"
+      id="diabetesMessage"
+      th:text="${diabetesMessage}"
+      th:class="${'risk-level-box ' + (
+          diabetesMessage.equalsIgnoreCase('NONE') ? 'risk-none' :
+          (diabetesMessage.equalsIgnoreCase('BORDERLINE') ? 'risk-borderline' :
+          (diabetesMessage.equalsIgnoreCase('IN_DANGER') ? 'risk-in-danger' :
+          (diabetesMessage.equalsIgnoreCase('EARLY_ONSET') ? 'risk-early-onset' : 'risk-undetermined'))))}"
+      style="flex:1 1 auto;min-width:0;"></div>
+    <div th:unless="${diabetesMessage != null and diabetesMessage != ''}"
+      id="diabetesMessage"
+      class="risk-level-box risk-undetermined"
+      style="flex:1 1 auto;min-width:0;">&nbsp;</div>
+  </div>
+
+        <form th:action="@{/api/patient/update/{id}(id=${patient.patientId})}" th:object="${patient}" method="post" class="form-vertical">
+        <input type="hidden" th:field="*{patientId}" />
+        <div class="form-row">
+          <label class="label-main-140">Prénom</label>
+          <input type="text" class="form-control input-340" th:field="*{firstname}" required />
         </div>
-        <div style="display: flex; align-items: center; gap: 18px;">
-          <label style="font-weight: 600; color: #3b5998; min-width: 140px; text-align: left;">Nom</label>
-          <input type="text" class="form-control" th:value="${patient.lastname}" readonly style="width: 340px; border: 1.5px solid #3b8dbc; background: #f4f8fb; color: #2c3e50;" />
+        <div class="form-row">
+          <label class="label-main-140">Nom</label>
+          <input type="text" class="form-control input-340" th:field="*{lastname}" required />
         </div>
-        <div style="display: flex; align-items: center; gap: 18px;">
-          <label style="font-weight: 600; color: #3b5998; min-width: 140px; text-align: left;">Date de naissance</label>
-          <input type="text" class="form-control" th:value="${patient.birthdate}" readonly style="width: 340px; border: 1.5px solid #3b8dbc; background: #f4f8fb; color: #2c3e50;" />
+        <div class="form-row">
+          <label class="label-main-140">Date de naissance</label>
+          <input type="text" class="form-control input-340" th:field="*{birthdate}" required />
         </div>
-        <div style="display: flex; align-items: center; gap: 18px;">
-          <label style="font-weight: 600; color: #3b5998; min-width: 140px; text-align: left;">Genre</label>
-          <input type="text" class="form-control" th:value="${patient.gender}" readonly style="width: 340px; border: 1.5px solid #3b8dbc; background: #f4f8fb; color: #2c3e50;" />
+        <div class="form-row">
+          <label class="label-main-140">Genre</label>
+          <input type="text" class="form-control input-340" th:field="*{gender}" required />
         </div>
-        <div style="display: flex; align-items: center; gap: 18px;">
-          <label style="font-weight: 600; color: #3b5998; min-width: 140px; text-align: left;">Adresse</label>
-          <input type="text" class="form-control" th:value="${patient.address}" readonly style="width: 340px; border: 1.5px solid #3b8dbc; background: #f4f8fb; color: #2c3e50;" />
+        <div class="form-row">
+          <label class="label-main-140">Adresse</label>
+          <input type="text" class="form-control input-340" th:field="*{address}" />
         </div>
-        <div style="display: flex; align-items: center; gap: 18px;">
-          <label style="font-weight: 600; color: #3b5998; min-width: 140px; text-align: left;">Téléphone</label>
-          <input type="text" class="form-control" th:value="${patient.phoneNumber}" readonly style="width: 340px; border: 1.5px solid #3b8dbc; background: #f4f8fb; color: #2c3e50;" />
+        <div class="form-row">
+          <label class="label-main-140">Téléphone</label>
+          <input type="text" class="form-control input-340" th:field="*{phoneNumber}" />
         </div>
-        <div style="margin-top: 1.5rem; display: flex; gap: 18px; align-items: center;">
-          <a th:href="@{/api/patient/update}"
-         class="btn btn-login"
-         style="background: #3b5998; color: #fff; border: 2px solid #3b5998; border-radius: 10px; font-weight: 600; padding: 0.55rem 1.5rem; transition: background 0.2s, color 0.2s; box-shadow: 0 1px 4px rgba(59,89,152,0.07); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; text-align: center; min-width: 120px;"
-         onmouseover="this.style.background='#fff';this.style.color='#3b5998'"
-         onmouseout="this.style.background='#3b5998';this.style.color='#fff'"
-       >Modifier</a>
-          <form method="post" th:action="@{/api/patient/save}" style="display: inline; margin: 0;">
-          </form>
+        <div class="actions-row">
+          <div class="label-spacer-140"></div>
+          <div class="actions-form-narrow">
+            <button type="submit" class="btn btn-form btn-form-solid btn-split" style="width: 100%;">Modifier</button>
+          </div>
         </div>
       </form>
+      </div>
     <!-- Bloc notes patient à droite (unique) -->
-    <div style="flex: 1 1 420px; min-width: 340px; max-width: 480px;">
-      <div style="background: #f8fafc; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,89,152,0.06); padding: 1.5rem 1.2rem; margin-bottom: 28px;">
-        <h3 style="color: #3b5998; font-weight: 600; margin-bottom: 1.2rem; text-align: center;">Notes du patient</h3>
+  <div style="flex: 0 0 700px; min-width: 420px; max-width: 700px; margin-left: 0.6rem;">
+  <div class="notes-panel">
+        <h3 class="section-title" style="margin-bottom: 1.2rem;">Notes du patient</h3>
         <div th:if="${#lists.isEmpty(notes)}" style="color: #888;">Aucune note enregistrée.</div>
-        <div th:if="${!#lists.isEmpty(notes)}" style="display: flex; flex-direction: column; gap: 1.1rem;">
-          <div th:each="note : ${notes}" style="background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(59,89,152,0.08); padding: 1.1rem 1.2rem; border-left: 5px solid #3b5998;">
-            <span th:text="${note.note}" style="font-size: 1.08em; color: #2c3e50;"></span>
+        <div th:if="${!#lists.isEmpty(notes)}" class="notes-list">
+          <div th:each="note,iter : ${notes}" class="note-item">
+            <!-- Formulaire d'édition (contient la zone de texte) -->
+            <form th:action="@{/api/patient/notes/edit/{noteId}(noteId=${note.id})}"
+                  th:attr="id=${'edit-form-' + note.id}"
+                  method="post"
+                  style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; margin: 0;">
+              <input type="hidden" name="patientId" th:value="${patient.patientId}" />
+              <textarea name="noteContent" class="note-textarea">[[${note.note}]]</textarea>
+            </form>
+            <!-- Zone d'actions côte à côte sans formulaires imbriqués -->
+            <div class="note-actions">
+              <button type="submit" class="btn btn-note" th:attr="form=${'edit-form-' + note.id}">Modifier</button>
+              <form th:action="@{/api/patient/notes/delete/{noteId}(noteId=${note.id})}" method="post" style="margin:0;">
+                <input type="hidden" name="patientId" th:value="${patient.patientId}" />
+                <button type="submit" class="btn btn-note">Supprimer</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-  <div style="background: #f4f8fb; border-radius: 14px; box-shadow: 0 2px 12px rgba(59,139,188,0.10); padding: 1.5rem 1.2rem; border: 1.5px solid #3b8dbc;">
-        <h3 style="color: #3b5998; font-weight: 600; margin-bottom: 1.2rem; text-align: center;">Ajouter une note</h3>
-        <form method="post" th:action="@{/api/notes}" th:object="${noteForm}" style="display: flex; flex-direction: column; gap: 1rem; min-height: 320px; justify-content: flex-start;">
+  <div class="notes-add-panel">
+        <h3 class="section-title" style="margin-bottom: 1.2rem;">Ajouter une note</h3>
+  <form method="post" th:action="@{/api/patient/notes}" th:object="${noteForm}" style="display: flex; flex-direction: column; gap: 1rem; justify-content: flex-start;">
+          <input type="hidden" th:field="*{patientId}" />
+          <input type="hidden" th:field="*{patientLastname}" />
             <input type="hidden" th:field="*{patientId}" />
             <input type="hidden" th:field="*{patientLastname}" />
-            <textarea th:field="*{note}" id="note" rows="10" cols="60" class="form-control" style="width: 340px; min-height: 140px; resize: vertical; background: #f4f8fb; border: 1.5px solid #3b8dbc; color: #2c3e50; margin-bottom: 0.7rem; display: block; margin-left: auto; margin-right: auto;"></textarea>
-            <button type="submit" class="btn btn-login" style="display: block; margin: 27px auto 0 auto; background: #3b5998; color: #fff; border: 2px solid #3b5998; border-radius: 10px; font-weight: 600; padding: 0.55rem 1.5rem; min-width: 120px;">Enregistrer</button>
+            <textarea th:field="*{note}" id="note" rows="5" cols="60" class="form-control note-textarea-add"></textarea>
+            <button type="submit" class="btn btn-form btn-form-solid btn-split" style="margin: 0.8rem auto 0.9rem auto; min-width: 220px;">Enregistrer</button>
             <div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" style="color:red"></div>
         </form>
+      </div>
       </div>
     </div>
   </div>

@@ -43,10 +43,10 @@ public class Patient {
     private Gender gender = Gender.M;
 
     @Column(name="address")
-    private String address = " ";
+    private String address = "";
 
     @Column(name="phoneNumber")
     @Size(max = 15)
-    private String phoneNumber =" ";
+    private String phoneNumber ="";
 
 }

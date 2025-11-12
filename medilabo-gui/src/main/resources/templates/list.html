@@ -6,178 +6,57 @@
 >
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Patient List</title>
-    <link href="/css/medilabo-style.css" rel="stylesheet" />
+    <link href="/css/medilabo-style.css?v=20241111" rel="stylesheet" />
   </head>
   <body>
     <!-- Bandeau supérieur -->
     <div class="top-banner">
       <div class="banner-content">
-        <div
-          class="logo-img"
-          style="
-            border: 6px solid #25648f;
-            border-radius: 18px;
-            padding: 0;
-            background: #e0f2fa;
-            box-shadow: 0 2px 8px rgba(37, 100, 143, 0.07);
-            width: 90px;
-            height: 68px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            top: 10px;
-          "
-        >
-          <img
-            src="/img/medilabo-logo.png"
-            alt="MédiLabo Solutions"
-            style="
-              width: 80px;
-              height: 56px;
-              object-fit: cover;
-              border-radius: 10px;
-              display: block;
-              margin: 0;
-            "
-          />
+        <div class="logo-img logo-frame">
+          <img src="/img/medilabo-logo.png" alt="MédiLabo Solutions" />
         </div>
         <a th:href="@{/logout}" class="btn btn-danger logout-btn"
           >Déconnexion</a
         >
       </div>
     </div>
-    <div
-      class="container"
-      style="
-        width: 80vw;
-        max-width: 1800px;
-        min-width: 700px;
-        margin: 40px auto 0 auto;
-      "
-    >
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 32px;
-        "
-      >
-        <h2
-          style="
-            margin: 0;
-            color: #3b5998;
-            font-weight: 700;
-            font-size: 2.2rem;
-            letter-spacing: 1px;
-          "
-        >
+    <div class="container container-main">
+      <div class="list-header">
+        <h2 class="heading-blue">
           Liste des patients
         </h2>
-        <a
-          href="/api/patient/add"
-          class="btn btn-login"
-          style="
-            max-width: 260px;
-            font-size: 1.15rem;
-            padding: 0.9rem 2.2rem;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(59, 89, 152, 0.1);
-          "
-          >+ Ajouter un patient</a
-        >
+        <a href="/api/patient/add" class="btn btn-login btn-add">+ Ajouter un patient</a>
       </div>
       <div class="table-responsive">
-        <table
-          class="table table-hover align-middle"
-          style="
-            background: #fff;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 4px 24px rgba(59, 89, 152, 0.1);
-            width: 100%;
-            min-width: 700px;
-            font-size: 1.13rem;
-          "
-        >
-          <thead
-            style="
-              background: linear-gradient(90deg, #e0e7ef 60%, #f8fafc 100%);
-            "
-          >
-            <tr style="color: #3b5998">
-              <th style="padding: 20px 18px; font-size: 1.1em">Nom</th>
-              <th style="padding: 20px 18px; font-size: 1.1em">Prénom</th>
-              <th
-                style="padding: 20px 18px; text-align: center; font-size: 1.1em"
-              >
+        <table class="table table-hover align-middle table-card">
+          <thead>
+            <tr style="color: #fff">
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th class="col-date">Date de naissance</th>
+              <th class="col-actions">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              th:each="patient : ${patients}"
-              style="border-bottom: 1px solid #f0f4fa"
-            >
-              <td th:text="${patient.lastname}" style="padding: 18px 18px"></td>
-              <td
-                th:text="${patient.firstname}"
-                style="padding: 18px 18px"
-              ></td>
-              <td style="text-align: center">
-                <div
-                  style="
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 10px;
-                  "
-                >
+            <tr th:each="patient,iterStat : ${patients}"
+              th:classappend="${iterStat.index % 2 == 0} ? 'row-even' : 'row-odd'">
+              <td th:text="${patient.lastname}"></td>
+              <td th:text="${patient.firstname}"></td>
+              <td class="col-date" th:text="${patient.birthdate}"></td>
+              <td>
+                <div class="actions-flex">
                   <a
                     th:href="@{/api/patient/details/{id}(id=${patient.patientId})}"
-                    class="btn btn-login"
-                    style="
-                      background: #fff;
-                      color: #3b5998;
-                      border: 2px solid #3b5998;
-                      border-radius: 10px;
-                      font-weight: 600;
-                      padding: 0.55rem 1.5rem;
-                      transition: background 0.2s, color 0.2s;
-                      box-shadow: 0 1px 4px rgba(59, 89, 152, 0.07);
-                      min-width: 100px;
-                      max-width: 100px;
-                      width: 100px;
-                      text-align: center;
-                    "
-                    onmouseover="this.style.background='#3b5998';this.style.color='#fff'"
-                    onmouseout="this.style.background='#fff';this.style.color='#3b5998'"
+                    class="btn btn-med btn-med-outline"
                     >Détails</a
                   >
                   <a
-                    th:href="@{/api/patient/update}"
-                    class="btn btn-login"
-                    style="
-                      background: #3b5998;
-                      color: #fff;
-                      border: 2px solid #3b5998;
-                      border-radius: 10px;
-                      font-weight: 600;
-                      padding: 0.55rem 1.5rem;
-                      transition: background 0.2s, color 0.2s;
-                      box-shadow: 0 1px 4px rgba(59, 89, 152, 0.07);
-                      font-size: 1.13rem;
-                      min-width: 100px;
-                      max-width: 100px;
-                      width: 100px;
-                      text-align: center;
-                    "
-                    onmouseover="this.style.background='#fff';this.style.color='#3b5998'"
-                    onmouseout="this.style.background='#3b5998';this.style.color='#fff'"
+                    th:href="@{/api/patient/update/{id}(id=${patient.patientId})}"
+                    class="btn btn-med btn-med-solid"
                     >Modifier</a
                   >
                 </div>

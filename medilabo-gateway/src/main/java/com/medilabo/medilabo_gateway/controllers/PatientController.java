@@ -17,10 +17,12 @@ import com.medilabo.medilabo_gateway.session.SessionStore;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/patient")
 public class PatientController {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
+    private static final String MEDILABO_BACK_BASE_URL = System.getenv().getOrDefault("BACK_URL", "https://medilabo-back:8082");
+    private static final String MEDILABO_BACK_MONGO_BASE_URL = System.getenv().getOrDefault("MONGO_URL", "https://medilabo-back-mongo:8083");
 
     @Autowired
     private RestTemplate restTemplate;
@@ -31,12 +33,17 @@ public class PatientController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @GetMapping("/patient/list")
-    public ResponseEntity<?> getUsers(@RequestHeader(value = "Authorization", required = false) String authorization) {
-        String apiUrl = "https://localhost:8082/api/patient/list";
+    private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("User-Name", "toto@gmail.com");
         headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        return headers;
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getUsers(@RequestHeader(value = "Authorization", required = false) String authorization) {
+        String apiUrl = MEDILABO_BACK_BASE_URL + "/api/patient/list";
+        HttpHeaders headers = getHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         try {
             ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
@@ -60,7 +67,7 @@ public class PatientController {
         }
     }
 
-    @PostMapping("/patient/addpatient")
+    @PostMapping("/addpatient")
     public ResponseEntity<?> addPatient(@RequestHeader(value = "Authorization", required = false) String authorization,
             @RequestBody PatientDTO patient) {
         // Normalisation du format de date avant enregistrement
@@ -85,10 +92,8 @@ public class PatientController {
                 patient.setPhoneNumber(normalizedPhone);
             }
         }
-        String apiUrl = "https://localhost:8082/api/patient/addpatient";
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("User-Name", "toto@gmail.com");
-        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        String apiUrl = MEDILABO_BACK_BASE_URL + "/api/patient/addpatient";
+        HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
         try {
@@ -107,13 +112,12 @@ public class PatientController {
         }
     }
 
-    @GetMapping("/patient/details/{id}")
+    
+    @GetMapping("/details/{id}")
     public ResponseEntity<?> getPatientById(
             @RequestHeader(value = "Authorization", required = false) String authorization, @PathVariable Long id) {
-        String apiUrlPatientDetails = "https://localhost:8082/api/patient/details/" + id;
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("User-Name", "toto@gmail.com");
-        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        String apiUrlPatientDetails = MEDILABO_BACK_BASE_URL + "/api/patient/details/" + id;
+        HttpHeaders headers = getHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         // partie pour medilabo-back
         try {
@@ -133,7 +137,7 @@ public class PatientController {
                 patient = new PatientDTO();
             }
             // partie pour medilabo-back-mongo
-            String apiUrlNote = "https://localhost:8083/api/notes/patient/" + id;
+            String apiUrlNote =  MEDILABO_BACK_MONGO_BASE_URL + "/api/notes/patient/" + id;
             ResponseEntity<List<NoteDTO>> responseNote = restTemplate.exchange(
                     apiUrlNote,
                     HttpMethod.GET,
@@ -159,7 +163,7 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing patient details");
         }
     }
-     @PostMapping("/patient/update/{id}")
+     @PostMapping("/update/{id}")
     public ResponseEntity<?> updatePatient(@RequestHeader(value = "Authorization", required = false) String authorization,
      @PathVariable Long id, @RequestBody PatientDTO patient) {
         // Normalisation du format de date avant enregistrement
@@ -184,10 +188,8 @@ public class PatientController {
                 patient.setPhoneNumber(normalizedPhone);
             }
         }
-        String apiUrl = "https://localhost:8082/api/patient/update/" + id;
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("User-Name", "toto@gmail.com");
-        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        String apiUrl = MEDILABO_BACK_BASE_URL + "/api/patient/update/" + id;
+        HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
         try {

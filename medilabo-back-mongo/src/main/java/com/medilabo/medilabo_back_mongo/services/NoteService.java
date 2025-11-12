@@ -18,7 +18,7 @@ public class NoteService implements INoteService {
 
     @Override
     public List<Note> getNotes(String patientId) {
-       List<Note> notes = noteRepository.findByPatientId(patientId);
+        List<Note> notes = noteRepository.findByPatientId(patientId);
         System.out.println("Notes récupérées : " + notes);
         return notes;
         // Retour statique temporaire (bypass repository)
@@ -46,4 +46,26 @@ public class NoteService implements INoteService {
         return noteRepository.save(newNote);
     }
 
+    @Override
+    public void deleteNote(String id) {
+        noteRepository.deleteById(id);
+    }
+
+    @Override
+    public Note updateNote(String id, String note) {
+        // Récupération de l'existant (exception si non trouvé)
+        Note existing = noteRepository.findById(id).orElseThrow();
+        // Validation simple (optionnelle) : ne pas accepter une note vide
+        if (note == null || note.trim().isEmpty()) {
+            return existing; // On retourne l'existant sans modification (ou lever une exception si souhaité)
+        }
+        // Reconstruction immuable via le constructeur AllArgs (id conservé pour update)
+        Note updated = new Note(
+                existing.getId(),
+                existing.getPatientId(),
+                existing.getPatientLastname(),
+                note.trim()
+        );
+        return noteRepository.save(updated);
+    }
 }

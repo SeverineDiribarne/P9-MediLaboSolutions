@@ -28,11 +28,11 @@ public class NoteController {
     @Autowired
     private INoteService noteService;
 
-    @PostMapping
+    @PostMapping("/add")
     public String addNote(UsernamePasswordAuthenticationToken authentication,
-                          @Valid @ModelAttribute("noteForm") NoteForm form,
-                          BindingResult result,
-                          Model model) {
+            @Valid @ModelAttribute("noteForm") NoteForm form,
+            BindingResult result,
+            Model model) {
         String jwtToken = (String) authentication.getDetails();
         if (jwtToken == null || jwtToken.isEmpty()) {
             model.addAttribute("users", Collections.emptyList());

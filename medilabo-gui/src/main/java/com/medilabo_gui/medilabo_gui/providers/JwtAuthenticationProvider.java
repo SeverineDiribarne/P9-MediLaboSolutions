@@ -35,7 +35,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private String gatewayUrl;
 
     // Valeur de repli au cas où la propriété ne serait pas chargée
-    public JwtAuthenticationProvider(@Value("${gateway.url:https://localhost:8090}") String gatewayUrl) {
+    public JwtAuthenticationProvider(@Value("${gateway.url:https://medilabo-gateway:8090}") String gatewayUrl) {
         this.gatewayUrl = gatewayUrl; // URL du service de validation du token
     }
 

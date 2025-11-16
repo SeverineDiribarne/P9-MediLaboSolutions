@@ -1,0 +1,11 @@
+com/medilabo/medilabo/session/SessionStoreTest.class
+com/medilabo/medilabo/controllers/UserControllerTest.class
+com/medilabo/medilabo/services/userService/UserServiceTest.class
+com/medilabo/medilabo/controllers/AuthenticationControllerTest.class
+com/medilabo/medilabo/MedilaboApplicationTests.class
+com/medilabo/medilabo/services/StringToSecretKeyConverter/StringToSecretKeyConverterTest.class
+com/medilabo/medilabo/controllers/PatientControllerTest.class
+com/medilabo/medilabo/services/customUserDetailsService/CustomUserDetailsServiceTest.class
+com/medilabo/medilabo/controllers/AuthenticationControllerTest$LoginReq.class
+com/medilabo/medilabo/services/jwt/JwtServiceTest.class
+com/medilabo/medilabo/services/patientService/PatientServiceTest.class

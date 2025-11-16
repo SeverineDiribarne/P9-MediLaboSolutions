@@ -45,7 +45,7 @@ public class Patient {
     @Column(name="address")
     private String address = "";
 
-    @Column(name="phoneNumber")
+    @Column(name="phone_number")
     @Size(max = 15)
     private String phoneNumber ="";
 

@@ -1,0 +1,29 @@
+-- Flyway V1: initial schema for User and Patient
+-- Adjust database/schema selection outside of this script if needed
+
+-- Table: user (quoted because user is a reserved keyword)
+-- CREATE TABLE IF NOT EXISTS `user` (
+--   `id` BIGINT NOT NULL AUTO_INCREMENT,
+--   `email` VARCHAR(255) NOT NULL,
+--   `password` VARCHAR(255) NOT NULL,
+--   `active_account` BOOLEAN NOT NULL,
+--   `locked_account` BOOLEAN NOT NULL,
+--   `credentials_non_expired` BOOLEAN NOT NULL,
+--   `enabled_account` BOOLEAN NOT NULL,
+--   -- Enum persisted as ordinal by default in JPA when @Enumerated is absent
+-- `authorities` TINYINT NOT NULL,
+--   PRIMARY KEY (`id`),
+--   UNIQUE KEY `uk_user_email` (`email`)
+-- ) ENGINE=InnoDB;
+
+-- -- Table: patient
+-- CREATE TABLE IF NOT EXISTS `patient` (
+--   `patient_id` BIGINT NOT NULL AUTO_INCREMENT,
+--   `lastname` VARCHAR(100) NOT NULL,
+--   `firstname` VARCHAR(100) NOT NULL,
+--   `birthdate` VARCHAR(255) NOT NULL,
+--   `gender` VARCHAR(10) NOT NULL,
+--   `address` VARCHAR(255),
+--   `phone_number` VARCHAR(15),
+--   PRIMARY KEY (`patient_id`)
+-- ) ENGINE=InnoDB;

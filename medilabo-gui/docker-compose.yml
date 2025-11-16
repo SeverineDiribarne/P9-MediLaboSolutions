@@ -1,0 +1,156 @@
+networks:
+  medilabo:
+    driver: bridge
+
+services:
+  medilabo-back:
+    build: ../medilabo-back
+    image: medilabo-back:latest
+    env_file:
+      - .env
+    environment:
+      - SERVER_SSL_ENABLED=true
+      - SERVER_PORT=8082
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_LOCATIONS=classpath:db/migration
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
+      - SERVER_SSL_KEY_STORE=classpath:keystore.p12
+      - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
+      - SERVER_SSL_KEY_STORE_TYPE=PKCS12
+      - SERVER_SSL_KEY_ALIAS=springboot
+      - DEBUG=true
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=DEBUG
+      - LOGGING_LEVEL_ORG_HIBERNATE_ORM_JDBC_BIND=TRACE
+      - LOGGING_LEVEL_ORG_FLYWAYDB=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./logs:/var/log/medilabo:rw
+    networks:
+      - medilabo
+    restart: unless-stopped
+
+  medilabo-back-mongo:
+    build: ../medilabo-back-mongo
+    image: medilabo-back-mongo:latest
+    environment:
+      - SERVER_SSL_ENABLED=true
+      - SERVER_PORT=8083
+      - SPRING_DATA_MONGODB_URI=${MONGODB_URI}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
+      - SERVER_SSL_KEY_STORE=classpath:keystore.p12
+      - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
+      - SERVER_SSL_KEY_STORE_TYPE=PKCS12
+      - SERVER_SSL_KEY_ALIAS=springboot
+      - DEBUG=true
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+    # no extra volumes needed for keystore in classpath
+    networks:
+      - medilabo
+    restart: unless-stopped
+
+  medilabo-back-risk:
+    build: ../medilabo-back-risk/medilabo-back-risk
+    image: medilabo-back-risk:latest
+    environment:
+      - SERVER_SSL_ENABLED=true
+      - SERVER_PORT=8084
+      - BACK_URL=https://medilabo-back:8082
+      - MONGO_URL=https://medilabo-back-mongo:8083
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
+      - SERVER_SSL_KEY_STORE=classpath:keystore.p12
+      - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
+      - SERVER_SSL_KEY_STORE_TYPE=PKCS12
+      - SERVER_SSL_KEY_ALIAS=springboot
+      - DEBUG=true
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+    # no extra volumes needed for keystore in classpath
+    depends_on:
+      - medilabo-back
+      - medilabo-back-mongo
+    networks:
+      - medilabo
+    restart: unless-stopped
+
+  medilabo-gateway:
+    build: ../medilabo-gateway
+    image: medilabo-gateway:latest
+    environment:
+      - SERVER_SSL_ENABLED=true
+      - SERVER_PORT=8090
+      - BACK_URL=https://medilabo-back:8082
+      - MONGO_URL=https://medilabo-back-mongo:8083
+      - RISK_URL=https://medilabo-back-risk:8084
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
+      - SERVER_SSL_KEY_STORE=classpath:keystore.p12
+      - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
+      - SERVER_SSL_KEY_STORE_TYPE=PKCS12
+      - SERVER_SSL_KEY_ALIAS=springboot
+      - DEBUG=true
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+    depends_on:
+      - medilabo-back
+      - medilabo-back-mongo
+      - medilabo-back-risk
+    volumes:
+      - ./logs:/var/log/medilabo:rw
+    networks:
+      - medilabo
+    restart: unless-stopped
+
+  medilabo-gui:
+    build: .
+    image: medilabo-gui:latest
+    environment:
+      - SERVER_SSL_ENABLED=true
+      - SERVER_PORT=8080
+      - GATEWAY_URL=https://medilabo-gateway:8090
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
+      - SERVER_SSL_KEY_STORE=classpath:keystore.p12
+      - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
+      - SERVER_SSL_KEY_STORE_TYPE=PKCS12
+      - SERVER_SSL_KEY_ALIAS=springboot
+      - DEBUG=true
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+    depends_on:
+      - medilabo-gateway
+    volumes:
+      - ./logs:/var/log/medilabo:rw
+    networks:
+      - medilabo
+    restart: unless-stopped
+    ports:
+      - "443:8080"
+
+
+  mysql:
+    image: mysql:8.0
+    container_name: medilabo-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - medilabo-db-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - medilabo
+    restart: unless-stopped
+
+volumes:
+  medilabo-db-data:

@@ -2,11 +2,10 @@ package com.medilabo_gui.medilabo_gui.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
 import lombok.*;
 
 /**
- * Form backing object pour créer une note.
+* Form backing object to create a note.
  */
 @Data
 @NoArgsConstructor

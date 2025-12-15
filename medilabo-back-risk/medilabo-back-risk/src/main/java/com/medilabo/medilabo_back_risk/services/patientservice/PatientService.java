@@ -13,14 +13,13 @@ public class PatientService implements IPatientService {
         if (value == null)
             return null;
         String genderValue = value.trim().toUpperCase(Locale.ROOT);
-        // prises en charge simples
         if ("M".equals(genderValue) || "MALE".equals(genderValue) || "HOMME".equals(genderValue))
             return Gender.M;
         if ("F".equals(genderValue) || "FEMALE".equals(genderValue) || "FEMME".equals(genderValue))
             return Gender.F;
         if ("X".equals(genderValue) || "OTHER".equals(genderValue) || "AUTRE".equals(genderValue))
             return Gender.X;
-        // fallback sécurisé
+        // securited fallback
         try {
             return Gender.valueOf(genderValue);
         } catch (IllegalArgumentException ex) {
@@ -31,7 +30,7 @@ public class PatientService implements IPatientService {
     @Override
     public PatientDTO processPatientDTOData(Map<String, Object> patient) {
         if (patient == null || patient.isEmpty()) {
-            // Données patient manquantes: lever une exception claire côté service
+            // Missing patient data: throw a clear exception on the service side
             throw new IllegalArgumentException("Les données du patient sont nulles ou vides (patient map)");
         }
         PatientDTO patientDTO = new PatientDTO();

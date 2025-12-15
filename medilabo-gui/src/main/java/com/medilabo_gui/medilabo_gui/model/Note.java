@@ -4,7 +4,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 /**
- * Représente une note médicale stockée dans MongoDB (service notes).
+* Represents a medical note stored in MongoDB (service notes).
  */
 @Data
 @NoArgsConstructor
@@ -13,8 +13,8 @@ import lombok.*;
 public class Note {
 
     @Id
-    private String id;          // identifiant Mongo (ObjectId sous forme String)
+    private String id;          
     private Long patientId; 
-    private String patientLastname;    // lien vers le patient
-    private String note;     // contenu de la note
+    private String patientLastname;   
+    private String note;     
 }

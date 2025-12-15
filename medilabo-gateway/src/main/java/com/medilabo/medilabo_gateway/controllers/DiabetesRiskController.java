@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@SuppressWarnings({"null"})
 @RequestMapping("/api")
+@CrossOrigin
 public class DiabetesRiskController {
 
     private static final Logger logger = LoggerFactory.getLogger(DiabetesRiskController.class);
@@ -28,11 +31,20 @@ public class DiabetesRiskController {
     @Autowired
     private SessionStore sessionStore;
 
-    private HttpHeaders getHeaders() {
+    private HttpHeaders getHeaders(String authorization) {
         HttpHeaders headers = new HttpHeaders();
-        // TODO enlever toutes les adresses email en dur dans le code
-        headers.add("User-Name", "toto@gmail.com");
-        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        String token = null;
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            token = authorization.substring(7);
+        }
+        String sessionNumber = token != null ? sessionStore.getSessionNumberByToken(token) : null;
+        String username = sessionNumber != null ? sessionStore.getUsernameBySessionNumber(sessionNumber) : null;
+        if (username != null) {
+            headers.add("User-Name", username);
+        }
+        if (sessionNumber != null) {
+            headers.add("Session-Number", sessionNumber);
+        }
         return headers;
     }
 
@@ -40,7 +52,7 @@ public class DiabetesRiskController {
     public ResponseEntity<?> getDiabetesRiskById(
             @RequestHeader(value = "Authorization", required = false) String authorization, @PathVariable Long id) {
         String apiUrlPatientDiabetesRisk = MEDILABO_BACK_RISK_BASE_URL + "/api/risk/diabetes/" + id;
-        HttpHeaders headers = getHeaders();
+        HttpHeaders headers = getHeaders(authorization);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         // partie pour medilabo-back-risk
         try {

@@ -1,6 +1,8 @@
 package com.medilabo.medilabo.config;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import com.medilabo.medilabo.services.StringToSecretKeyConverter.StringToSecretKeyConverter;
+ 
 
 @Configuration
 public class SecretKeyConfig {
@@ -23,20 +25,19 @@ public class SecretKeyConfig {
     @Value("${algorithm:HmacSHA256}")
     private String algorithm;
 
-    private static final Logger logger = LoggerFactory.getLogger(StringToSecretKeyConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(SecretKeyConfig.class);
 
     @Bean
     public SecretKey jwtSecretKey(){
-      //  String[] classPathParameters = classPathParameter.split(":");
-        ClassPathResource classPathResource = new ClassPathResource(classPathParameter);
+        String path = Objects.requireNonNull(classPathParameter, "Property 'hmac256.key' must not be null");
+        ClassPathResource classPathResource = new ClassPathResource(path);
 
-        try{
-       //     Path path =Path.of(classPathResource.getURI());
-            byte[] secretKeyValue = classPathResource.getInputStream().readAllBytes();
-            return new SecretKeySpec(secretKeyValue, algorithm); 
+        try (InputStream is = classPathResource.getInputStream()){
+            byte[] secretKeyValue = is.readAllBytes();
+            return new SecretKeySpec(secretKeyValue, algorithm);
         } catch(IOException e){
             logger.error("Failed to read secret key from resource: {}", classPathResource.getPath(), e);
-            throw new IllegalStateException("Could not load secret key from resource: " +classPathResource.getPath(), e);
+            throw new IllegalStateException("Could not load secret key from resource: " + classPathResource.getPath(), e);
         }
     }
 }

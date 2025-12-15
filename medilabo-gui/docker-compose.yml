@@ -22,14 +22,16 @@ services:
       - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
       - SERVER_SSL_KEY_STORE_TYPE=PKCS12
       - SERVER_SSL_KEY_ALIAS=springboot
-      - DEBUG=true
-      - LOGGING_LEVEL_ROOT=DEBUG
-      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=DEBUG
-      - LOGGING_LEVEL_ORG_HIBERNATE_ORM_JDBC_BIND=TRACE
-      - LOGGING_LEVEL_ORG_FLYWAYDB=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      # Logging (less verbose)
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE_ORM_JDBC_BIND=OFF
+      - LOGGING_LEVEL_ORG_FLYWAYDB=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=INFO
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
     ports:
       - "8082:8082"
+      - "5006:5006"
     volumes:
       - ./logs:/var/log/medilabo:rw
     networks:
@@ -49,9 +51,13 @@ services:
       - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
       - SERVER_SSL_KEY_STORE_TYPE=PKCS12
       - SERVER_SSL_KEY_ALIAS=springboot
-      - DEBUG=true
-      - LOGGING_LEVEL_ROOT=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      # Logging (less verbose)
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=INFO
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+    ports:
+      - "8083:8083"
+      - "5007:5007"
     # no extra volumes needed for keystore in classpath
     networks:
       - medilabo
@@ -71,9 +77,13 @@ services:
       - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
       - SERVER_SSL_KEY_STORE_TYPE=PKCS12
       - SERVER_SSL_KEY_ALIAS=springboot
-      - DEBUG=true
-      - LOGGING_LEVEL_ROOT=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      # Logging (less verbose)
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=INFO
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
+    ports:
+      - "8084:8084"
+      - "5008:5008"
     # no extra volumes needed for keystore in classpath
     depends_on:
       - medilabo-back
@@ -88,6 +98,7 @@ services:
     environment:
       - SERVER_SSL_ENABLED=true
       - SERVER_PORT=8090
+      - SERVER_URL=https://medilabo-back:8082
       - BACK_URL=https://medilabo-back:8082
       - MONGO_URL=https://medilabo-back-mongo:8083
       - RISK_URL=https://medilabo-back-risk:8084
@@ -97,9 +108,10 @@ services:
       - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
       - SERVER_SSL_KEY_STORE_TYPE=PKCS12
       - SERVER_SSL_KEY_ALIAS=springboot
-      - DEBUG=true
-      - LOGGING_LEVEL_ROOT=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      # Logging (less verbose)
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=INFO
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     depends_on:
       - medilabo-back
       - medilabo-back-mongo
@@ -109,6 +121,9 @@ services:
     networks:
       - medilabo
     restart: unless-stopped
+    ports:
+      - "8090:8090"
+      - "5005:5005"
 
   medilabo-gui:
     build: .
@@ -123,9 +138,10 @@ services:
       - SERVER_SSL_KEY_STORE_PASSWORD=?42AzdK{}sD&16984523Tu
       - SERVER_SSL_KEY_STORE_TYPE=PKCS12
       - SERVER_SSL_KEY_ALIAS=springboot
-      - DEBUG=true
-      - LOGGING_LEVEL_ROOT=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      # Logging (less verbose)
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=INFO
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5009
     depends_on:
       - medilabo-gateway
     volumes:
@@ -135,6 +151,7 @@ services:
     restart: unless-stopped
     ports:
       - "443:8080"
+      - "5009:5009"
 
 
   mysql:

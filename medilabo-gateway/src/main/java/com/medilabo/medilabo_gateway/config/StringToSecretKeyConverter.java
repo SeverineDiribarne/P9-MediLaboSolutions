@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.lang.NonNull;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 
@@ -27,8 +28,9 @@ private static final Logger logger = LoggerFactory.getLogger(StringToSecretKeyCo
 
     @Override
     public SecretKey convert(@NonNull String classPathParameter) {
-        String[] classPathParameters = classPathParameter.split(":");
-        ClassPathResource classPathResource = new ClassPathResource(classPathParameters[1]);
+        String[] classPathParameters = Objects.requireNonNull(classPathParameter, "classPathParameter must not be null").split(":");
+        String resourcePath = Objects.requireNonNull(classPathParameters.length > 1 ? classPathParameters[1] : null, "Missing resource path after ':'");
+        ClassPathResource classPathResource = new ClassPathResource(resourcePath);
         try {
             Path path = Path.of(classPathResource.getURI());
             byte[] secretKeyValue = Files.readAllBytes(path);

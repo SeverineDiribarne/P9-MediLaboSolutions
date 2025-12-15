@@ -15,10 +15,10 @@ public class RiskService {
 	@Autowired
 	INotesService notesService;
 
-	// Regles de traitement du message du risque de diabete
+	// Rules for processing the diabetes risk message
 
 	public String processRiskData(PatientDTO patientDTO, int triggerWordCount) {
-		// Implémenter la logique de calcul du risque ici
+		// Implement the risk calculation logic here
 		if (triggerWordCount <= 1) {
 			return "NONE";
 		}

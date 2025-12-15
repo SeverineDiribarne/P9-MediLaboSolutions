@@ -15,6 +15,11 @@ public class UserPublicDTO {
         this.authorities = authorities;
     }
 
-     public String getUsername() { return username; }
-    public List<String> getAuthorities() { return authorities; }
+    public String getUsername() {
+        return username;
+    }
+
+    public List<String> getAuthorities() {
+        return authorities;
+    }
 }

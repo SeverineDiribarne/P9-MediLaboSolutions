@@ -1,6 +1,5 @@
 package com.medilabo.medilabo_back_risk.model;
 
-import java.util.List;
 
 import com.medilabo.medilabo_back_risk.utils.NoteUtils;
 import lombok.AllArgsConstructor;
@@ -18,8 +17,8 @@ public class Note {
     private String note;
 
     /**
-     * Normalise et met à jour le contenu de cette note via l'utilitaire fourni,
-     * sans exposer get/set du contenu côté appelant.
+     * Normalizes and updates this note's content using the provided utility,
+     * without exposing content getters/setters to the caller side.
      */
     public void normalizeContent(NoteUtils utils) {
         if (utils == null) return;
@@ -27,8 +26,8 @@ public class Note {
     }
 
     /**
-     * Retourne le contenu textuel de la note (après éventuelle normalisation).
-     * Garder un alias nommé "content" évite toute ambiguïté côté appelant.
+     * Returns the textual content of the note (after possible normalization).
+     * Keeping an alias named "content" avoids any ambiguity on the caller side.
      */
     public String getContent() {
         return this.note;

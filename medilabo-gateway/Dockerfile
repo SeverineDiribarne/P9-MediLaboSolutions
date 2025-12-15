@@ -11,7 +11,8 @@ RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests package
 
 FROM eclipse-temurin:17-jre
 ENV TZ=Europe/Paris \
-    JAVA_OPTS="-Dspring.profiles.active=docker"
+    JAVA_OPTS="-Dspring.profiles.active=docker" \
+    JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 
 RUN if ! id -u spring >/dev/null 2>&1; then \
             groupadd -f spring 2>/dev/null || true; \
@@ -22,6 +23,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
 
 EXPOSE 8090
+EXPOSE 5005
 
 # create log dir and set ownership so agents can read it
 RUN mkdir -p /var/log/medilabo && chown -R spring:spring /var/log/medilabo || true

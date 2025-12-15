@@ -7,17 +7,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionStore {
 
-    private final ConcurrentHashMap<String, String> sessionMap = new ConcurrentHashMap<>();
+    // Single HashMap storing sessionNumber -> SessionInfo
+    private final ConcurrentHashMap<String, SessionInfo> sessionMap = new ConcurrentHashMap<>();
 
     public void put(String sessionNumber, String username) {
-        sessionMap.put(sessionNumber, username);
+        sessionMap.put(sessionNumber, new SessionInfo(sessionNumber, username, null));
     }
 
 
     public String getSessionNumber(String userName){
         return sessionMap.entrySet()
             .stream()
-            .filter(entry -> entry.getValue().equals(userName))
+            .filter(entry -> userName.equals(entry.getValue().getUsername()))
             .map(ConcurrentHashMap.Entry::getKey)
             .findFirst()
             .orElse(null);
@@ -29,5 +30,31 @@ public class SessionStore {
 
     public void remove(String sessionNumber) {
         sessionMap.remove(sessionNumber);
+    }
+
+    // --- Token association stored inside SessionInfo ---
+    public void attachTokenToSession(String sessionNumber, String token) {
+        sessionMap.computeIfPresent(sessionNumber, (sn, info) -> {
+            info.setToken(token);
+            return info;
+        });
+    }
+
+    public String getSessionNumberByToken(String token) {
+        return sessionMap.entrySet()
+            .stream()
+            .filter(e -> token != null && token.equals(e.getValue().getToken()))
+            .map(ConcurrentHashMap.Entry::getKey)
+            .findFirst()
+            .orElse(null);
+    }
+
+    public boolean isValidToken(String token) {
+        return getSessionNumberByToken(token) != null;
+    }
+
+    public String getUsernameBySessionNumber(String sessionNumber) {
+        SessionInfo info = sessionMap.get(sessionNumber);
+        return info != null ? info.getUsername() : null;
     }
 }

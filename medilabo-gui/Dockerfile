@@ -23,6 +23,8 @@ COPY --from=build /app/target/*.jar /app/app.jar
 
 # En mode conteneur interne, on vise HTTP (SERVER_PORT=8080 via compose)
 EXPOSE 8080
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5009"
+EXPOSE 5009
 # create log dir and set ownership so agents can read it
 RUN mkdir -p /var/log/medilabo && chown -R spring:spring /var/log/medilabo || true
 VOLUME ["/var/log/medilabo"]

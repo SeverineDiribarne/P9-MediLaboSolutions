@@ -40,7 +40,8 @@ public class PatientService implements IPatientService {
             throw new IllegalArgumentException("Patient not found");
         }
         Patient existing = existingOpt.get();
-        // Utilise le constructeur pour créer le patient mis à jour (id conservé)
+        // Uses the constructor to create the updated patient (id retained)
+
         Patient patientToSave = new Patient(
                 existing.getPatientId(),
                 updatedPatient.getLastname(),

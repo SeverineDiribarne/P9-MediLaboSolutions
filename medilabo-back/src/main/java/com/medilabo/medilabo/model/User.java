@@ -15,20 +15,20 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name= "user")
+@Table(name = "user")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, unique = true, name="email")
+    @Column(nullable = false, unique = true, name = "email")
     private String email;
 
-    @Column(nullable = false, name="password")
+    @Column(nullable = false, name = "password")
     private String password;
-    
-     @Column(nullable = false, name = "active_account")
+
+    @Column(nullable = false, name = "active_account")
     private boolean accountIsActive;
 
     @Column(nullable = false, name = "locked_account")
@@ -43,7 +43,7 @@ public class User implements UserDetails {
     @Column(nullable = false, name = "authorities")
     private UserAuthorities userAuthorities;
 
-     @Override
+    @Override
     public String getUsername() {
         return this.email;
     }
@@ -73,22 +73,23 @@ public class User implements UserDetails {
 
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 
-        switch (userAuthorities){
+        switch (userAuthorities) {
             case USER:
-            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.USER));
-            break;
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserAuthorities.USER));
+                break;
 
-             case ADMIN:
-            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.ADMIN));
-            break;
+            case ADMIN:
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserAuthorities.ADMIN));
+                break;
 
-             case ADMIN_AND_USER:
-            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.ADMIN));
-            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.USER));
-            break;
+            case ADMIN_AND_USER:
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserAuthorities.ADMIN));
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserAuthorities.USER));
+                break;
 
             default:
-            authorities.add(new SimpleGrantedAuthority("ROLE_" +UserAuthorities.USER));break;
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserAuthorities.USER));
+                break;
         }
         return authorities;
     }

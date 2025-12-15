@@ -20,36 +20,38 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "https://localhost:8443"
+            allowedOrigins:
+              - ${cors.origin1:https://localhost}
+              - ${cors.origin2:https://localhost:8443}
             allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
             allowedHeaders: "*"
             allowCredentials: true
       routes:
         - id: patient-list
-          uri: https://localhost:8082
+          uri: ${back.url:https://localhost:8082}
           predicates:
             - Path=/api/patient/list
         - id: patient-details
-          uri: https://localhost:8082
+          uri: ${back.url:https://localhost:8082}
           predicates:
             - Path=/api/patient/details/**
         - id: patient-add
-          uri: https://localhost:8082
+          uri: ${back.url:https://localhost:8082}
           predicates:
             - Path=/api/patient/addpatient
         - id: patient-update
-          uri: https://localhost:8082
+          uri: ${back.url:https://localhost:8082}
           predicates:
             - Path=/api/patient/update/**
         - id: auth-login
-          uri: https://localhost:8082
+          uri: ${back.url:https://localhost:8082}
           predicates:
             - Path=/api/auth/login
         - id: notes-get-add
-          uri: https://localhost:8083
+          uri: ${mongo.url:https://localhost:8083}
           predicates:
             - Path=/api/notes/**
         - id: risk-diabetes
-          uri: https://localhost:8084
+          uri: ${risk.url:https://localhost:8084}
           predicates:
             - Path=/api/risk/**

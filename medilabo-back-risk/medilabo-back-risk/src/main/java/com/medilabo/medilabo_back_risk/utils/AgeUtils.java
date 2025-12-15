@@ -1,6 +1,5 @@
 package com.medilabo.medilabo_back_risk.utils;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -10,10 +9,10 @@ import java.util.List;
 
 public final class AgeUtils {
 
-    // Formats courants: ISO (2020-12-31) et FR (31/12/2020). Ajoute-en si besoin.
+    // Common formats: ISO (2020-12-31) and FR (31/12/2020). Add more if needed.
     private static final List<DateTimeFormatter> SUPPORTED_FORMATS = List.of(
         DateTimeFormatter.ISO_LOCAL_DATE,                   // yyyy-MM-dd
-        // Formats supplémentaires
+        // Additional formats
         DateTimeFormatter.ofPattern("yyyy/MM/dd"), // 2020/05/01
         DateTimeFormatter.ofPattern("yyyy.MM.dd"), // 2020.05.01
         DateTimeFormatter.ofPattern("dd-MM-yyyy"), // 01-05-2020
@@ -38,7 +37,7 @@ public final class AgeUtils {
     public static int computeAge(String birthdateStr) {
         LocalDate dob = parseBirthdate(birthdateStr);
         if (dob == null) {
-            // À toi de voir: lancer une exception, retourner -1, etc.
+            // Up to you: throw an exception, return -1, etc.
             return -1;
         }
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
@@ -54,9 +53,9 @@ public final class AgeUtils {
             try {
                 return LocalDate.parse(birthdateStr.trim(), f);
             } catch (DateTimeParseException ignored) {
-                // on essaie le format suivant
+                // try the next format
             }
         }
-        return null; // aucun format n’a matché
+        return null; // no format matched
     }
 }

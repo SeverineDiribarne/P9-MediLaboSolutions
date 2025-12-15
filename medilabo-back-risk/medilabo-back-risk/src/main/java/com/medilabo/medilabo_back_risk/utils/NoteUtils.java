@@ -11,25 +11,23 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 /**
- * Utilitaires liés aux notes pour la détection de mots déclencheurs.
- * Toutes les méthodes sont d'instance afin de pouvoir utiliser l'injection de dépendances si nécessaire.
+ * Utilities related to notes for detecting trigger words.
+ * All methods are instance methods to allow dependency injection if needed.
  */
 @Component
 public class NoteUtils {
 
     /**
-     * Modèle basé sur des "concepts" plutôt que sur des mots isolés afin de regrouper
-     * les synonymes / variations (genre, nombre, verbe) sous une seule entité clinique.
-     * Chaque concept est compté au plus UNE fois même si plusieurs synonymes apparaissent.
+     * Model based on "concepts" rather than isolated words to group
+     * synonyms/variations (gender, number, verb) under a single clinical entity.
+     * Each concept is counted at most ONCE even if multiple synonyms appear.
      */
     private final Map<String, List<String>> CONCEPT_SYNONYMS_ORIGINAL = Map.ofEntries(
         Map.entry("hémoglobine A1C", List.of("hémoglobine A1C")),
         Map.entry("microalbumine", List.of("microalbumine")),
         Map.entry("taille", List.of("taille")),
         Map.entry("poids", List.of("poids")),
-        // tabagisme
         Map.entry("fumeur", List.of("fumeur", "fumeuse", "fumer")),
-        // anormalités (on garde le terme principal pour ne pas complexifier la règle métier)
         Map.entry("anormal", List.of("anormal", "anormale", "anormaux", "anormales")),
         Map.entry("cholestérol", List.of("cholestérol")),
         Map.entry("vertige", List.of("vertige", "vertiges")),
@@ -38,13 +36,13 @@ public class NoteUtils {
         Map.entry("anticorps", List.of("anticorps"))
     );
 
-    // Liste immuable des concepts (nom canonique)
+    // Immutable list of concepts (canonical name)
     private final List<String> CONCEPTS = Collections.unmodifiableList(new ArrayList<>(CONCEPT_SYNONYMS_ORIGINAL.keySet()));
 
-    // Map concept -> liste des synonymes normalisés
+    // Map concept -> list of normalized synonyms
     private final Map<String, List<String>> NORMALIZED_CONCEPT_SYNONYMS;
 
-    // Liste des formes normalisées des noms canoniques (pour compat rétro des tests existants)
+    // List of normalized forms of canonical names (for backward compatibility of existing tests)
     private final List<String> NORMALIZED_CONCEPT_NAMES;
 
     public NoteUtils() {
@@ -63,74 +61,56 @@ public class NoteUtils {
     }
 
     /**
-     * Retourne la liste immuable des mots déclencheurs (forme originale).
+     * Returns the immutable list of trigger words (original form).
      */
-    public List<String> getTriggerWords() { // compatibilité avec ancienne API
-        return CONCEPTS; // retourne les noms canoniques des concepts
+    public List<String> getTriggerWords() { // compatibility with old API
+        return CONCEPTS; // returns the canonical names of concepts
     }
 
     /**
-     * Retourne la liste immuable des mots déclencheurs normalisés (sans accents, en minuscules).
+     * Returns the immutable list of normalized trigger words (no accents, lowercase).
      */
-    public List<String> getNormalizedTriggerWords() { // compat héritée
+    public List<String> getNormalizedTriggerWords() { // compatibility with old API
         return NORMALIZED_CONCEPT_NAMES;
     }
 
     /**
-     * Nouvel accès : retourne la map concept -> synonymes normalisés.
+     * New accessor: returns the map concept -> normalized synonyms.
      */
     public Map<String, List<String>> getNormalizedConceptSynonyms() {
         return NORMALIZED_CONCEPT_SYNONYMS;
     }
 
     /**
-     * Normalise une chaîne : met en minuscule et supprime les diacritiques (accents).
+     * Normalizes a string: lowercases and removes diacritics (accents).
      */
     public String normalize(String text) {
         if (text == null)
             return "";
         String normalizedText = Normalizer.normalize(text, Normalizer.Form.NFD);
-        // supprime les marques diacritiques
+        // remove diacritic marks
         normalizedText = normalizedText.replaceAll("\\p{M}+", "");
         return normalizedText.toLowerCase();
     }
 
-    // /**
-    //  * Vérifie si le texte fourni contient au moins un mot déclencheur (insensible à la casse et aux accents).
-    //  *
-    //  * @param text le texte à analyser (peut être null)
-    //  * @return true si un mot déclencheur est présent, false sinon
-    //  */
-    // public boolean containsTriggerWord(String text) {
-    //     if (text == null || text.isBlank()) {
-    //         return false;
-    //     }
-    //     String normalizedText = normalize(text);
-    //     for (String normalizedWord : NORMALIZED_TRIGGER_WORDS) {
-    //         if (normalizedText.contains(normalizedWord)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
+   
     /**
-     * Retourne une Map contenant pour chaque mot déclencheur sa présence dans le texte (1) ou non (0).
-     * Chaque mot déclencheur est compté au maximum une fois.
-     * La clé de la Map est le mot tel qu'il apparaît dans {@link #getTriggerWords()} (forme originale).
+     * Returns a Map containing, for each trigger word, its presence in the text (1) or not (0).
+     * Each trigger word is counted at most once.
+     * The Map key is the word as it appears in {@link #getTriggerWords()} (original form).
      *
-     * @param text le texte à analyser (peut être null)
-     * @return Map mot -> 0|1
+     * @param text text to analyze (may be null)
+     * @return Map word -> 0|1
      */
     public Map<String, Integer> mapTriggerWordCounts(String text) {
-        // Conservé pour compatibilité : chaque concept renvoie 0/1 selon présence d'au moins un synonyme
+        // Kept for compatibility: each concept returns 0/1 based on presence of at least one synonym
         return mapConceptCounts(text);
     }
 
     /**
-     * Nouvelle méthode explicite basée sur les concepts.
-     * @param text texte source (peut être null)
-     * @return map concept -> 0/1 (1 si au moins un synonyme apparaît)
+     * New explicit method based on concepts.
+     * @param text source text (may be null)
+     * @return map concept -> 0/1 (1 if at least one synonym appears)
      */
     public Map<String, Integer> mapConceptCounts(String text) {
         Map<String, Integer> result = new LinkedHashMap<>();
@@ -145,7 +125,7 @@ public class NoteUtils {
             for (String syn : entry.getValue()) {
                 if (normalizedText.contains(syn)) {
                     result.put(entry.getKey(), 1);
-                    break; // on passe au concept suivant
+                    break; // move to the next concept
                 }
             }
         }

@@ -3,9 +3,13 @@ package com.medilabo_gui.medilabo_gui.services.diabetesrisk;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medilabo_gui.medilabo_gui.model.DiabetesRisk;
+
+import io.micrometer.common.lang.NonNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +17,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class DiabetesRiskService implements IDiabetesRisk {
 
-    private static final String GATEWAY_BASE_URL = "https://localhost:8090"; // Gateway
+    @Value("${gateway.url:https://localhost:8090}")
+    private String gatewayBaseUrl;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(DiabetesRiskService.class);
@@ -35,7 +40,7 @@ public class DiabetesRiskService implements IDiabetesRisk {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         try {
         ResponseEntity<String> response = restTemplate.exchange(
-            GATEWAY_BASE_URL + "/api/risk/" + id,
+            gatewayBaseUrl + "/api/risk/" + id,
                     HttpMethod.GET,
                     entity,
                     new ParameterizedTypeReference<String>() {}

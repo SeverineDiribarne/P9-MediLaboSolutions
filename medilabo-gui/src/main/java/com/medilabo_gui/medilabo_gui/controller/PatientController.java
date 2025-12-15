@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
-@CrossOrigin(origins = "https://localhost:8090")
+@CrossOrigin
 @Controller
 @RequestMapping("/api/patient")
 public class PatientController {
@@ -125,8 +125,8 @@ public class PatientController {
             model.addAttribute("msgGender", "Your gender is incorrect");
             return PATIENT_ADD;
         }
-        // Adresse et téléphone sont optionnels, mais on peut les normaliser ici si
-        // besoin
+        // Address and telephone are optional, but they can be standardized here though
+        // need
         try {
             patientService.addPatient(newPatient, jwtToken);
             return REDIRECT_PATIENT_LIST;
@@ -151,10 +151,11 @@ public class PatientController {
         List<GrantedAuthority> authorities = JwtUtils.decodeAuthorities(jwtToken);
         model.addAttribute("authorities", authorities);
 
-        // Recuperation des informations patient dans la base de donnees medilabo-back
+        // Recovery of patient information in the medilabo-back database
+
         Patient patient;
         try {
-            // Appel via la gateway (port 8090) pour récupérer le patient par son id
+            // Call via the gateway (port 8090) to collect the patient by their id
             ResponseEntity<Patient> responsePatientDetails = patientService.getPatientDetails(id, jwtToken);
             if (responsePatientDetails.getStatusCode().is2xxSuccessful() && responsePatientDetails.getBody() != null) {
                 patient = responsePatientDetails.getBody();
@@ -168,7 +169,8 @@ public class PatientController {
             patient = new Patient();
         }
         model.addAttribute("patient", patient);
-        // Récupération des notes du patient via le service notes
+        // Recovery of patient notes via the notes service
+
         try {
             var notes = noteService.getNotesByPatientId(patient.getPatientId(), jwtToken);
             model.addAttribute("notes", notes);
@@ -176,7 +178,7 @@ public class PatientController {
             logger.error("Exception lors de la récupération des notes du patient {}", patient.getPatientId(), ex);
             model.addAttribute("notes", Collections.emptyList());
         }
-        // Préparation de l'objet formulaire pour l'ajout d'une note (utilisé par
+        // Preparing the form object for adding a note (used by
         // th:object="${noteForm}")
         if (!model.containsAttribute("noteForm")) {
             com.medilabo_gui.medilabo_gui.model.NoteForm noteForm = new com.medilabo_gui.medilabo_gui.model.NoteForm();
@@ -184,12 +186,17 @@ public class PatientController {
             noteForm.setPatientLastname(patient.getLastname());
             model.addAttribute("noteForm", noteForm);
         }
-         // Recuperation des informations de risque de diabete du patient dans la base de donnees medilabo-back-risk
+        // Recovery of patient diabetes risk information in the medilabo-back-risk
+        // database
+
         DiabetesRisk diabetesRisk = new DiabetesRisk();
         try {
-            // Appel via la gateway (port 8090) pour récupérer le risque de diabete du patient par son id
-            ResponseEntity<DiabetesRisk> responsePatientDiabetesRisk = diabetesRiskService.getPatientDiabetesRisk(id, jwtToken);
-            if (responsePatientDiabetesRisk.getStatusCode().is2xxSuccessful() && responsePatientDiabetesRisk.getBody() != null) {
+            // Call via the gateway (port 8090) to recover the risk of diabetes
+            // patient by his id
+            ResponseEntity<DiabetesRisk> responsePatientDiabetesRisk = diabetesRiskService.getPatientDiabetesRisk(id,
+                    jwtToken);
+            if (responsePatientDiabetesRisk.getStatusCode().is2xxSuccessful()
+                    && responsePatientDiabetesRisk.getBody() != null) {
                 diabetesRisk = responsePatientDiabetesRisk.getBody();
                 logger.info("Patient's risk of diabetes retrieved via gateway for id {}", id);
             } else {
@@ -200,7 +207,8 @@ public class PatientController {
             logger.error("Exception during REST call to /api/risk/diabetes/" + id, ex);
             diabetesRisk = new DiabetesRisk();
         }
-        // Espace pour message relatif à l'état du diabète du patient
+        // Space for message relating to the patient's diabetes status
+
         model.addAttribute("diabetesMessage", diabetesRisk.getDiabetesRiskLevel());
 
         return PATIENT_DETAILS;
@@ -304,7 +312,7 @@ public class PatientController {
         }
 
         if (result.hasErrors()) {
-            // Recharger patient et notes pour redisplay form avec erreurs
+            // Recharge patient and notes for redisplay form with errors
             try {
                 ResponseEntity<Patient> responsePatientDetails = patientService
                         .getPatientDetails(String.valueOf(noteForm.getPatientId()), jwtToken);

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DiabetesRiskDTO {
 
-    //private Long patientId;
     private String diabetesRiskLevel;
 
 }

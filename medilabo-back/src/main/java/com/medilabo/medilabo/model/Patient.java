@@ -15,38 +15,38 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name="patient")
+@Table(name = "patient")
 public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name="patient_id")
-    private  long patientId;
+    @Column(name = "patient_id")
+    private long patientId;
 
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name="lastname")
-    private String lastname ="";
+    @Column(name = "lastname")
+    private String lastname = "";
 
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name="firstname")
+    @Column(name = "firstname")
     private String firstname = "";
 
     @NotNull
-    @Column(name="birthdate")
+    @Column(name = "birthdate")
     private String birthdate = "";
 
     @NotNull
-    @Column(name="gender")
+    @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender = Gender.M;
 
-    @Column(name="address")
+    @Column(name = "address")
     private String address = "";
 
-    @Column(name="phone_number")
+    @Column(name = "phone_number")
     @Size(max = 15)
-    private String phoneNumber ="";
+    private String phoneNumber = "";
 
 }

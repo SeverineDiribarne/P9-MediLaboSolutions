@@ -45,7 +45,6 @@ public class NoteController {
 
         if (result.hasErrors()) {
             logger.warn("Erreur de validation du formulaire de note: {}", result.getAllErrors());
-            // On revient sur la page détails du patient
             return "redirect:/api/patient/details/" + form.getPatientId();
         }
 

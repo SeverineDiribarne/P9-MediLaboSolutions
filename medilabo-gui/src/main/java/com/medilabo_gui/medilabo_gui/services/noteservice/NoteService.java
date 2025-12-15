@@ -6,6 +6,7 @@ import com.medilabo_gui.medilabo_gui.model.Note;
 import com.medilabo_gui.medilabo_gui.model.NoteForm;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,7 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoteService implements INoteService {
 
-    private static final String GATEWAY_BASE_URL = "https://localhost:8090"; // Gateway
+    @Value("${gateway.url:https://localhost:8090}")
+    private String gatewayBaseUrl;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(NoteService.class);
@@ -38,7 +40,7 @@ public class NoteService implements INoteService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         try {
             ResponseEntity<String> response = restTemplate.exchange(
-                    GATEWAY_BASE_URL + "/api/notes/patient/" + patientId,
+                    gatewayBaseUrl + "/api/notes/patient/" + patientId,
                     HttpMethod.GET,
                     entity,
                     new ParameterizedTypeReference<String>() {
@@ -61,7 +63,7 @@ public class NoteService implements INoteService {
             String json = objectMapper.writeValueAsString(form);
             HttpEntity<String> entity = new HttpEntity<>(json, headers);
             ResponseEntity<String> response = restTemplate.exchange(
-                    GATEWAY_BASE_URL + "/api/notes",
+                    gatewayBaseUrl + "/api/notes",
                     HttpMethod.POST,
                     entity,
                     new ParameterizedTypeReference<String>() {
@@ -82,7 +84,7 @@ public class NoteService implements INoteService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         try {
             restTemplate.exchange(
-                    GATEWAY_BASE_URL + "/api/notes/" + noteId,
+                    gatewayBaseUrl + "/api/notes/" + noteId,
                     HttpMethod.DELETE,
                     entity,
                     Void.class);
@@ -99,7 +101,7 @@ public class NoteService implements INoteService {
             String json = String.format("{\"note\":\"%s\"}", note.replace("\"", "\\\""));
             HttpEntity<String> entity = new HttpEntity<>(json, headers);
             ResponseEntity<String> response = restTemplate.exchange(
-                    GATEWAY_BASE_URL + "/api/notes/" + noteId,
+                    gatewayBaseUrl + "/api/notes/" + noteId,
                     HttpMethod.PUT,
                     entity,
                     new ParameterizedTypeReference<String>() {

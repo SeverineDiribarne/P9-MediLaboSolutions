@@ -26,6 +26,8 @@ COPY --from=build /app/target/*.jar /app/app.jar
 
 # Port par défaut de l'application (peut être surchargé par SERVER_PORT)
 EXPOSE 8082
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006"
+EXPOSE 5006
 
 # create log dir and set ownership so agents can read it
 RUN mkdir -p /var/log/medilabo && chown -R spring:spring /var/log/medilabo || true

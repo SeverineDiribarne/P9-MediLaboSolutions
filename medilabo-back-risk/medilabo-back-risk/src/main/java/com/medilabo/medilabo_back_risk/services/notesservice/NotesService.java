@@ -24,10 +24,10 @@ public class NotesService implements INotesService {
 		if (notesDTO == null || notesDTO.getNotes() == null) {
 			return 0;
 		}
-	//1) récupérer les concepts et leurs synonymes normalisés
+	// 1) Retrieve concepts and their normalized synonyms
 	var normalizedConceptSynonyms = noteUtils.getNormalizedConceptSynonyms();
 
-	// 2) créer une liste de notes normalisées et la remplir avec les notes normalisées
+	// 2) Create a list of normalized notes and fill it with normalized content
 		List<Note> normalizedNotes = new ArrayList<>();
 
 		for (Note note : notesDTO.getNotes()) {
@@ -36,10 +36,10 @@ public class NotesService implements INotesService {
 			normalizedNotes.add(note);
 		}
 
-		// Ensemble des CONCEPTS détectés (comptés au plus une fois globalement)
+		// Set of detected CONCEPTS (counted at most once globally)
 		Set<String> foundConcepts = new HashSet<>();
 
-		// 3) Pour chaque concept, vérifier si au moins un de ses synonymes apparaît dans au moins une note
+		// 3) For each concept, check if at least one synonym appears in at least one note
 		for (var entry : normalizedConceptSynonyms.entrySet()) {
 			String concept = entry.getKey();
 			List<String> synonyms = entry.getValue();
@@ -58,7 +58,7 @@ public class NotesService implements INotesService {
 				foundConcepts.add(concept);
 			}
 		}
-		// renvoyer le nombre de concepts trouvés
+		// return the number of concepts found
 		return foundConcepts.size();
 	}
 }

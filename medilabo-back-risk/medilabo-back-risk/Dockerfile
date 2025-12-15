@@ -22,6 +22,8 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
 
 EXPOSE 8084
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008"
+EXPOSE 5008
 
 USER spring
 ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]

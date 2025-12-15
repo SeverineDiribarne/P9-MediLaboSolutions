@@ -14,19 +14,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/patient")
-@CrossOrigin(origins = "https://localhost:8090")
+@CrossOrigin
 public class PatientController {
 
     private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PatientController.class);
-    // private static final String LOG_ERROR = "The patient could not be validated
-    // or registered in the database because the patient details were empty or
-    // partially empty,"
-    // +
-    // " with the exception of the address and telephone number, which are
-    // optional.";
-    // private static final String PATIENT_ADD = "patient/add";
-    // private static final String PATIENT_UPDATE = "patient/update";
-    private static final String REDIRECT_PATIENT_LIST = "redirect:/patient/list";
 
     @Autowired
     IPatientService patientService;
@@ -46,7 +37,7 @@ public class PatientController {
 
     @GetMapping("/details/{id}")
     public ResponseEntity<Patient> detailsOfPatient(@PathVariable Long id) {
-        // Logique pour récupérer les détails du patient en fonction de l'id
+        // Logic to retrieve patient details based on id
         return patientService.getPatientById(id)
                 .map(patient -> {
                     log.info("Patient {} found", id);
@@ -62,7 +53,7 @@ public class PatientController {
             log.error("Patient {} not found for update", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found");
         }
-        // Délègue la logique de mise à jour au service
+        // Delegates update logic to the service
         Patient patientSaved = patientService.updatePatient(id, updatedPatient);
         log.info("Patient {} updated", id);
         return ResponseEntity.ok(patientSaved);

@@ -17,12 +17,16 @@ import com.medilabo.medilabo_gateway.session.SessionStore;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@SuppressWarnings({ "null" })
 @RequestMapping("/api/patient")
+@CrossOrigin
 public class PatientController {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
-    private static final String MEDILABO_BACK_BASE_URL = System.getenv().getOrDefault("BACK_URL", "https://medilabo-back:8082");
-    private static final String MEDILABO_BACK_MONGO_BASE_URL = System.getenv().getOrDefault("MONGO_URL", "https://medilabo-back-mongo:8083");
+    private static final String MEDILABO_BACK_BASE_URL = System.getenv().getOrDefault("BACK_URL",
+            "https://medilabo-back:8082");
+    private static final String MEDILABO_BACK_MONGO_BASE_URL = System.getenv().getOrDefault("MONGO_URL",
+            "https://medilabo-back-mongo:8083");
 
     @Autowired
     private RestTemplate restTemplate;
@@ -33,17 +37,27 @@ public class PatientController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private HttpHeaders getHeaders() {
+    private HttpHeaders getHeaders(String authorization) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("User-Name", "toto@gmail.com");
-        headers.add("Session-Number", sessionStore.getSessionNumber("toto@gmail.com"));
+        String token = null;
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            token = authorization.substring(7);
+        }
+        String sessionNumber = token != null ? sessionStore.getSessionNumberByToken(token) : null;
+        String username = sessionNumber != null ? sessionStore.getUsernameBySessionNumber(sessionNumber) : null;
+        if (username != null) {
+            headers.add("User-Name", username);
+        }
+        if (sessionNumber != null) {
+            headers.add("Session-Number", sessionNumber);
+        }
         return headers;
     }
 
     @GetMapping("/list")
     public ResponseEntity<?> getUsers(@RequestHeader(value = "Authorization", required = false) String authorization) {
         String apiUrl = MEDILABO_BACK_BASE_URL + "/api/patient/list";
-        HttpHeaders headers = getHeaders();
+        HttpHeaders headers = getHeaders(authorization);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         try {
             ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
@@ -70,30 +84,32 @@ public class PatientController {
     @PostMapping("/addpatient")
     public ResponseEntity<?> addPatient(@RequestHeader(value = "Authorization", required = false) String authorization,
             @RequestBody PatientDTO patient) {
-        // Normalisation du format de date avant enregistrement
+        // Standardizing the date format before saving
         String inputDate = patient.getBirthdate();
         if (inputDate != null && !inputDate.isEmpty()) {
-            // Remplace les points ou slash par tirets
+            // Replaces dots or slashes with dashes
             String normalized = inputDate.replace('.', '-').replace('/', '-');
-            // Vérifie le format dd-MM-yyyy
+            // Checks the dd-MM-yyyy format
             if (normalized.matches("\\d{2}-\\d{2}-\\d{4}")) {
                 String[] parts = normalized.split("-");
                 normalized = parts[2] + "-" + parts[1] + "-" + parts[0];
                 patient.setBirthdate(normalized);
             }
         }
-        // Normalisation du format du numéro de téléphone avant enregistrement
+        // Standardization of the telephone number format before registration
         String inputPhone = patient.getPhoneNumber();
         if (inputPhone != null && !inputPhone.isEmpty()) {
-            // Remplace points, slash et espaces par tirets
+            // Replaces dots, slashes and spaces with dashes
+
             String normalizedPhone = inputPhone.replace('.', '-').replace('/', '-').replace(' ', '-');
-            // Vérifie le format xxx-xxx-xxxx
+            // Checks the xxx-xxx-xxxx format
+
             if (normalizedPhone.matches("\\d{3}-\\d{3}-\\d{4}")) {
                 patient.setPhoneNumber(normalizedPhone);
             }
         }
         String apiUrl = MEDILABO_BACK_BASE_URL + "/api/patient/addpatient";
-        HttpHeaders headers = getHeaders();
+        HttpHeaders headers = getHeaders(authorization);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
         try {
@@ -112,14 +128,14 @@ public class PatientController {
         }
     }
 
-    
     @GetMapping("/details/{id}")
     public ResponseEntity<?> getPatientById(
             @RequestHeader(value = "Authorization", required = false) String authorization, @PathVariable Long id) {
         String apiUrlPatientDetails = MEDILABO_BACK_BASE_URL + "/api/patient/details/" + id;
-        HttpHeaders headers = getHeaders();
+        HttpHeaders headers = getHeaders(authorization);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-        // partie pour medilabo-back
+        // for medilabo-back part
+
         try {
             ResponseEntity<PatientDTO> responsePatientDetails = restTemplate.exchange(
                     apiUrlPatientDetails,
@@ -136,8 +152,8 @@ public class PatientController {
                 logger.warn("Gateway call succeeded but body empty or status not OK for id {}", id);
                 patient = new PatientDTO();
             }
-            // partie pour medilabo-back-mongo
-            String apiUrlNote =  MEDILABO_BACK_MONGO_BASE_URL + "/api/notes/patient/" + id;
+            // for medilabo-back-mongo part
+            String apiUrlNote = MEDILABO_BACK_MONGO_BASE_URL + "/api/notes/patient/" + id;
             ResponseEntity<List<NoteDTO>> responseNote = restTemplate.exchange(
                     apiUrlNote,
                     HttpMethod.GET,
@@ -163,33 +179,35 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing patient details");
         }
     }
-     @PostMapping("/update/{id}")
-    public ResponseEntity<?> updatePatient(@RequestHeader(value = "Authorization", required = false) String authorization,
-     @PathVariable Long id, @RequestBody PatientDTO patient) {
-        // Normalisation du format de date avant enregistrement
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> updatePatient(
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @PathVariable Long id, @RequestBody PatientDTO patient) {
+        // Standardizing the date format before saving
         String inputDate = patient.getBirthdate();
         if (inputDate != null && !inputDate.isEmpty()) {
-            // Remplace les points ou slash par tirets
+            // Replaces dots or slashes with dashes
             String normalized = inputDate.replace('.', '-').replace('/', '-');
-            // Vérifie le format dd-MM-yyyy
+            // Checks the dd-MM-yyyy format
             if (normalized.matches("\\d{2}-\\d{2}-\\d{4}")) {
                 String[] parts = normalized.split("-");
                 normalized = parts[2] + "-" + parts[1] + "-" + parts[0];
                 patient.setBirthdate(normalized);
             }
         }
-        // Normalisation du format du numéro de téléphone avant enregistrement
+        // Standardization of the telephone number format before registration
         String inputPhone = patient.getPhoneNumber();
         if (inputPhone != null && !inputPhone.isEmpty()) {
-            // Remplace points, slash et espaces par tirets
+            // Replaces dots, slashes and spaces with dashes
             String normalizedPhone = inputPhone.replace('.', '-').replace('/', '-').replace(' ', '-');
-            // Vérifie le format xxx-xxx-xxxx
+            // Checks the xxx-xxx-xxxx format
             if (normalizedPhone.matches("\\d{3}-\\d{3}-\\d{4}")) {
                 patient.setPhoneNumber(normalizedPhone);
             }
         }
         String apiUrl = MEDILABO_BACK_BASE_URL + "/api/patient/update/" + id;
-        HttpHeaders headers = getHeaders();
+        HttpHeaders headers = getHeaders(authorization);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PatientDTO> entity = new HttpEntity<>(patient, headers);
         try {
@@ -207,5 +225,4 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing user list");
         }
     }
-
 }

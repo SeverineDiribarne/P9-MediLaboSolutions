@@ -23,7 +23,7 @@ public class PatientDTO {
     private Gender gender = Gender.M;
 
     
-     // Traitement de l'age du patient
+    //Treatment of the patient's age
     public int getPatientAge(PatientDTO dto) {
         return AgeUtils.computeAge(dto.getBirthdate());
     }

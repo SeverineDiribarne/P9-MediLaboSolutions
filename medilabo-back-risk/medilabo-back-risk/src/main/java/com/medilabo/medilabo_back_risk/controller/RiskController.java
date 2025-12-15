@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/risk")
-@CrossOrigin(origins = "https://localhost:8090")
+@CrossOrigin
 public class RiskController {
 
      private final Logger log = LoggerFactory.getLogger(RiskController.class);
@@ -57,7 +57,7 @@ public class RiskController {
 
           PatientDTO patientDTO = new PatientDTO();
           try {
-               // 1) Récupérer les détails du patient depuis medilabo-back (8082)
+               // 1) Retrieve patient details from medilabo-back (8082)
                patientDTO = getPatientDTO(patientId, authorization, userName, sessionNumber);
                if (patientDTO == null) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found");
@@ -73,14 +73,14 @@ public class RiskController {
                log.error("Error while retrieving patient {} from medilabo-back: {}", patientId, e.getMessage(), e);
                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving patient details");
           }
-          // 2) Récupérer les notes du patient depuis medilabo-back-mongo (8083)
+          // 2) Retrieve patient notes from medilabo-back-mongo (8083)
           int triggerWordCount = 0;
           try {
                NotesDTO notesDTO = getNotesDTO(patientId, authorization, userName, sessionNumber);
-               // envoyer les notes dans le NotesService pour traitement
+               // send notes to NotesService for processing
                triggerWordCount = notesService.processNotesDTOData(notesDTO);
           } catch (HttpClientErrorException.NotFound ex) {
-               // Pas de notes pour ce patient -> on continue avec une liste vide
+               // No notes for this patient -> continue with an empty list
                log.info("No notes found for patient {} in medilabo-back-mongo", patientId);
           } catch (HttpClientErrorException ex) {
                log.error("Error while retrieving notes for patient {} from medilabo-back-mongo - status: {}, body: {}",
@@ -90,16 +90,15 @@ public class RiskController {
                log.error("Error while retrieving notes for patient {} from medilabo-back-mongo: {}", patientId, ex.getMessage(), ex);
                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving patient details");
           }
-          // TODO: Implement actual risk calculation logic
           String diabeteRiskLevel = "";
           diabeteRiskLevel = riskService.processRiskData(patientDTO, triggerWordCount);
-          // 3) Calcul/renvoi du risque (placeholder pour l'instant)
+          // 3) Compute/return risk (placeholder for now)
           DiabetesRiskDTO dto = new DiabetesRiskDTO(diabeteRiskLevel);
           return ResponseEntity.ok(dto);
      }
 
      private PatientDTO getPatientDTO(Long patientId, String authorization, String userName, String sessionNumber) throws Exception {
-          // 1) Récupérer les détails du patient depuis medilabo-back (8082)
+          // 1) Retrieve patient details from medilabo-back (8082)
           String patientUrl = MEDILABO_BACK_BASE_URL + "/api/patient/details/" + patientId;
           HttpHeaders headers = new HttpHeaders();
           if (authorization != null && !authorization.isBlank()) {
@@ -122,14 +121,14 @@ public class RiskController {
                return null;
           }
 
-          // Optionnel: parser pour vérifier existence / extraire champs si besoin
+          // Optional: parse to verify existence / extract fields if needed
           Map<String, Object> patient = objectMapper.readValue(patientResponse.getBody(),
                     new TypeReference<Map<String, Object>>() {
                     });
           if (patient == null || patient.isEmpty()) {
                return null;
           }
-          // envoyer le patient dans le PatientService pour traitement
+          // send patient to PatientService for processing
           return patientService.processPatientDTOData(patient);
      }
 

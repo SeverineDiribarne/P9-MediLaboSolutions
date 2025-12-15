@@ -236,9 +236,7 @@
                     name="patientId"
                     th:value="${patient.patientId}"
                   />
-                  <textarea name="noteContent" class="note-textarea">
-                  [[${note.note}]]
-                  </textarea>
+                  <textarea name="noteContent" class="note-textarea" th:text="${note.note}"></textarea>
                 </form>
                 <!-- Side-by-side action zone without nested forms -->
                 <div class="note-actions">

@@ -27,7 +27,7 @@ public class NoteService implements INoteService {
         Note newNote = new Note();
         newNote.setPatientId(String.valueOf(patientId));
         newNote.setPatientLastname(patientLastname);
-        newNote.setNote(note);
+        newNote.setNote(note == null ? null : note.trim());
         return noteRepository.save(newNote);
     }
 

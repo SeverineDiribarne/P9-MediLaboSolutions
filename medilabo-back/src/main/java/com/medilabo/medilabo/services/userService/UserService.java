@@ -9,14 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 
-
 @Service
 public class UserService implements IUserService {
 
     @Autowired
     private IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -38,11 +36,10 @@ public class UserService implements IUserService {
         return userRepository.findAll()
                 .stream()
                 .map(user -> new UserPublicDTO(
-                    user.getUsername(),
-                     user.getAuthorities().stream()
-                     .map(GrantedAuthority::getAuthority)
-                     .toList()
-                ))
+                        user.getUsername(),
+                        user.getAuthorities().stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .toList()))
                 .toList();
     }
 }

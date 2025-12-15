@@ -1,6 +1,7 @@
 package com.medilabo_gui.medilabo_gui.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,7 +24,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/api/auth/login", "/").permitAll()
+//Freely allow static resources to prevent the browser from receiving the /login page instead (nosniff MIME error)
+            .requestMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
+//Public pages
+            .requestMatchers("/login", "/api/auth/login", "/").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -35,11 +39,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurer(
+            @Value("${gui.cors.allowed-origins:https://localhost,https://localhost:8443}") String allowedOrigins) {
         return new WebMvcConfigurer() {
             public void addCorsMappings(@NonNull CorsRegistry registry) {
+                String[] origins = java.util.Arrays.stream(allowedOrigins.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .toArray(String[]::new);
                 registry.addMapping("/**")
-                        .allowedOrigins("https://localhost:8443")
+                        .allowedOrigins(origins)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

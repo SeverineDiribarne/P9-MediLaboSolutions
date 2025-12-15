@@ -18,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 import com.medilabo.medilabo_gateway.security.JwtBlackList;
 
 @RestController
+@CrossOrigin
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;

@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Objects;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
+
 
 public class StringToSecretKeyConverter implements Converter<String, SecretKey>{
 
@@ -19,8 +21,9 @@ private String algorithm = "HmacSHA256";
 
     @Override
     public SecretKey convert(@org.springframework.lang.NonNull String classPathParameter) {
-        String[] classPathParameters = classPathParameter.split(":");
-        ClassPathResource classPathResource = new ClassPathResource(classPathParameters[1]);
+        String[] classPathParameters = Objects.requireNonNull(classPathParameter, "classPathParameter must not be null").split(":");
+        String resourcePath = Objects.requireNonNull(classPathParameters.length > 1 ? classPathParameters[1] : null, "Missing resource path after ':'");
+        ClassPathResource classPathResource = new ClassPathResource(resourcePath);
 
         try{
             Path path =Path.of(classPathResource.getURI());

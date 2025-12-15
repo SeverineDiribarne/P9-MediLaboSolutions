@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 @Controller
-@CrossOrigin(origins = "https://localhost:8090")
+@CrossOrigin
 public class LogoutController {
 
     @GetMapping("/logout")

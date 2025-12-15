@@ -14,26 +14,27 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@SuppressWarnings({"null"})
 public class RestTemplateConfig {
 
     @Bean
     public RestTemplate restTemplate() throws Exception {
         final SSLContext sslContext = SSLContexts.custom()
-                .loadTrustMaterial(null, (chain, authType) -> true) //Trust all certificates
+                .loadTrustMaterial(null, (chain, authType) -> true) // Trust all certificates
                 .build();
 
-    final DefaultClientTlsStrategy tlsStrategy = new DefaultClientTlsStrategy(
-        sslContext,
-        (host, session) -> true);
+        final DefaultClientTlsStrategy tlsStrategy = new DefaultClientTlsStrategy(
+                sslContext,
+                (host, session) -> true);
 
-    final PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder
-        .create()
-        .setTlsSocketStrategy(tlsStrategy)
-        .build();
+        final PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder
+                .create()
+                .setTlsSocketStrategy(tlsStrategy)
+                .build();
 
-    CloseableHttpClient httpClient = HttpClients.custom()
-        .setConnectionManager(connectionManager)
-        .build();
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .build();
 
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(httpClient);

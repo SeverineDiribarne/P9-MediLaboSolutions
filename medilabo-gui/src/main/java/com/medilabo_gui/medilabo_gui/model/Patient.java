@@ -12,18 +12,11 @@ import lombok.*;
 public class Patient {
 
     private long patientId;
-
     private String lastname;
-
     private String firstname;
-
     private String birthdate;
-
     private Gender gender;
-
     private String address;
-
     private String phoneNumber;
-
     private List<Note> notes;
 }

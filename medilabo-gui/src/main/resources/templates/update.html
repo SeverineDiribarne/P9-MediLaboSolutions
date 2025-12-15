@@ -1,68 +1,120 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html
+  lang="fr"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modifier un patient</title>
+  <link href="/css/medilabo-style.css?v=20241111" rel="stylesheet" />
+  </head>
 
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Update Page</title>
-    <link href="/css/medilabo-style.css" rel="stylesheet">
-</head>
-
-<body>
-<div class="row">
-    <h2>Update patient</h2>
-</div>
-
-<div class="row">
-    <form action="#" th:action="@{/patient/validate}" th:object="${patient}" method="post" class="form-horizontal"
-          align="center" style="width: 100%">
-        <!-- Create a form to input the values of Patient, there are 2 buttons: Save data and cancel to the list PatientList -->
-
-        <label>Lastname<br/>
-            <input type="text" id="lastname" name="lastname" th:field="*{lastname}" placeholder="Lastname"
-                   required/><br/>
-        </label>
-        <label>Firstname<br/>
-            <input type="text" id="firstname" name="firstname" th:field="*{firstname}" placeholder="Firstname"
-                   required/><br/>
-        </label>
-        <label>BirthDate<br/>
-            <input type="text" id="birthdate" name="birthdate" th:field="*{birthdate}" placeholder="BirthDate"
-                   required/> <br/>
-        </label>
-        <div>
-            <label>Gender</label><br/>
-
-            <input type="radio" id="genderChoice1" name="gender" value="Male" checked/>
-            <label for="genderChoice1">Male</label>
-
-            <input type="radio" id="genderChoice2" name="gender" value="Female"/>
-            <label for="genderChoice2">Female</label>
-
-            <input type="radio" id="genderChoice3" name="gender" value="X"/>
-            <label for="genderChoice3">X</label>
+  <body>
+    <!-- Upper headBand -->
+    <div class="top-banner">
+      <div class="banner-content">
+        <div class="logo-img logo-frame">
+          <img src="/img/medilabo-logo.png" alt="MédiLabo Solutions" />
         </div>
-        <br/>
-        <label>Address<br/>
-            <input type="text" th:field="*{address}" id="address" name="address" placeholder="Address"/>
-            <br/>
-        </label>
-        <label>Phone number<br/>
-            <input type="text" th:field="*{phoneNumber}" id="phoneNumber" name="phoneNumber"
-                   placeholder="Phone Number"/>
-            <br/>
-        </label>
-        <span th:style="'color: red;'" th:if="${msgLastname}" th:utext="${msgLastname}">Error Lastname</span><br/>
-        <span th:style="'color: red;'" th:if="${msgFirstname}" th:utext="${msgFirstname}">Error Firstname</span><br/>
-        <span th:style="'color: red;'" th:if="${msgBirthdate}" th:utext="${msgBirthdate}">Error Birthdate</span><br/>
-        <div class="form-group">
-            <div class="col-sm-12">
-                <a href="/patient/list" class="btn btn-danger" style="margin-top: 0.5%">Cancel</a>
-                <input type="submit" class="btn btn-primary" value="Update Patient" style="margin-top: 0.5%"/>
-            </div>
+        <div class="banner-actions">
+          <a th:href="@{/api/patient/list}" class="btn btn-login retour-btn">Retour à la liste</a>
+          <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
         </div>
-    </form>
-</div>
-</body>
-
+      </div>
+    </div>
+    <div style="width: 100%; margin-top: 2.5rem; text-align: center">
+      <h2 class="heading-blue" style="margin: 0;">
+        Modifier le patient
+      </h2>
+    </div>
+    <div class="form-card-wide">
+      <form
+        action="#"
+        th:action="@{/api/patient/update/{id}(id=${patient.patientId})}"
+        method="post"
+        th:object="${patient}"
+        class="form-vertical"
+      >
+        <input type="hidden" th:field="*{patientId}" />
+        <div class="form-row">
+          <label for="lastname" class="label-main-180">Nom</label>
+          <input
+            type="text"
+            id="lastname"
+            name="lastname"
+            th:field="*{lastname}"
+            placeholder="Nom"
+            required
+            class="form-control input-flex"
+          />
+        </div>
+        <div class="form-row">
+          <label for="firstname" class="label-main-180">Prénom</label>
+          <input
+            type="text"
+            id="firstname"
+            name="firstname"
+            th:field="*{firstname}"
+            placeholder="Prénom"
+            required
+            class="form-control input-flex"
+          />
+        </div>
+        <div class="form-row">
+          <label for="birthdate" class="label-main-180">Date de naissance</label>
+          <input
+            type="text"
+            id="birthdate"
+            name="birthdate"
+            th:field="*{birthdate}"
+            placeholder="JJ/MM/AAAA"
+            required
+            class="form-control input-flex"
+          />
+        </div>
+        <div class="form-row">
+          <label class="label-main-180">Genre</label>
+          <div class="radio-group">
+            <label style="font-weight: 500; color: #2c3e50"><input type="radio" id="M" name="gender" th:field="*{gender}" value="M" checked /> Homme</label>
+            <label style="font-weight: 500; color: #2c3e50"><input type="radio" id="F" name="gender" th:field="*{gender}" value="F" /> Femme</label>
+            <label style="font-weight: 500; color: #2c3e50"><input type="radio" id="X" name="gender" th:field="*{gender}" value="X" /> X</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="address" class="label-main-180">Adresse</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            th:field="*{address}"
+            placeholder="Adresse"
+            class="form-control input-flex"
+          />
+        </div>
+        <div class="form-row">
+          <label for="phoneNumber" class="label-main-180">Téléphone</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            name="phoneNumber"
+            th:field="*{phoneNumber}"
+            placeholder="Téléphone"
+            class="form-control input-flex"
+          />
+        </div>
+        <span th:if="${msgLastname}" th:utext="${msgLastname}" class="error-text">Erreur Nom</span>
+        <span th:if="${msgFirstname}" th:utext="${msgFirstname}" class="error-text">Erreur Prénom</span>
+        <span th:if="${msgBirthdate}" th:utext="${msgBirthdate}" class="error-text">Erreur Date de naissance</span>
+        <div class="actions-row">
+          <div class="label-spacer-180"></div>
+          <div class="actions-form-wide">
+            <button type="reset" class="btn btn-form btn-form-outline btn-split">Annuler</button>
+            <button type="submit" class="btn btn-form btn-form-solid btn-split">Enregistrer</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
 </html>

@@ -15,19 +15,41 @@ public class PatientService implements IPatientService {
     @Autowired
     IPatientRepository patientRepository;
 
-
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Iterable<Patient> getPatientList() {
         return patientRepository.findAll();
     }
 
     @Override
-    public Optional<Patient> getPatientById(long id) {//byID
+    @Transactional(rollbackFor = Exception.class)
+    public Optional<Patient> getPatientById(long id) {// byID
         return patientRepository.findById(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Patient savePatient(Patient patient) {
         return patientRepository.save(patient);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Patient updatePatient(Long id, Patient updatedPatient) {
+        Optional<Patient> existingOpt = patientRepository.findById(id);
+        if (existingOpt.isEmpty()) {
+            throw new IllegalArgumentException("Patient not found");
+        }
+        Patient existing = existingOpt.get();
+        // Uses the constructor to create the updated patient (id retained)
+
+        Patient patientToSave = new Patient(
+                existing.getPatientId(),
+                updatedPatient.getLastname(),
+                updatedPatient.getFirstname(),
+                updatedPatient.getBirthdate(),
+                updatedPatient.getGender(),
+                updatedPatient.getAddress(),
+                updatedPatient.getPhoneNumber());
+        return patientRepository.save(patientToSave);
     }
 }

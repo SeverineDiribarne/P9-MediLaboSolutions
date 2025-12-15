@@ -15,19 +15,12 @@ public class PatientDTO {
 
 
     private  long patientId;
-
     private String lastname ="";
-
     private String firstname = "";
-
     private String birthdate = "";
-
     private Gender gender = Gender.M;
-
     private String address = " ";
-
     private String phoneNumber =" ";
-
     private List<NoteDTO> notes;
 
 }

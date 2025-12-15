@@ -10,4 +10,8 @@ public interface INoteService {
     List<Note> getNotesByPatientId(Long patientId, String jwtToken);
 
     Note addNote(NoteForm form, String jwtToken);
+
+    void deleteNote(String noteId, String jwtToken);
+
+    Note updateNote(String noteId, String note, String jwtToken);
 }

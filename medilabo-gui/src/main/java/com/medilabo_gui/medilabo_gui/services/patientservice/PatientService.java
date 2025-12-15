@@ -1,6 +1,7 @@
 package com.medilabo_gui.medilabo_gui.services.patientservice;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.medilabo_gui.medilabo_gui.model.Patient;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,13 +22,21 @@ public class PatientService implements IPatientService {
         this.restTemplate = restTemplate;
     }
 
+    @Value("${gateway.url:https://localhost:8090}")
+    private String gatewayBaseUrl;
+
+      private HttpHeaders buildHeaders(String jwtToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(java.util.List.of(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", "Bearer " + jwtToken);
+        return headers;
+    }
+     
     @Override
     public ResponseEntity<List<Patient>> getPatientList(String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/list";
-
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
+        String gatewayUrl = gatewayBaseUrl + "/api/patient/list";
+        HttpHeaders headersRequest = buildHeaders(jwtToken);
+        
         HttpEntity<String> entity = new HttpEntity<>(headersRequest);
 
         return restTemplate.exchange(
@@ -41,12 +49,9 @@ public class PatientService implements IPatientService {
 
     @Override
     public ResponseEntity<Patient> addPatient(Patient patient, String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/addpatient";
+        String gatewayUrl = gatewayBaseUrl + "/api/patient/addpatient";
+         HttpHeaders headers = buildHeaders(jwtToken);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + jwtToken);
         HttpEntity<Patient> entity = new HttpEntity<>(patient, headers);
 
         return restTemplate.exchange(
@@ -58,12 +63,10 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public ResponseEntity<Patient> getPatientDetails(long id, String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/details/" + id;
+    public ResponseEntity<Patient> getPatientDetails(String id, String jwtToken) {
+        String gatewayUrl = gatewayBaseUrl + "/api/patient/details/" + id;
+        HttpHeaders headersRequest = buildHeaders(jwtToken);
 
-        HttpHeaders headersRequest = new HttpHeaders();
-        headersRequest.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headersRequest.set("Authorization", "Bearer " + jwtToken);
         HttpEntity<String> entity = new HttpEntity<>(headersRequest);
 
         return restTemplate.exchange(
@@ -75,9 +78,33 @@ public class PatientService implements IPatientService {
     }
 
     @Override
-    public ResponseEntity<Patient> getPatientToUpdate(long id, String jwtToken) {
-        String gatewayUrl = "https://localhost:8090/api/patient/update/" + id;
-        return restTemplate.getForEntity(gatewayUrl, Patient.class);
+    public ResponseEntity<Patient> getPatientToUpdateById(String patientId, String jwtToken) {
+        String gatewayUrl = gatewayBaseUrl + "/api/patient/details/" + patientId;
+        HttpHeaders headersRequest = buildHeaders(jwtToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headersRequest);
+
+        return restTemplate.exchange(
+                gatewayUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<Patient>() {
+                });
     }
 
+    @Override
+    public ResponseEntity<Patient> updatePatient(String patientId, Patient patient, String jwtToken) {
+    String gatewayUrl = gatewayBaseUrl + "/api/patient/update/" + patientId;
+     HttpHeaders headers = buildHeaders(jwtToken);
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    
+    HttpEntity<Patient> entity = new HttpEntity<>(patient, headers);
+
+    return restTemplate.exchange(
+        gatewayUrl,
+        HttpMethod.POST,
+        entity,
+        new ParameterizedTypeReference<Patient>() {
+        });
+    }
 }

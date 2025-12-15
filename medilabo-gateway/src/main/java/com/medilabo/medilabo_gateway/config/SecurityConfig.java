@@ -23,7 +23,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
-// @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -63,42 +62,34 @@ public class SecurityConfig {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    public RouteLocator customRouteLocator(
+            RouteLocatorBuilder builder,
+            @Value("${back.url:https://localhost:8082}") String backUrl,
+            @Value("${mongo.url:https://localhost:8083}") String mongoUrl) {
         return builder.routes()
                 .route("dedude_response_header_route", r -> r
                         .path("/authentication")
                         .filters(f -> f.dedupeResponseHeader(
                                 "Access-Control-Allow-Credentials",
                                 "RETAIN_FIRST"))
-                        .uri("https://localhost:8082"))
+                        .uri(backUrl))
 
                 .route("backend_route", r -> r
                         .path("/api/patient/list")
-                        .uri("https://localhost:8082"))
+                        .uri(backUrl))
 
                 .route("medilabo-addpatientbyid", r -> r
                         .path("/api/patient/details/{id}")
-                        .uri("https://localhost:8082"))
+                        .uri(backUrl))
 
                 .route("medilabo-details-getnotes", r -> r
                         .path("/api/notes/patient/{patientid}")
                         .filters(f -> f.addRequestParameter("patientid", "defaultId"))
-                        .uri("https://localhost:8083"))
+                        .uri(mongoUrl))
 
                 .route("medilabo-addpatient", r -> r
                          .path("/api/notes/patient/addnote")
-                         .uri("https://localhost:8083"))
-
-                // .route("medilabo-update", r -> r
-                //         .path("/api/patient/update/{id}")
-                //         .filters(f -> f.addRequestParameter("id", "defaultId"))
-                //         .uri("https://localhost:8082"))
-
-                // .route("medilabo-authenticate", r -> r
-                //         .path("/api/auth/login")
-                //         // .filters(f -> f.filter(filterFactory.apply(new
-                //         // AddAuthRequestParametersGatewayFilterFactory.Config())))
-                //         .uri("https://localhost:8082"))
+                         .uri(mongoUrl))
                 .build();
     }
 

@@ -1,0 +1,37 @@
+# syntax=docker/dockerfile:1.6
+
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+WORKDIR /app
+
+# Préparer le cache Maven et les dépendances
+COPY pom.xml .
+RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests dependency:go-offline
+
+# Copier le code et builder
+COPY src ./src
+RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests package
+
+FROM eclipse-temurin:17-jre
+ENV TZ=Europe/Paris \
+    JAVA_OPTS="-Dspring.profiles.active=docker"
+
+# Utilisateur non-root
+RUN if ! id -u spring >/dev/null 2>&1; then \
+            groupadd -f spring 2>/dev/null || true; \
+            useradd -m -s /bin/sh -g spring spring 2>/dev/null || true; \
+        fi && [ -d /app ] && chown -R spring:spring /app || true
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar /app/app.jar
+
+# Port par défaut de l'application (peut être surchargé par SERVER_PORT)
+EXPOSE 8082
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006"
+EXPOSE 5006
+
+# create log dir and set ownership so agents can read it
+RUN mkdir -p /var/log/medilabo && chown -R spring:spring /var/log/medilabo || true
+VOLUME ["/var/log/medilabo"]
+
+USER spring
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]

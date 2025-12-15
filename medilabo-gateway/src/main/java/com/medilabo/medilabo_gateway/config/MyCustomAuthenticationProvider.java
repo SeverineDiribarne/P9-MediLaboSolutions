@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class MyCustomAuthenticationProvider implements AuthenticationProvider {
 
     private final String serverUrl;
+    private final String authUrl;
 
     @Autowired
     private SessionStore sessionStore;
@@ -45,8 +46,18 @@ public class MyCustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private RestTemplate restTemplate;
 
-    MyCustomAuthenticationProvider(@Value("${server.url}") String serverUrl) {
-        this.serverUrl = serverUrl;
+    MyCustomAuthenticationProvider(
+            @Value("${server.url:https://localhost:8082}") String serverUrl,
+            @Value("${auth.path:/authentication}") String authPath) {
+        this.serverUrl = trimTrailingSlash(serverUrl);
+        this.authUrl = this.serverUrl + (authPath.startsWith("/") ? authPath : "/" + authPath);
+    }
+
+    private static String trimTrailingSlash(String url) {
+        if (url == null) {
+            return "";
+        }
+        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
 
     @Override
@@ -58,10 +69,10 @@ public class MyCustomAuthenticationProvider implements AuthenticationProvider {
         User userToCheck = new User(authentication.getName(), authentication.getCredentials().toString());
         try {
             HttpEntity<User> entity = new HttpEntity<>(userToCheck, headers);
-            ResponseEntity<String> entityResponseEntity = restTemplate
-                    .postForEntity(serverUrl + "/authentication",
-                            entity,
-                            String.class);
+                ResponseEntity<String> entityResponseEntity = restTemplate
+                    .postForEntity(authUrl,
+                        entity,
+                        String.class);
             if (entityResponseEntity.getStatusCode().is2xxSuccessful()) {
                 String body = entityResponseEntity.getBody();
                 if (body != null && !body.isEmpty()) {
@@ -72,6 +83,7 @@ public class MyCustomAuthenticationProvider implements AuthenticationProvider {
                     String username = authentication.getName();
                     if (sessionNumber != null && username != null) {
                         sessionStore.put(sessionNumber, username);
+                        sessionStore.attachTokenToSession(sessionNumber, jwtTokenReceived);
                     }
                     // Parse JWT header and claims (no signature verification)
                     String[] parts = jwtTokenReceived.split("\\.");

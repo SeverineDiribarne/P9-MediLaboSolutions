@@ -11,9 +11,9 @@ public interface IPatientService {
 
     ResponseEntity<Patient> addPatient(Patient patient, String jwtToken);
 
-    ResponseEntity<Patient> getPatientDetails(long id, String jwtToken);
+    ResponseEntity<Patient> getPatientDetails(String id, String jwtToken);
 
-    ResponseEntity<Patient> getPatientToUpdate(long id, String jwtToken);
-
+    ResponseEntity<Patient> getPatientToUpdateById(String id, String jwtToken);
+    ResponseEntity<Patient> updatePatient(String id, Patient patient, String jwtToken);
    
 }
